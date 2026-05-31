@@ -1,0 +1,4 @@
+-- ============================================================
+-- LinkIUT – Database Schema (H2 compatible)
+-- Tables only – seed data is loaded by DataLoader.java
+-- ============================================================

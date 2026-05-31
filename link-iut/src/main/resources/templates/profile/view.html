@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${profileUser.displayName + ' — Profile'}">Profile</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- ═══ Hero Section ═══ -->
+    <div class="glass rounded-2xl overflow-hidden mb-8 animate-fade-in">
+        <!-- Cover gradient -->
+        <div class="h-36 bg-gradient-to-r from-brand-700 via-brand-500 to-accent-teal relative">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-30"></div>
+        </div>
+
+        <div class="px-8 pb-8 -mt-16 relative">
+            <div class="flex flex-col sm:flex-row items-start sm:items-end gap-5">
+                <!-- Avatar -->
+                <div class="w-28 h-28 rounded-2xl bg-gradient-to-br from-brand-500 to-accent-violet flex items-center justify-center text-3xl font-bold text-white border-4 border-surface-800 shadow-xl shadow-brand-500/20">
+                    <span th:text="${profileUser.initials}">FR</span>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-1">
+                        <h1 class="text-2xl font-bold text-white" th:text="${profileUser.displayName}">User Name</h1>
+                        <span class="text-[11px] px-2.5 py-0.5 rounded-full font-semibold"
+                              th:classappend="${profileUser.role.name() == 'ALUMNI' ? 'badge-alumni' : 'badge-student'}"
+                              th:text="${profileUser.role}">ROLE</span>
+                    </div>
+                    <p class="text-sm text-surface-200/70" th:text="${profile.headline}">Headline</p>
+                    <div class="flex items-center gap-4 mt-2 text-xs text-surface-200/50">
+                        <span th:if="${profile.location}" class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            <span th:text="${profile.location}">Location</span>
+                        </span>
+                        <span th:if="${profile.department}" class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                            <span th:text="${profile.department + ' · Batch ' + profile.batch}">CSE · Batch 2024</span>
+                        </span>
+                        <a th:if="${profile.linkedinUrl}" th:href="${profile.linkedinUrl}" target="_blank"
+                           class="flex items-center gap-1 text-brand-400 hover:text-brand-300 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 mt-4 sm:mt-0" th:if="${!isOwnProfile}">
+                    <form th:action="@{/messages/start/{id}(id=${profileUser.id})}" method="post">
+                        <button type="submit" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2" id="start-chat-btn">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                            Start Chat
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Bio ═══ -->
+    <div th:if="${profile.bio}" class="glass rounded-2xl p-6 mb-8 animate-fade-in-up stagger-1" style="opacity:0">
+        <h2 class="text-lg font-semibold text-white mb-3">About</h2>
+        <p class="text-sm text-surface-200/70 leading-relaxed" th:text="${profile.bio}">Bio text</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- ═══ Experience Timeline ═══ -->
+        <div class="glass rounded-2xl p-6 animate-fade-in-up stagger-2" style="opacity:0">
+            <h2 class="text-lg font-semibold text-white mb-6">Experience</h2>
+
+            <div th:if="${profile.experiences != null && !profile.experiences.isEmpty()}" class="relative">
+                <!-- Timeline line -->
+                <div class="absolute left-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-brand-500 via-accent-teal to-transparent"></div>
+
+                <div th:each="exp, iter : ${profile.experiences}" class="relative pl-10 pb-8 last:pb-0">
+                    <!-- Dot -->
+                    <div class="absolute left-[10px] top-1.5 w-[11px] h-[11px] rounded-full border-2"
+                         th:classappend="${exp.current ? 'bg-accent-teal border-accent-teal shadow-md shadow-accent-teal/30' : 'bg-surface-800 border-brand-500/50'}"></div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="text-sm font-semibold text-white" th:text="${exp.title}">Title</h3>
+                            <span th:if="${exp.current}" class="text-[10px] bg-accent-teal/10 text-accent-teal px-2 py-0.5 rounded-full font-medium">Current</span>
+                        </div>
+                        <p class="text-xs text-brand-400 font-medium" th:text="${exp.company}">Company</p>
+                        <p class="text-xs text-surface-200/40 mt-0.5">
+                            <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Jan 2020</span>
+                            <span> — </span>
+                            <span th:text="${exp.current ? 'Present' : #temporals.format(exp.endDate, 'MMM yyyy')}">Present</span>
+                        </p>
+                        <p th:if="${exp.description}" class="text-xs text-surface-200/60 mt-2 leading-relaxed" th:text="${exp.description}">Description</p>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${profile.experiences == null || profile.experiences.isEmpty()}" class="text-sm text-surface-200/30 text-center py-8">
+                No experience added yet
+            </div>
+        </div>
+
+        <!-- ═══ Projects ═══ -->
+        <div class="glass rounded-2xl p-6 animate-fade-in-up stagger-3" style="opacity:0">
+            <h2 class="text-lg font-semibold text-white mb-6">Projects</h2>
+
+            <div th:if="${profile.projects != null && !profile.projects.isEmpty()}" class="space-y-4">
+                <div th:each="proj : ${profile.projects}" class="glass-light rounded-xl p-5 hover-lift">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="text-sm font-semibold text-white" th:text="${proj.name}">Project Name</h3>
+                        <a th:if="${proj.repoUrl}" th:href="${proj.repoUrl}" target="_blank"
+                           class="text-surface-200/40 hover:text-brand-400 transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </a>
+                    </div>
+                    <p class="text-xs text-surface-200/60 mb-3 leading-relaxed" th:text="${proj.description}">Description</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span th:each="tech : ${proj.techList}"
+                              class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 font-medium"
+                              th:text="${tech}">Java</span>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${profile.projects == null || profile.projects.isEmpty()}" class="text-sm text-surface-200/30 text-center py-8">
+                No projects added yet
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
