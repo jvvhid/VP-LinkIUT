@@ -45,40 +45,31 @@
     <div class="bg-orb bg-orb-2"></div>
     <div class="bg-orb bg-orb-3"></div>
 
-    <!-- Decorative Background Graphics -->
-    <div class="fixed inset-0 pointer-events-none z-0">
-        <svg class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] text-white/[0.015]" viewBox="0 0 900 900">
-            <circle cx="450" cy="450" r="150" stroke="currentColor" stroke-width="0.5" fill="none"/>
-            <circle cx="450" cy="450" r="300" stroke="currentColor" stroke-width="0.5" fill="none"/>
-            <circle cx="450" cy="450" r="420" stroke="currentColor" stroke-width="0.3" fill="none"/>
-        </svg>
-        <svg class="absolute left-[5%] top-[25%] w-48 h-48 float-slow" viewBox="0 0 100 100" fill="none">
-            <polygon points="50,5 90,27 90,72 50,95 10,72 10,27" stroke="#3377ff" stroke-width="0.5" opacity="0.1"/>
-            <polygon points="50,20 75,33 75,67 50,80 25,67 25,33" stroke="#2dd4bf" stroke-width="0.4" opacity="0.08"/>
-        </svg>
-        <svg class="absolute right-[8%] bottom-[20%] w-40 h-52 float-medium" viewBox="0 0 180 240" fill="none">
-            <line x1="90" y1="40" x2="150" y2="100" stroke="#a78bfa" stroke-width="0.6" opacity="0.15" stroke-dasharray="4 4"/>
-            <line x1="150" y1="100" x2="100" y2="180" stroke="#3377ff" stroke-width="0.6" opacity="0.15" stroke-dasharray="4 4"/>
-            <line x1="100" y1="180" x2="30" y2="130" stroke="#2dd4bf" stroke-width="0.6" opacity="0.15" stroke-dasharray="4 4"/>
-            <circle cx="90" cy="40" r="10" stroke="#a78bfa" stroke-width="0.8" fill="#a78bfa" fill-opacity="0.05"/>
-            <circle cx="150" cy="100" r="8" stroke="#3377ff" stroke-width="0.8" fill="#3377ff" fill-opacity="0.05"/>
-            <circle cx="100" cy="180" r="10" stroke="#2dd4bf" stroke-width="0.8" fill="#2dd4bf" fill-opacity="0.05"/>
-            <circle cx="30" cy="130" r="7" stroke="#fbbf24" stroke-width="0.8" fill="#fbbf24" fill-opacity="0.05"/>
-        </svg>
+    <!-- Decorative Background Graphics (GenZ Aesthetic) -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <!-- Floating abstract shapes -->
+        <div class="absolute top-[10%] right-[10%] w-72 h-72 rounded-full bg-gradient-to-tr from-accent-violet/20 to-brand-500/20 blur-3xl float-slow"></div>
+        <div class="absolute bottom-[10%] left-[10%] w-64 h-64 rounded-full bg-gradient-to-bl from-accent-teal/20 to-brand-400/20 blur-3xl float-medium"></div>
+        
+        <!-- Subtle noise overlay for texture -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E'); mix-blend-mode: overlay;"></div>
     </div>
 
     <div class="relative z-10 w-full max-w-lg" style="animation: fadeInUp 0.7s ease-out forwards">
         <!-- Logo -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-lg shadow-brand-500/25 mb-4 relative">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-                <div class="absolute inset-0 rounded-2xl bg-brand-500/20" style="animation: pulse-ring 3s ease-out infinite"></div>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-48 h-48 -mb-6 relative hover:scale-105 transition-transform duration-500">
+                <img src="/images/justlogo.png" alt="LinkIUT Logo" class="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(51,119,255,0.6)]" />
+                <div class="absolute inset-0 rounded-full bg-brand-500/20 blur-2xl" style="animation: pulse-ring 3s ease-out infinite"></div>
             </div>
-            <h1 class="text-3xl font-bold bg-gradient-to-r from-brand-400 to-accent-teal bg-clip-text text-transparent">Join LinkIUT</h1>
-            <p class="text-sm text-slate-400 mt-1">Create your alumni-student networking account</p>
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-brand-400 to-accent-teal bg-clip-text text-transparent tracking-tight">Join LinkIUT</h1>
+            <p class="text-[15px] font-medium text-slate-300 mt-1 flex items-center justify-center gap-2.5">
+                <span>Connect</span>
+                <span class="text-brand-500 text-lg">•</span>
+                <span>Collaborate</span>
+                <span class="text-accent-teal text-lg">•</span>
+                <span>Grow</span>
+            </p>
         </div>
 
         <!-- Registration Card -->

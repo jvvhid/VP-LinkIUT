@@ -2,6 +2,7 @@ package edu.iutdhaka.linkiut.repository;
 
 import edu.iutdhaka.linkiut.model.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -28,4 +29,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
            "WHERE m.chatSession.id = :sessionId AND m.id > :afterId " +
            "ORDER BY m.sentAt ASC")
     List<Message> findNewMessages(@Param("sessionId") Long sessionId, @Param("afterId") Long afterId);
+
+    @Modifying
+    @Query("UPDATE Message m SET m.status = 'SEEN' WHERE m.chatSession.id = :sessionId AND m.sender.id != :userId AND m.status != 'SEEN'")
+    void markAsSeen(@Param("sessionId") Long sessionId, @Param("userId") Long userId);
+
+    @Query("SELECT m.chatSession.id FROM Message m WHERE m.sender.id != :userId AND m.status != 'SEEN' AND (m.chatSession.initiator.id = :userId OR m.chatSession.responder.id = :userId)")
+    List<Long> findSessionsWithUnreadMessages(@Param("userId") Long userId);
 }

@@ -39,11 +39,14 @@ public class MessageController {
     public String chatList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         AppUser currentUser = getCurrentUser(userDetails);
         List<ChatSession> sessions = messageService.getUserSessions(currentUser.getId());
+        List<Long> unreadSessions = messageService.getUnreadSessions(currentUser.getId());
+        
         model.addAttribute("chatSessions", sessions);
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("activeChat", null);
         model.addAttribute("chatMessages", Collections.emptyList());
         model.addAttribute("lastMessageId", 0L);
+        model.addAttribute("unreadSessions", unreadSessions);
         return "messages/chat";
     }
 
@@ -51,19 +54,21 @@ public class MessageController {
      * Open a specific chat session.
      */
     @GetMapping("/{sessionId}")
-    @Transactional(readOnly = true)
     public String chat(@PathVariable Long sessionId, Model model,
                        @AuthenticationPrincipal UserDetails userDetails) {
         try {
             AppUser currentUser = getCurrentUser(userDetails);
+            messageService.markMessagesAsSeen(sessionId, currentUser.getId());
             ChatSession chatSession = messageService.getSession(sessionId);
             List<Message> messages = messageService.getChatHistory(sessionId);
+            List<Long> unreadSessions = messageService.getUnreadSessions(currentUser.getId());
 
             model.addAttribute("activeChat", chatSession);
             model.addAttribute("chatMessages", messages);
             model.addAttribute("currentUser", currentUser);
             model.addAttribute("chatSessions", messageService.getUserSessions(currentUser.getId()));
             model.addAttribute("lastMessageId", messages.isEmpty() ? 0L : messages.get(messages.size() - 1).getId());
+            model.addAttribute("unreadSessions", unreadSessions);
             return "messages/chat";
         } catch (Exception e) {
             log.error("Error opening chat {}: {}", sessionId, e.getMessage());
@@ -114,12 +119,12 @@ public class MessageController {
      * HTMX polling: return new messages since lastId.
      */
     @GetMapping("/{sessionId}/poll")
-    @Transactional(readOnly = true)
     public String pollMessages(@PathVariable Long sessionId,
                                 @RequestParam(defaultValue = "0") Long lastId,
                                 Model model,
                                 @AuthenticationPrincipal UserDetails userDetails) {
         AppUser currentUser = getCurrentUser(userDetails);
+        messageService.markMessagesAsSeen(sessionId, currentUser.getId());
         List<Message> newMessages = messageService.getNewMessages(sessionId, lastId);
         ChatSession chatSession = messageService.getSession(sessionId);
 

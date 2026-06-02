@@ -64,6 +64,6 @@ public class Message {
     /** Formatted time for chat UI */
     public String getFormattedTime() {
         if (sentAt == null) return "";
-        return sentAt.toLocalTime().withSecond(0).toString();
+        return sentAt.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

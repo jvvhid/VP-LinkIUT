@@ -86,4 +86,13 @@ public class MessageService {
     public List<ChatSession> getUserSessions(Long userId) {
         return chatSessionRepository.findAllByUser(userId);
     }
+
+    @Transactional
+    public void markMessagesAsSeen(Long sessionId, Long userId) {
+        messageRepository.markAsSeen(sessionId, userId);
+    }
+
+    public List<Long> getUnreadSessions(Long userId) {
+        return messageRepository.findSessionsWithUnreadMessages(userId);
+    }
 }

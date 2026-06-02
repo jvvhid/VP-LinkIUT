@@ -9,9 +9,9 @@
 <div layout:fragment="content">
 
     <!-- Professional Tech/Sci-Fi Graphics -->
-    <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+    <div class="pointer-events-none fixed inset-0 z-[-1] overflow-hidden">
         <!-- Subtle dot grid pattern over dark background -->
-        <div class="absolute inset-0 bg-[#060b13]"></div>
+        <div class="absolute inset-0 bg-[#060b13]/50"></div>
         <svg class="absolute top-0 left-0 w-full h-full text-[#38bdf8]/[0.03]" viewBox="0 0 100 100" preserveAspectRatio="none">
             <pattern id="dot-grid" x="0" y="0" width="1" height="1" patternUnits="userSpaceOnUse">
                 <circle cx="0.5" cy="0.5" r="0.1" fill="currentColor"/>
@@ -133,7 +133,7 @@
                     <div class="flex items-start justify-between mb-5">
                         <div class="flex items-center gap-3">
                             <a th:href="@{/profile/{id}(id=${opp.postedBy.id})}"
-                               class="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-black border border-white/10 overflow-hidden flex-shrink-0 relative z-10 bg-gradient-to-br from-[#38bdf8] to-[#10b981]">
+                               class="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white border border-white/10 overflow-hidden flex-shrink-0 relative z-10 bg-gradient-to-br from-[#38bdf8] to-[#10b981]">
                                 <img th:if="${opp.postedBy.avatarUrl != null}" th:src="${opp.postedBy.avatarUrl}" alt="Avatar" class="w-full h-full object-cover"/>
                                 <span th:if="${opp.postedBy.avatarUrl == null}" th:text="${opp.postedBy.initials}">FR</span>
                             </a>
