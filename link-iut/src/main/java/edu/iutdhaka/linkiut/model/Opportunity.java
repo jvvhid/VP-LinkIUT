@@ -32,7 +32,7 @@ public class Opportunity {
     private LocalDateTime expiresAt;
 
     public enum OpportunityType {
-        JOB, INTERNSHIP, MENTORSHIP, JOURNEY, PROJECT_INSIGHT, APP_BUILD
+        JOB, INTERNSHIP, RESEARCH_CONTRIBUTION, JOURNEY
     }
 
     // ── Constructors ─────────────────────────────────────────
@@ -73,12 +73,10 @@ public class Opportunity {
     /** CSS class helper based on type */
     public String getTypeBadgeClass() {
         return switch (type) {
-            case JOB             -> "badge-job";
-            case INTERNSHIP      -> "badge-internship";
-            case MENTORSHIP      -> "badge-mentorship";
-            case JOURNEY         -> "badge-journey";
-            case PROJECT_INSIGHT -> "badge-insight";
-            case APP_BUILD       -> "badge-app";
+            case JOB                   -> "badge-job";
+            case INTERNSHIP            -> "badge-internship";
+            case RESEARCH_CONTRIBUTION -> "badge-research";
+            case JOURNEY               -> "badge-journey";
         };
     }
 

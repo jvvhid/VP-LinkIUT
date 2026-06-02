@@ -135,9 +135,9 @@ public class DataLoader implements CommandLineRunner {
         opportunityRepository.save(opp1);
 
         Opportunity opp2 = new Opportunity();
-        opp2.setTitle("Mentorship: System Design Deep-Dive");
-        opp2.setDescription("I will mentor one student through 8 weeks of system-design case studies (free).");
-        opp2.setType(Opportunity.OpportunityType.MENTORSHIP);
+        opp2.setTitle("Research Collaboration on Systems");
+        opp2.setDescription("Looking for a student researcher for a paper on distributed systems design.");
+        opp2.setType(Opportunity.OpportunityType.RESEARCH_CONTRIBUTION);
         opp2.setPostedBy(alumni);
         opp2.setExpiresAt(LocalDateTime.now().plusDays(60));
         opportunityRepository.save(opp2);

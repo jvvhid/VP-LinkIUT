@@ -46,14 +46,16 @@
         </div>
 
         <!-- ═══ Filter Tabs ═══ -->
-        <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-2 animate-fade-in scrollbar-hide" id="filter-tabs">
-            <button onclick="filterOpportunities('ALL')" class="filter-tab active text-xs px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap" data-type="ALL">All</button>
-            <button onclick="filterOpportunities('JOB')" class="filter-tab text-xs px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap" data-type="JOB">💼 Jobs</button>
-            <button onclick="filterOpportunities('INTERNSHIP')" class="filter-tab text-xs px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap" data-type="INTERNSHIP">🚀 Internships</button>
-            <button onclick="filterOpportunities('MENTORSHIP')" class="filter-tab text-xs px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap" data-type="MENTORSHIP">🧠 Mentorship</button>
-            <button onclick="filterOpportunities('JOURNEY')" class="filter-tab text-xs px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap" data-type="JOURNEY">🌟 Journey</button>
-            <button onclick="filterOpportunities('PROJECT_INSIGHT')" class="filter-tab text-xs px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap" data-type="PROJECT_INSIGHT">💡 Project Insight</button>
-            <button onclick="filterOpportunities('APP_BUILD')" class="filter-tab text-xs px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap" data-type="APP_BUILD">🛠️ App Build</button>
+        <div class="flex items-center gap-2 mb-2 overflow-x-auto pb-2 animate-fade-in scrollbar-hide" id="main-tabs">
+            <button onclick="filterOpportunities('ALL', false)" class="main-tab active text-xs px-5 py-2 rounded-lg font-medium transition-all whitespace-nowrap uppercase tracking-wider" data-type="ALL">All</button>
+            <button onclick="filterOpportunities('OPPORTUNITY', false)" class="main-tab text-xs px-5 py-2 rounded-lg font-medium transition-all whitespace-nowrap uppercase tracking-wider" data-type="OPPORTUNITY">Opportunity</button>
+            <button onclick="filterOpportunities('JOURNEY', false)" class="main-tab text-xs px-5 py-2 rounded-lg font-medium transition-all whitespace-nowrap uppercase tracking-wider" data-type="JOURNEY">Journey</button>
+        </div>
+
+        <div id="sub-tabs" class="hidden flex items-center gap-2 mb-6 overflow-x-auto pb-2 animate-fade-in scrollbar-hide">
+            <button onclick="filterOpportunities('JOB', true)" class="sub-tab text-xs px-4 py-1.5 rounded-full font-medium transition-all whitespace-nowrap border border-white/10 text-slate-400 hover:text-white" data-type="JOB">Jobs</button>
+            <button onclick="filterOpportunities('INTERNSHIP', true)" class="sub-tab text-xs px-4 py-1.5 rounded-full font-medium transition-all whitespace-nowrap border border-white/10 text-slate-400 hover:text-white" data-type="INTERNSHIP">Internships</button>
+            <button onclick="filterOpportunities('RESEARCH_CONTRIBUTION', true)" class="sub-tab text-xs px-4 py-1.5 rounded-full font-medium transition-all whitespace-nowrap border border-white/10 text-slate-400 hover:text-white" data-type="RESEARCH_CONTRIBUTION">Research Contribution</button>
         </div>
 
         <!-- ═══ Post Opportunity Form (Minimized) ═══ -->
@@ -78,7 +80,10 @@
                         
                         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                             <select name="type" class="rounded-xl px-4 py-3 text-sm flex-1 w-full sm:w-auto bg-[#131b26] border border-white/10 text-white outline-none" id="opp-type">
-                                <option th:each="t : ${types}" th:value="${t}" th:text="${t}">JOB</option>
+                                <option value="JOB">Job</option>
+                                <option value="INTERNSHIP">Internship</option>
+                                <option value="RESEARCH_CONTRIBUTION">Research Contribution</option>
+                                <option value="JOURNEY">Journey</option>
                             </select>
                             
                             <select name="archiveInHours" class="rounded-xl px-4 py-3 text-sm flex-1 w-full sm:w-auto bg-[#131b26] border border-white/10 text-white outline-none" id="opp-archive">
@@ -141,7 +146,7 @@
                                 <a th:href="@{/profile/{id}(id=${opp.postedBy.id})}" class="text-[14px] font-semibold text-[#f8fafc] hover:text-[#38bdf8] transition-colors" th:text="${opp.postedBy.displayName}">User Name</a>
                                 <div class="flex items-center gap-2 mt-0.5">
                                     <span class="inline-block text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-[#38bdf8]/30 text-[#38bdf8] bg-[#38bdf8]/5 font-semibold"
-                                          th:text="${opp.postedBy.role}">ALUMNI</span>
+                                          th:text="${opp.postedBy.profile != null and opp.postedBy.profile.department != null and opp.postedBy.profile.batch != null ? (opp.postedBy.profile.department + '-' + opp.postedBy.profile.batch) : opp.postedBy.role}">ALUMNI</span>
                                     <span class="text-[11px] text-[#94a3b8]/60" th:text="${opp.timeAgo}">2h ago</span>
                                 </div>
                             </div>
@@ -158,10 +163,9 @@
                             <span th:if="${!opp.isArchived()}" class="text-[10px] px-2.5 py-1 rounded-full font-bold tracking-wide uppercase border border-current/20"
                                   th:classappend="${opp.type.name() == 'JOB' ? 'text-[#38bdf8] bg-[#38bdf8]/10' : 
                                                   (opp.type.name() == 'INTERNSHIP' ? 'text-[#10b981] bg-[#10b981]/10' : 
-                                                  (opp.type.name() == 'MENTORSHIP' ? 'text-[#a855f7] bg-[#a855f7]/10' : 
-                                                  (opp.type.name() == 'JOURNEY' ? 'text-[#f59e0b] bg-[#f59e0b]/10' : 
-                                                  (opp.type.name() == 'PROJECT_INSIGHT' ? 'text-[#f43f5e] bg-[#f43f5e]/10' : 'text-[#6366f1] bg-[#6366f1]/10'))))}"
-                                  th:text="${opp.type}">JOB</span>
+                                                  (opp.type.name() == 'RESEARCH_CONTRIBUTION' ? 'text-[#a855f7] bg-[#a855f7]/10' : 
+                                                  (opp.type.name() == 'JOURNEY' ? 'text-[#f59e0b] bg-[#f59e0b]/10' : 'text-[#6366f1] bg-[#6366f1]/10')))}"
+                                  th:text="${opp.type.name() == 'RESEARCH_CONTRIBUTION' ? 'RESEARCH' : opp.type}">JOB</span>
                         </div>
                     </div>
 
@@ -210,27 +214,54 @@
         </div>
     </div>
 
-    <!-- Filter Scripts -->
     <script>
-        function filterOpportunities(type) {
-            document.querySelectorAll('.filter-tab').forEach(t => {
-                t.classList.remove('active');
-                if (t.dataset.type === type) t.classList.add('active');
-            });
-            document.querySelectorAll('.opp-card').forEach(card => {
-                if (type === 'ALL' || card.dataset.type === type) {
-                    card.style.display = '';
-                    card.style.opacity = '1';
+        function filterOpportunities(type, isSubTab = false) {
+            if (!isSubTab) {
+                document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+                event.target.classList.add('active');
+
+                const subTabs = document.getElementById('sub-tabs');
+                if (type === 'OPPORTUNITY') {
+                    subTabs.classList.remove('hidden');
+                    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
                 } else {
-                    card.style.display = 'none';
+                    subTabs.classList.add('hidden');
+                }
+            } else {
+                document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+
+            document.querySelectorAll('.opp-card').forEach(card => {
+                const cardType = card.dataset.type;
+                let show = false;
+                
+                if (type === 'ALL') {
+                    show = true;
+                } else if (type === 'JOURNEY') {
+                    show = (cardType === 'JOURNEY');
+                } else if (type === 'OPPORTUNITY') {
+                    show = (cardType === 'JOB' || cardType === 'INTERNSHIP' || cardType === 'RESEARCH_CONTRIBUTION');
+                } else if (isSubTab) {
+                    show = (cardType === type);
+                }
+
+                if (show) {
+                    card.style.display = '';
+                    setTimeout(() => card.style.opacity = '1', 50);
+                } else {
+                    card.style.opacity = '0';
+                    setTimeout(() => card.style.display = 'none', 200);
                 }
             });
         }
     </script>
     <style>
-        .filter-tab { background: rgba(30,41,59,0.3); color: rgba(148,163,184,0.8); border: 1px solid rgba(255,255,255,0.05); }
-        .filter-tab:hover { background: rgba(56,189,248,0.1); color: #f8fafc; border-color: rgba(56,189,248,0.2); }
-        .filter-tab.active { background: rgba(56,189,248,0.15); color: #38bdf8; border-color: rgba(56,189,248,0.3); }
+        .main-tab { background: rgba(30,41,59,0.3); color: rgba(148,163,184,0.8); border: 1px solid rgba(255,255,255,0.05); }
+        .main-tab:hover { background: rgba(56,189,248,0.1); color: #f8fafc; border-color: rgba(56,189,248,0.2); }
+        .main-tab.active { background: rgba(56,189,248,0.15); color: #38bdf8; border-color: rgba(56,189,248,0.3); }
+        .sub-tab:hover { background: rgba(255,255,255,0.05); }
+        .sub-tab.active { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3); }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
