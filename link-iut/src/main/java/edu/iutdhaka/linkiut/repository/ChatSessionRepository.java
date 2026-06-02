@@ -15,28 +15,12 @@ import java.util.Optional;
 public interface ChatSessionRepository extends JpaRepository<ChatSession, Long> {
 
     /**
-     * Finds ACTIVE sessions whose SLA deadline has passed.
-     * Used by ChatTimerScheduler every 60 seconds.
-     */
-    List<ChatSession> findByStatusAndSlaDeadlineBefore(
-            ChatSession.Status status, LocalDateTime deadline);
-
-    /**
-     * Bulk-expire overdue sessions in a single UPDATE (more efficient than loading entities).
-     */
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE ChatSession c SET c.status = 'EXPIRED' " +
-           "WHERE c.status = 'ACTIVE' AND c.slaDeadline < :now")
-    int expireOverdueSessions(@Param("now") LocalDateTime now);
-
-    /**
      * Find existing session between two users (either direction).
      */
     @Query("SELECT c FROM ChatSession c " +
-           "WHERE c.status = 'ACTIVE' " +
-           "AND ((c.initiator.id = :user1 AND c.responder.id = :user2) " +
-           "  OR (c.initiator.id = :user2 AND c.responder.id = :user1))")
-    Optional<ChatSession> findActiveSessionBetween(
+           "WHERE (c.initiator.id = :user1 AND c.responder.id = :user2) " +
+           "   OR (c.initiator.id = :user2 AND c.responder.id = :user1)")
+    Optional<ChatSession> findSessionBetween(
             @Param("user1") Long user1, @Param("user2") Long user2);
 
     /**

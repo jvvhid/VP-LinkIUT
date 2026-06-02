@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Edit Profile</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="max-w-2xl mx-auto animate-fade-in">
+        <!-- Page Header -->
+        <div class="flex items-center gap-3 mb-8">
+            <a href="javascript:history.back()" class="w-10 h-10 rounded-xl glass-light flex items-center justify-center hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5 text-surface-200/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-white">Edit Profile</h1>
+                <p class="text-xs text-surface-200/50">Update your profile information</p>
+            </div>
+        </div>
+
+        <form th:action="@{/profile/edit}" method="post" enctype="multipart/form-data" class="space-y-6">
+
+            <!-- ═══ Avatar Upload ═══ -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    Profile Picture
+                </h2>
+                <div class="flex items-center gap-6">
+                    <!-- Preview -->
+                    <div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 border-2 border-white/10 relative group cursor-pointer" onclick="document.getElementById('avatar-input').click()">
+                        <img id="avatar-preview"
+                             th:src="${user.avatarUrl ?: ''}"
+                             th:class="${user.avatarUrl != null ? 'w-full h-full object-cover' : 'hidden'}"
+                             alt="Avatar preview"/>
+                        <div id="avatar-placeholder"
+                             th:class="${user.avatarUrl == null ? 'w-full h-full bg-gradient-to-br from-brand-500 to-accent-violet flex items-center justify-center text-2xl font-bold text-white' : 'hidden'}">
+                            <span th:text="${user.initials}">FR</span>
+                        </div>
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <input type="file" id="avatar-input" name="avatar" accept="image/*" class="hidden" onchange="previewAvatar(this)">
+                        <button type="button" onclick="document.getElementById('avatar-input').click()"
+                                class="glass-light px-4 py-2 rounded-xl text-sm text-surface-200 hover:bg-white/10 transition-all">
+                            Upload Photo
+                        </button>
+                        <p class="text-xs text-surface-200/40 mt-2">JPG, PNG or GIF. Max 2MB. Adding a photo verifies your profile.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Basic Info ═══ -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-accent-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    Basic Information
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-displayName">Display Name</label>
+                        <input type="text" id="edit-displayName" name="displayName" th:value="${user.displayName}"
+                               class="input-glass w-full rounded-xl px-4 py-3 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-headline">Headline</label>
+                        <input type="text" id="edit-headline" name="headline" th:value="${profile.headline}"
+                               class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="e.g. Senior SWE @ Google">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-bio">Bio</label>
+                        <textarea id="edit-bio" name="bio" rows="4"
+                                  class="input-glass w-full rounded-xl px-4 py-3 text-sm resize-none" placeholder="Tell others about yourself..." th:text="${profile.bio}"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Academic & Professional ═══ -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-accent-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                    Academic & Professional
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-department">Department</label>
+                        <select id="edit-department" name="department" class="input-glass w-full rounded-xl px-4 py-3 text-sm">
+                            <option value="">Select...</option>
+                            <option value="CSE" th:selected="${profile.department == 'CSE'}">CSE</option>
+                            <option value="EEE" th:selected="${profile.department == 'EEE'}">EEE</option>
+                            <option value="MCE" th:selected="${profile.department == 'MCE'}">MCE</option>
+                            <option value="CEE" th:selected="${profile.department == 'CEE'}">CEE</option>
+                            <option value="BTM" th:selected="${profile.department == 'BTM'}">BTM</option>
+                            <option value="TVE" th:selected="${profile.department == 'TVE'}">TVE</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-batch">Batch</label>
+                        <input type="text" id="edit-batch" name="batch" th:value="${profile.batch}"
+                               class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="e.g. 2024">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-company">Current Company</label>
+                        <input type="text" id="edit-company" name="currentCompany" th:value="${profile.currentCompany}"
+                               class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="e.g. Google">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-location">Location</label>
+                        <input type="text" id="edit-location" name="location" th:value="${profile.location}"
+                               class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="e.g. Dhaka, BD">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-xs font-medium text-surface-200/60 mb-1.5" for="edit-linkedin">LinkedIn URL</label>
+                    <input type="url" id="edit-linkedin" name="linkedinUrl" th:value="${profile.linkedinUrl}"
+                           class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="https://linkedin.com/in/yourprofile">
+                </div>
+            </div>
+
+            <!-- ═══ GitHub Projects ═══ -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-sm font-semibold text-white mb-4 flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-[#00ffcc]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        GitHub Projects
+                    </span>
+                    <button type="button" onclick="addProjectField()" class="text-xs text-[#00ffcc] hover:text-white transition-colors bg-[#00ffcc]/10 px-3 py-1.5 rounded-lg border border-[#00ffcc]/20">+ Add Project</button>
+                </h2>
+                <div id="projects-container" class="space-y-4">
+                    <th:block th:each="proj, stat : ${profile.projects}">
+                        <div class="project-entry p-4 border border-white/10 rounded-xl relative bg-white/5">
+                            <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-surface-200/50 hover:text-red-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Project Name</label>
+                                    <input type="text" name="projectName" th:value="${proj.name}" class="input-glass w-full rounded-xl px-4 py-3 text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Repo URL</label>
+                                    <input type="url" name="projectRepoUrl" th:value="${proj.repoUrl}" class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="https://github.com/user/repo">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Tech Stack (comma separated)</label>
+                                    <input type="text" name="projectTechStack" th:value="${proj.techStack}" class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="React, Spring Boot, MySQL">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Description</label>
+                                    <textarea name="projectDesc" rows="2" class="input-glass w-full rounded-xl px-4 py-3 text-sm resize-none" th:text="${proj.description}"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+
+            <!-- ═══ Submit ═══ -->
+            <div class="flex items-center gap-4">
+                <button type="submit" class="btn-primary px-8 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 bg-gradient-to-r from-brand-500 to-[#00ffcc]/80 text-black border-none hover:opacity-90 shadow-[0_0_15px_rgba(0,255,204,0.3)]">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    Save Changes
+                </button>
+                <a th:href="@{/profile/{id}(id=${user.id})}" class="text-sm text-surface-200/50 hover:text-surface-200/80 transition-colors">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function addProjectField() {
+            const container = document.getElementById('projects-container');
+            const html = `
+                <div class="project-entry p-4 border border-white/10 rounded-xl relative bg-white/5 animate-fade-in">
+                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-surface-200/50 hover:text-red-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Project Name</label>
+                            <input type="text" name="projectName" class="input-glass w-full rounded-xl px-4 py-3 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Repo URL</label>
+                            <input type="url" name="projectRepoUrl" class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="https://github.com/user/repo">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Tech Stack (comma separated)</label>
+                            <input type="text" name="projectTechStack" class="input-glass w-full rounded-xl px-4 py-3 text-sm" placeholder="React, Spring Boot, MySQL">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-medium text-surface-200/60 mb-1.5">Description</label>
+                            <textarea name="projectDesc" rows="2" class="input-glass w-full rounded-xl px-4 py-3 text-sm resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        }
+    </script>
+
+    <!-- Avatar Preview Script -->
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (file.size > 2 * 1024 * 1024) {
+                    if (typeof showToast === 'function') showToast('File must be under 2MB', 'error');
+                    input.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('avatar-preview');
+                    const placeholder = document.getElementById('avatar-placeholder');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    preview.classList.add('w-full', 'h-full', 'object-cover');
+                    placeholder.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+</div>
+</body>
+</html>

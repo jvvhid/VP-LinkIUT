@@ -28,23 +28,54 @@
         .bg-orb { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.12; pointer-events: none; }
         .bg-orb-1 { width: 500px; height: 500px; background: #3377ff; top: -15%; left: -10%; animation: drift1 20s ease-in-out infinite; }
         .bg-orb-2 { width: 400px; height: 400px; background: #2dd4bf; bottom: -10%; right: -5%; animation: drift2 25s ease-in-out infinite; }
+        .bg-orb-3 { width: 350px; height: 350px; background: #a78bfa; top: 30%; right: 15%; animation: drift3 22s ease-in-out infinite; }
         @keyframes drift1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
         @keyframes drift2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-50px,-40px); } }
+        @keyframes drift3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(30px,-30px); } }
         @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(1.4); opacity: 0; } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+        .float-slow { animation: float 6s ease-in-out infinite; }
+        .float-medium { animation: float 4s ease-in-out infinite 1s; }
+        .strength-bar { transition: width 0.3s ease, background 0.3s ease; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center px-4 py-8 antialiased">
+<body class="min-h-screen flex items-center justify-center px-4 py-8 antialiased overflow-x-hidden">
     <div class="bg-orb bg-orb-1"></div>
     <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- Decorative Background Graphics -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <svg class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] text-white/[0.015]" viewBox="0 0 900 900">
+            <circle cx="450" cy="450" r="150" stroke="currentColor" stroke-width="0.5" fill="none"/>
+            <circle cx="450" cy="450" r="300" stroke="currentColor" stroke-width="0.5" fill="none"/>
+            <circle cx="450" cy="450" r="420" stroke="currentColor" stroke-width="0.3" fill="none"/>
+        </svg>
+        <svg class="absolute left-[5%] top-[25%] w-48 h-48 float-slow" viewBox="0 0 100 100" fill="none">
+            <polygon points="50,5 90,27 90,72 50,95 10,72 10,27" stroke="#3377ff" stroke-width="0.5" opacity="0.1"/>
+            <polygon points="50,20 75,33 75,67 50,80 25,67 25,33" stroke="#2dd4bf" stroke-width="0.4" opacity="0.08"/>
+        </svg>
+        <svg class="absolute right-[8%] bottom-[20%] w-40 h-52 float-medium" viewBox="0 0 180 240" fill="none">
+            <line x1="90" y1="40" x2="150" y2="100" stroke="#a78bfa" stroke-width="0.6" opacity="0.15" stroke-dasharray="4 4"/>
+            <line x1="150" y1="100" x2="100" y2="180" stroke="#3377ff" stroke-width="0.6" opacity="0.15" stroke-dasharray="4 4"/>
+            <line x1="100" y1="180" x2="30" y2="130" stroke="#2dd4bf" stroke-width="0.6" opacity="0.15" stroke-dasharray="4 4"/>
+            <circle cx="90" cy="40" r="10" stroke="#a78bfa" stroke-width="0.8" fill="#a78bfa" fill-opacity="0.05"/>
+            <circle cx="150" cy="100" r="8" stroke="#3377ff" stroke-width="0.8" fill="#3377ff" fill-opacity="0.05"/>
+            <circle cx="100" cy="180" r="10" stroke="#2dd4bf" stroke-width="0.8" fill="#2dd4bf" fill-opacity="0.05"/>
+            <circle cx="30" cy="130" r="7" stroke="#fbbf24" stroke-width="0.8" fill="#fbbf24" fill-opacity="0.05"/>
+        </svg>
+    </div>
 
     <div class="relative z-10 w-full max-w-lg" style="animation: fadeInUp 0.7s ease-out forwards">
         <!-- Logo -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-lg shadow-brand-500/25 mb-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-lg shadow-brand-500/25 mb-4 relative">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                 </svg>
+                <div class="absolute inset-0 rounded-2xl bg-brand-500/20" style="animation: pulse-ring 3s ease-out infinite"></div>
             </div>
             <h1 class="text-3xl font-bold bg-gradient-to-r from-brand-400 to-accent-teal bg-clip-text text-transparent">Join LinkIUT</h1>
             <p class="text-sm text-slate-400 mt-1">Create your alumni-student networking account</p>
@@ -62,15 +93,21 @@
                 <!-- Display Name -->
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1.5" for="displayName">Full Name</label>
-                    <input type="text" id="displayName" name="displayName" placeholder="Farhan Rahman"
-                           class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                    <div class="relative">
+                        <input type="text" id="displayName" name="displayName" placeholder="Farhan Rahman"
+                               class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 pl-10 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                        <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    </div>
                 </div>
 
                 <!-- Email -->
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1.5" for="reg-email">Email</label>
-                    <input type="email" id="reg-email" name="email" placeholder="you@iut.edu"
-                           class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                    <div class="relative">
+                        <input type="email" id="reg-email" name="email" placeholder="you@iut.edu"
+                               class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 pl-10 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                        <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    </div>
                 </div>
 
                 <!-- Role Selection -->
@@ -79,13 +116,13 @@
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cursor-pointer">
                             <input type="radio" name="role" value="STUDENT" class="peer sr-only" checked>
-                            <div class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-slate-400 peer-checked:border-teal-500/40 peer-checked:bg-teal-500/10 peer-checked:text-teal-400 transition-all">
+                            <div class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-slate-400 peer-checked:border-teal-500/40 peer-checked:bg-teal-500/10 peer-checked:text-teal-400 transition-all hover:-translate-y-0.5">
                                 <span>📚</span> Student
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="radio" name="role" value="ALUMNI" class="peer sr-only">
-                            <div class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-slate-400 peer-checked:border-amber-500/40 peer-checked:bg-amber-500/10 peer-checked:text-amber-400 transition-all">
+                            <div class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-slate-400 peer-checked:border-amber-500/40 peer-checked:bg-amber-500/10 peer-checked:text-amber-400 transition-all hover:-translate-y-0.5">
                                 <span>🎓</span> Alumni
                             </div>
                         </label>
@@ -124,20 +161,45 @@
                 <!-- Password -->
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1.5" for="reg-password">Password</label>
-                    <input type="password" id="reg-password" name="password" placeholder="Min 6 characters"
-                           class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required minlength="6">
+                    <div class="relative">
+                        <input type="password" id="reg-password" name="password" placeholder="Min 6 characters"
+                               class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 pl-10 pr-10 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required minlength="6"
+                               oninput="updateStrength(this.value)">
+                        <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        <button type="button" onclick="togglePassword('reg-password', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+                            <svg class="w-4 h-4 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            <svg class="w-4 h-4 eye-closed hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                        </button>
+                    </div>
+                    <!-- Password Strength Indicator -->
+                    <div class="mt-2">
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+                                <div id="strength-bar" class="strength-bar h-full rounded-full" style="width: 0%; background: #ef4444;"></div>
+                            </div>
+                            <span id="strength-label" class="text-[10px] text-slate-500 w-12 text-right">—</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Confirm Password -->
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1.5" for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••"
-                           class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                    <div class="relative">
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••"
+                               class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 pl-10 pr-10 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                        <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        <button type="button" onclick="togglePassword('confirmPassword', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+                            <svg class="w-4 h-4 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            <svg class="w-4 h-4 eye-closed hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" id="register-submit"
-                        class="w-full bg-gradient-to-r from-brand-500 to-brand-600 text-white py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all mt-2">
-                    Create Account
+                        class="w-full bg-gradient-to-r from-brand-500 to-brand-600 text-white py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all mt-2 relative overflow-hidden group">
+                    <span class="relative z-10">Create Account</span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-brand-600 to-brand-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </button>
             </form>
 
@@ -151,5 +213,45 @@
 
         <p class="text-center text-xs text-slate-600 mt-6">IUT Dhaka — Islamic University of Technology</p>
     </div>
+
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const eyeOpen = btn.querySelector('.eye-open');
+            const eyeClosed = btn.querySelector('.eye-closed');
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            }
+        }
+        function updateStrength(val) {
+            const bar = document.getElementById('strength-bar');
+            const label = document.getElementById('strength-label');
+            let score = 0;
+            if (val.length >= 6) score++;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const configs = [
+                { w: '0%', bg: '#ef4444', text: '—' },
+                { w: '20%', bg: '#ef4444', text: 'Weak' },
+                { w: '40%', bg: '#f97316', text: 'Fair' },
+                { w: '60%', bg: '#eab308', text: 'Good' },
+                { w: '80%', bg: '#22c55e', text: 'Strong' },
+                { w: '100%', bg: '#10b981', text: 'Superb' }
+            ];
+            const c = configs[Math.min(score, 5)];
+            bar.style.width = c.w;
+            bar.style.background = c.bg;
+            label.textContent = c.text;
+            label.style.color = c.bg;
+        }
+    </script>
 </body>
 </html>

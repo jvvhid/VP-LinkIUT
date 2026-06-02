@@ -34,7 +34,8 @@ public class OpportunityService {
     @Transactional
     public Opportunity createOpportunity(String title, String description,
                                           Opportunity.OpportunityType type,
-                                          AppUser postedBy) {
+                                          AppUser postedBy,
+                                          Integer archiveInHours) {
         Opportunity opp = new Opportunity();
         opp.setTitle(title);
         opp.setDescription(description);
@@ -42,6 +43,11 @@ public class OpportunityService {
         opp.setPostedBy(postedBy);
         opp.setCreatedAt(LocalDateTime.now());
         opp.setExpiresAt(LocalDateTime.now().plusDays(30));
+        
+        if (archiveInHours != null && archiveInHours > 0) {
+            opp.setArchiveAt(LocalDateTime.now().plusHours(archiveInHours));
+        }
+        
         return opportunityRepository.save(opp);
     }
 }

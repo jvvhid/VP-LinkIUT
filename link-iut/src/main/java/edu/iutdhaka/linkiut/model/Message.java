@@ -25,6 +25,14 @@ public class Message {
     @Column(name = "sent_at", nullable = false, updatable = false)
     private LocalDateTime sentAt = LocalDateTime.now();
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MessageStatus status = MessageStatus.SENT;
+
+    public enum MessageStatus {
+        SENT, DELIVERED, SEEN
+    }
+
     // ── Constructors ─────────────────────────────────────────
     public Message() {}
 
@@ -49,6 +57,9 @@ public class Message {
 
     public LocalDateTime getSentAt() { return sentAt; }
     public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }
+
+    public MessageStatus getStatus() { return status; }
+    public void setStatus(MessageStatus status) { this.status = status; }
 
     /** Formatted time for chat UI */
     public String getFormattedTime() {

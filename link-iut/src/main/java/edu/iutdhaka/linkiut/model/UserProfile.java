@@ -35,10 +35,10 @@ public class UserProfile {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("startDate DESC")
-    private List<Experience> experiences = new ArrayList<>();
+    private java.util.Set<Experience> experiences = new java.util.LinkedHashSet<>();
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Project> projects = new ArrayList<>();
+    private java.util.Set<Project> projects = new java.util.LinkedHashSet<>();
 
     // ── Constructors ─────────────────────────────────────────
     public UserProfile() {}
@@ -71,9 +71,9 @@ public class UserProfile {
     public String getLinkedinUrl() { return linkedinUrl; }
     public void setLinkedinUrl(String linkedinUrl) { this.linkedinUrl = linkedinUrl; }
 
-    public List<Experience> getExperiences() { return experiences; }
-    public void setExperiences(List<Experience> experiences) { this.experiences = experiences; }
+    public java.util.Set<Experience> getExperiences() { return experiences; }
+    public void setExperiences(java.util.Set<Experience> experiences) { this.experiences = experiences; }
 
-    public List<Project> getProjects() { return projects; }
-    public void setProjects(List<Project> projects) { this.projects = projects; }
+    public java.util.Set<Project> getProjects() { return projects; }
+    public void setProjects(java.util.Set<Project> projects) { this.projects = projects; }
 }

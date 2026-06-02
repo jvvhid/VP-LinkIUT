@@ -49,10 +49,11 @@ public class FeedController {
     public String createOpportunity(@RequestParam String title,
             @RequestParam String description,
             @RequestParam Opportunity.OpportunityType type,
+            @RequestParam(required = false) Integer archiveInHours,
             Model model,
             @AuthenticationPrincipal UserDetails userDetails) {
         AppUser currentUser = getCurrentUser(userDetails);
-        Opportunity opp = opportunityService.createOpportunity(title, description, type, currentUser);
+        Opportunity opp = opportunityService.createOpportunity(title, description, type, currentUser, archiveInHours);
         model.addAttribute("opp", opp);
         addCurrentUser(model, userDetails);
         return "feed/index :: opportunity-card";

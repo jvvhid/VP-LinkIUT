@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Discover</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="animate-fade-in">
+        <!-- Page Header -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-teal/20 to-brand-500/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-accent-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-white to-surface-200 bg-clip-text text-transparent">Discover People</h1>
+                <p class="text-xs text-surface-200/50">Find alumni and students across IUT</p>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <form action="/search" method="get" class="mb-8">
+            <div class="relative">
+                <input type="text" name="q" th:value="${query}" placeholder="Search by name or email..."
+                       class="input-glass w-full rounded-2xl px-6 py-4 pl-12 text-sm" id="search-input" autocomplete="off">
+                <svg class="w-5 h-5 text-surface-200/40 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 btn-primary px-4 py-2 rounded-xl text-xs font-semibold">
+                    Search
+                </button>
+            </div>
+        </form>
+
+        <!-- Results count -->
+        <div th:if="${results != null}" class="mb-4">
+            <p class="text-xs text-surface-200/40">
+                <span th:text="${#lists.size(results)}">0</span> people found
+                <span th:if="${query != null && !query.isEmpty()}" th:text="' for &quot;' + ${query} + '&quot;'"></span>
+            </p>
+        </div>
+
+        <!-- Results Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div th:each="user, iter : ${results}"
+                 class="glass hover-lift rounded-2xl p-5 animate-fade-in-up"
+                 th:style="'opacity:0; animation-delay:' + ${iter.index * 0.05} + 's'">
+
+                <div class="flex items-start gap-4">
+                    <!-- Avatar -->
+                    <a th:href="@{/profile/{id}(id=${user.id})}"
+                       class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 hover:shadow-lg hover:shadow-brand-500/20 transition-shadow">
+                        <img th:if="${user.avatarUrl != null}" th:src="${user.avatarUrl}" alt="" class="w-full h-full object-cover"/>
+                        <div th:if="${user.avatarUrl == null}"
+                             class="w-full h-full bg-gradient-to-br from-brand-500 to-accent-violet flex items-center justify-center text-lg font-bold text-white">
+                            <span th:text="${user.initials}">FR</span>
+                        </div>
+                    </a>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <a th:href="@{/profile/{id}(id=${user.id})}" class="text-sm font-semibold text-white hover:text-brand-400 transition-colors truncate" th:text="${user.displayName}">Name</a>
+                            <span th:if="${user.avatarUrl != null}" class="flex-shrink-0">
+                                <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                            </span>
+                        </div>
+                        <span class="inline-block text-[10px] px-2 py-0.5 rounded-full font-semibold mb-2"
+                              th:classappend="${user.role.name() == 'ALUMNI' ? 'badge-alumni' : 'badge-student'}"
+                              th:text="${user.role}">ROLE</span>
+                        <p th:if="${user.profile != null && user.profile.headline != null}" class="text-xs text-surface-200/50 truncate" th:text="${user.profile.headline}">Headline</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-2 mt-4 pt-3 border-t border-white/5">
+                    <a th:href="@{/profile/{id}(id=${user.id})}" class="flex-1 text-center text-xs py-2 rounded-lg glass-light text-surface-200/60 hover:text-brand-400 hover:bg-brand-500/10 transition-all">
+                        View Profile
+                    </a>
+                    <form th:if="${currentUser != null && !currentUser.id.equals(user.id)}"
+                          th:action="@{/messages/start/{id}(id=${user.id})}" method="post" class="flex-1">
+                        <button type="submit" class="w-full text-center text-xs py-2 rounded-lg glass-light text-brand-400 hover:bg-brand-500/10 transition-all">
+                            Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${results == null || results.isEmpty()}" class="glass rounded-2xl p-12 text-center">
+            <div class="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-accent-teal/10 to-brand-500/10 flex items-center justify-center">
+                <svg class="w-10 h-10 text-surface-200/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            </div>
+            <p class="text-surface-200/40 text-sm mb-1">No people found</p>
+            <p class="text-surface-200/25 text-xs">Try a different search term</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

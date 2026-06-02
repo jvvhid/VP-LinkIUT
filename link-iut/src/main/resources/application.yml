@@ -37,6 +37,12 @@ spring:
     init:
       mode: never
 
+    # ── File Upload ──────────────────────────────────────────────────
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+
   # ── Thymeleaf ──────────────────────────────────────────────────────
   thymeleaf:
     cache: false

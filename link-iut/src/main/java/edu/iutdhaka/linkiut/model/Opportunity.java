@@ -32,7 +32,7 @@ public class Opportunity {
     private LocalDateTime expiresAt;
 
     public enum OpportunityType {
-        JOB, INTERNSHIP, MENTORSHIP
+        JOB, INTERNSHIP, MENTORSHIP, JOURNEY, PROJECT_INSIGHT, APP_BUILD
     }
 
     // ── Constructors ─────────────────────────────────────────
@@ -60,12 +60,25 @@ public class Opportunity {
     public LocalDateTime getExpiresAt() { return expiresAt; }
     public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
 
+    @Column(name = "archive_at")
+    private LocalDateTime archiveAt;
+
+    public LocalDateTime getArchiveAt() { return archiveAt; }
+    public void setArchiveAt(LocalDateTime archiveAt) { this.archiveAt = archiveAt; }
+
+    public boolean isArchived() {
+        return archiveAt != null && archiveAt.isBefore(LocalDateTime.now());
+    }
+
     /** CSS class helper based on type */
     public String getTypeBadgeClass() {
         return switch (type) {
-            case JOB        -> "badge-job";
-            case INTERNSHIP -> "badge-internship";
-            case MENTORSHIP -> "badge-mentorship";
+            case JOB             -> "badge-job";
+            case INTERNSHIP      -> "badge-internship";
+            case MENTORSHIP      -> "badge-mentorship";
+            case JOURNEY         -> "badge-journey";
+            case PROJECT_INSIGHT -> "badge-insight";
+            case APP_BUILD       -> "badge-app";
         };
     }
 

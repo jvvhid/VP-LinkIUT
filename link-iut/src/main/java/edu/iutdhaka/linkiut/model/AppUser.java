@@ -24,7 +24,7 @@ public class AppUser {
     @Column(name = "display_name", nullable = false)
     private String displayName;
 
-    @Column(name = "avatar_url")
+    @Column(name = "avatar_url", length = 3000000)
     private String avatarUrl;
 
     @Column(name = "created_at", nullable = false, updatable = false)

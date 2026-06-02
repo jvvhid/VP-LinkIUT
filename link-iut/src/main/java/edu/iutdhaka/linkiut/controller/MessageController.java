@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class MessageController {
      * Chat list — all sessions for the current user (no chat selected).
      */
     @GetMapping
+    @Transactional(readOnly = true)
     public String chatList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         AppUser currentUser = getCurrentUser(userDetails);
         List<ChatSession> sessions = messageService.getUserSessions(currentUser.getId());
@@ -49,6 +51,7 @@ public class MessageController {
      * Open a specific chat session.
      */
     @GetMapping("/{sessionId}")
+    @Transactional(readOnly = true)
     public String chat(@PathVariable Long sessionId, Model model,
                        @AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -95,9 +98,12 @@ public class MessageController {
         AppUser currentUser = getCurrentUser(userDetails);
         try {
             Message msg = messageService.sendMessage(sessionId, currentUser.getId(), content);
+            ChatSession chatSession = messageService.getSession(sessionId);
             model.addAttribute("msg", msg);
             model.addAttribute("currentUser", currentUser);
-            return "messages/chat :: message-bubble";
+            model.addAttribute("activeChat", chatSession);
+            model.addAttribute("lastMessageId", msg.getId());
+            return "messages/chat :: new-message-sent";
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "messages/chat :: session-expired";
@@ -108,6 +114,7 @@ public class MessageController {
      * HTMX polling: return new messages since lastId.
      */
     @GetMapping("/{sessionId}/poll")
+    @Transactional(readOnly = true)
     public String pollMessages(@PathVariable Long sessionId,
                                 @RequestParam(defaultValue = "0") Long lastId,
                                 Model model,

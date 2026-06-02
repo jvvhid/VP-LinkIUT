@@ -52,6 +52,7 @@ public class DataLoader implements CommandLineRunner {
 
         // ── Alumni user ──────────────────────────────────────────
         AppUser alumni = new AppUser("alumni@iut.edu", encodedPassword, AppUser.Role.ALUMNI, "Farhan Rahman");
+        alumni.setAvatarUrl(generateSvgAvatar("FR", "#3377ff", "#1440e1"));
         alumni = userRepository.save(alumni);
 
         UserProfile alumniProfile = new UserProfile();
@@ -93,6 +94,7 @@ public class DataLoader implements CommandLineRunner {
 
         // ── Student user ─────────────────────────────────────────
         AppUser student = new AppUser("student@iut.edu", encodedPassword, AppUser.Role.STUDENT, "Nadia Hossain");
+        student.setAvatarUrl(generateSvgAvatar("NH", "#2dd4bf", "#0d9488"));
         student = userRepository.save(student);
 
         UserProfile studentProfile = new UserProfile();
@@ -149,5 +151,23 @@ public class DataLoader implements CommandLineRunner {
         opportunityRepository.save(opp3);
 
         log.info("DataLoader: ✅ seeded 2 users, 3 experiences, 2 projects, 3 opportunities.");
+    }
+
+    /**
+     * Generates a simple SVG avatar as a data URI.
+     * Creates a gradient circle with centered initials text.
+     */
+    private String generateSvgAvatar(String initials, String color1, String color2) {
+        String svg = "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'>"
+                + "<defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'>"
+                + "<stop offset='0%' stop-color='" + color1 + "'/>"
+                + "<stop offset='100%' stop-color='" + color2 + "'/>"
+                + "</linearGradient></defs>"
+                + "<rect width='200' height='200' fill='url(#g)' rx='20'/>"
+                + "<text x='100' y='115' font-family='Inter,sans-serif' font-size='72' font-weight='700' "
+                + "fill='white' text-anchor='middle'>" + initials + "</text>"
+                + "</svg>";
+        String base64 = java.util.Base64.getEncoder().encodeToString(svg.getBytes());
+        return "data:image/svg+xml;base64," + base64;
     }
 }
