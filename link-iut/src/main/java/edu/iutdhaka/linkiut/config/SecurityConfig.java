@@ -21,14 +21,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             // Permit static resources and H2 console
+            // Permit static resources, H2 console, and landing page
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**", "/css/**", "/js/**", "/images/**", "/error", "/register").permitAll()
+                .requestMatchers("/", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/error", "/register").permitAll()
                 .anyRequest().authenticated()
             )
             // Form login
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/feed", true)
                 .permitAll()
             )
             .logout(logout -> logout

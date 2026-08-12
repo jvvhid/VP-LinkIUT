@@ -24,7 +24,7 @@ public class FeedController {
     /**
      * Main feed page — renders all opportunities.
      */
-    @GetMapping("/")
+    @GetMapping("/feed")
     public String index(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("opportunities", opportunityService.getAllOpportunities());
         model.addAttribute("types", Opportunity.OpportunityType.values());

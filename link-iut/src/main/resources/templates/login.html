@@ -65,20 +65,10 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 antialiased bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M20%2020.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0%2020h2v20H0V20zm4%200h2v20H4V20zm4%200h2v20H8V20zm4%200h2v20h-2V20zm4%200h2v20h-2V20zm4%204V20h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v-2z%22%20fill%3D%22%231a1c1c%22%20fill-opacity%3D%220.03%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] overflow-hidden">
 
-    <!-- Landing Page Overlay (Minecraft IUT Portal) -->
-    <div id="landing-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black cursor-pointer origin-center"
-         style="background-image: url('/images/iut-minecraft.jpg'); background-size: cover; background-position: center; transition: transform 1.2s cubic-bezier(0.64, 0, 0.78, 0), opacity 1.2s ease-in-out;">
-        
-        <div class="absolute inset-0 bg-black/10 flex flex-col items-center justify-end pb-12 hover:bg-black/0 transition-colors duration-500">
-            <!-- Pulsing text to prompt action -->
-            <p id="enter-text" class="text-white text-xl font-headline-md tracking-widest uppercase animate-pulse" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
-                Click anywhere to enter
-            </p>
-        </div>
-    </div>
 
-    <!-- Main Content Wrapper (Hidden initially for effect, then revealed) -->
-    <div id="main-content" class="w-full max-w-md opacity-0 transform translate-y-10 transition-all duration-1000 ease-out delay-500">
+
+    <!-- Main Content Wrapper -->
+    <div id="main-content" class="w-full max-w-md">
         <!-- Logo -->
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-on-surface bg-primary shadow-isometric mb-4">
@@ -154,35 +144,6 @@
         <p class="text-center font-label-md text-on-surface-variant uppercase mt-8 text-xs">IUT Dhaka — Islamic University of Technology</p>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const overlay = document.getElementById('landing-overlay');
-            const mainContent = document.getElementById('main-content');
-            const enterText = document.getElementById('enter-text');
 
-            if (overlay) {
-                overlay.addEventListener('click', () => {
-                    // Zoom-in effect into the portal!
-                    overlay.style.transform = 'scale(4) translateZ(0)';
-                    overlay.style.opacity = '0';
-                    enterText.style.opacity = '0';
-                    
-                    // Allow scrolling again
-                    document.body.classList.remove('overflow-hidden');
-
-                    // Fade in the form
-                    setTimeout(() => {
-                        mainContent.classList.remove('opacity-0', 'translate-y-10');
-                        mainContent.classList.add('opacity-100', 'translate-y-0');
-                    }, 400); // Start showing form mid-way through the zoom
-
-                    // Remove the overlay from the DOM after transition completes
-                    setTimeout(() => {
-                        overlay.style.display = 'none';
-                    }, 1200);
-                });
-            }
-        });
-    </script>
 </body>
 </html>

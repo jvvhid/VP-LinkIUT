@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LinkIUT - Connect, Collaborate, Grow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-fonts">
+    /* Using a pixel-style font to mimic the Minecraft aesthetic */
+    .font-pixel {
+      font-family: 'Press Start 2P', cursive;
+    }
+  </style>
+<style data-purpose="custom-styles">
+    /* Pixelated button styling */
+    .btn-pixel {
+      background-color: #6a1a22; /* Dark red base */
+      border: 4px solid #3d0c10;
+      box-shadow: 
+        inset -4px -4px 0px 0px rgba(0,0,0,0.5),
+        inset 4px 4px 0px 0px rgba(255,255,255,0.2);
+      transition: all 0.1s;
+    }
+    .btn-pixel:hover {
+      background-color: #8a222c;
+    }
+    .btn-pixel:active {
+      box-shadow: 
+        inset 4px 4px 0px 0px rgba(0,0,0,0.5),
+        inset -4px -4px 0px 0px rgba(255,255,255,0.2);
+      transform: translateY(2px);
+    }
+    
+    /* Text styling to match the image */
+    .text-shadow-pixel {
+      text-shadow: 4px 4px 0px #000000;
+    }
+    .text-red-primary {
+      color: #b02a36;
+    }
+    .text-gray-primary {
+      color: #c0c0c0;
+    }
+
+    /* Portal Zoom Effect */
+    .bg-image-container {
+      transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+      transform-origin: 65% 55%; /* Center on the archway */
+    }
+    .portal-zoomed {
+      transform: scale(4);
+    }
+
+    /* Individual Pillar Interactive Zones */
+    .pillar-zone {
+      position: absolute;
+      z-index: 20;
+      cursor: crosshair;
+      transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+      border-radius: 4px;
+      /* subtle highlight on hover */
+    }
+    .pillar-zone:hover {
+      background-color: rgba(255, 100, 100, 0.1);
+      box-shadow: 0 0 15px rgba(255, 100, 100, 0.3);
+      transform: scale(1.02);
+    }
+
+    /* Portal Overlay Transition */
+    #portal-overlay {
+      transition: opacity 1.5s ease-in-out;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #portal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Join Button Animation */
+    #join-btn {
+      transition: all 0.2s ease-in-out;
+      border-radius: 4px;
+    }
+    #join-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px 5px rgba(255, 191, 0, 0.5); /* Amber outer glow */
+    }
+    #join-btn:active {
+      transform: scale(0.95) translateY(2px);
+    }
+  </style>
+</head>
+<body class="bg-black min-h-screen flex items-center justify-center p-[64px]">
+<!-- BEGIN: MainContainer -->
+<main class="relative w-full max-w-6xl aspect-[1024/625] overflow-hidden rounded-sm group" id="main-container">
+<!-- Atmospheric Shader Overlay -->
+<canvas class="absolute inset-0 w-full h-full z-0 opacity-50 mix-blend-screen pointer-events-none" id="glcanvas"></canvas>
+<!-- Background Image Container for Zoom Effect -->
+<div class="absolute inset-0 w-full h-full z-0 bg-image-container pointer-events-none" id="bg-container">
+<img alt="Minecraft style arch structure at night" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXKsL6ADzFIh6meQudeoycG4wiPQd2pE39fbbclf7lb-qJJsWqH5D7OA8y-iGCyUn_6m4brMizpN60LNDO-RlGyRCR9cVogr5ya2LVQ6MangeFcRXff5DLYrcXwrpAFJWYYksFGvZt0g2yWkRFTPdSfVFkt_eaLSmlRFN3CoDzmqG-NWsUBdTxdPDVvpuktLBw9vCSG4ZPcPplAlBLLlmIFtZa4BiH_IWKngNG2_clJmQI7uQvSB0iIEQwX6H0cmud5g"/>
+</div>
+<!-- Interactive Pillar Zones -->
+<!-- Pillar 1 (Leftmost inner) -->
+<div class="pillar-zone" style="left: 48%; top: 20%; width: 5%; height: 60%;"></div>
+<!-- Pillar 2 -->
+<div class="pillar-zone" style="left: 56%; top: 15%; width: 5%; height: 70%;"></div>
+<!-- Pillar 3 -->
+<div class="pillar-zone" style="left: 64%; top: 10%; width: 5%; height: 75%;"></div>
+<!-- Pillar 4 (Rightmost outer) -->
+<div class="pillar-zone" style="left: 72%; top: 18%; width: 5%; height: 65%;"></div>
+<!-- Archway center (Portal) -->
+<div class="pillar-zone" style="left: 55%; top: 25%; width: 15%; height: 45%; border-radius: 50% 50% 0 0;"></div>
+<!-- BEGIN: Content Overlay -->
+<div class="relative z-10 w-full h-full flex flex-col justify-center pointer-events-none">
+<!-- Interactive Invisible Button positioned over the image's drawn button -->
+<a aria-label="Join LinkIUT" class="absolute left-[2%] bottom-[13%] w-[35%] h-[15%] z-30 cursor-pointer pointer-events-auto" href="#" id="join-btn"></a>
+</div>
+<!-- END: Content Overlay -->
+<!-- Portal Transition Overlay -->
+<div class="absolute inset-0 w-full h-full z-50 bg-white" id="portal-overlay"></div>
+</main>
+<!-- END: MainContainer -->
+<script>
+  // Portal Animation Logic
+  const joinBtn = document.getElementById('join-btn');
+  const bgContainer = document.getElementById('bg-container');
+  const portalOverlay = document.getElementById('portal-overlay');
+
+  joinBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    bgContainer.classList.add('portal-zoomed');
+    
+    // Trigger fade to white slightly after zoom starts
+    setTimeout(() => {
+      portalOverlay.classList.add('active');
+    }, 500);
+
+    // Reset after animation (for demo purposes)
+    setTimeout(() => { window.location.href = '/login'; }, 1500);
+  });
+
+  // Setup WebGL for Atmospheric Shader
+  const canvas = document.getElementById('glcanvas');
+  const gl = canvas.getContext('webgl');
+
+  if (gl) {
+    // Vertex Shader
+    const vsSource = `
+      attribute vec4 aVertexPosition;
+      attribute vec2 aTextureCoord;
+      varying highp vec2 v_texCoord;
+      void main(void) {
+        gl_Position = aVertexPosition;
+        v_texCoord = aTextureCoord;
+      }
+    `;
+
+    // Fragment Shader (From DataStore)
+    const fsSource = `
+      precision highp float;
+      uniform float u_time;
+      uniform vec2 u_resolution;
+      varying vec2 v_texCoord;
+
+      float hash(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+      }
+
+      void main() {
+          vec2 uv = v_texCoord;
+          vec3 color = vec4(0.0, 0.0, 0.0, 1.0).rgb; // Pure black base
+          
+          // Subtle atmospheric dust/embers to add "life" to the void
+          for(int i = 0; i < 30; i++) {
+              float t = u_time * 0.15 + float(i) * 1.2;
+              vec2 p = vec2(hash(vec2(float(i), 5.0)), hash(vec2(float(i), 6.0)));
+              p.y = fract(p.y - t * 0.3);
+              p.x += sin(t + p.y * 5.0) * 0.01;
+              
+              float dist = length(uv - p);
+              float glow = 0.0008 / dist;
+              vec3 emberColor = vec3(0.8, 0.3, 0.1) * (0.3 + 0.7 * sin(u_time + float(i)));
+              color += emberColor * glow * smoothstep(0.002, 0.001, dist);
+          }
+          
+          gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    function loadShader(gl, type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+    const shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
+
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      console.error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
+    }
+
+    const programInfo = {
+      program: shaderProgram,
+      attribLocations: {
+        vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+        textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
+      },
+      uniformLocations: {
+        time: gl.getUniformLocation(shaderProgram, 'u_time'),
+        resolution: gl.getUniformLocation(shaderProgram, 'u_resolution'),
+      },
+    };
+
+    const positions = [
+      -1.0,  1.0,
+       1.0,  1.0,
+      -1.0, -1.0,
+       1.0, -1.0,
+    ];
+
+    const texCoords = [
+      0.0,  0.0,
+      1.0,  0.0,
+      0.0,  1.0,
+      1.0,  1.0,
+    ];
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+    const texCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
+
+    function render(time) {
+      time *= 0.001; // convert to seconds
+
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.useProgram(programInfo.program);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+      gl.vertexAttribPointer(programInfo.attribLocations.textureCoord, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+
+      gl.uniform1f(programInfo.uniformLocations.time, time);
+      gl.uniform2f(programInfo.uniformLocations.resolution, canvas.width, canvas.height);
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  }
+</script>
+</body></html>
