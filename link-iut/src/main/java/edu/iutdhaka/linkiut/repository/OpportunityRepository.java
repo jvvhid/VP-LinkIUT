@@ -24,4 +24,10 @@ public interface OpportunityRepository extends JpaRepository<Opportunity, Long> 
      */
     @Query("SELECT o FROM Opportunity o JOIN FETCH o.postedBy WHERE o.type = :type ORDER BY o.createdAt DESC")
     List<Opportunity> findByTypeWithPoster(@org.springframework.data.repository.query.Param("type") Opportunity.OpportunityType type);
+
+    @Query("SELECT o FROM Opportunity o JOIN FETCH o.postedBy WHERE LOWER(o.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(o.description) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(o.postedBy.displayName) LIKE LOWER(CONCAT('%', :query, '%')) ORDER BY o.createdAt DESC")
+    List<Opportunity> searchByTitleOrDescription(@org.springframework.data.repository.query.Param("query") String query);
+
+    @Query("SELECT o FROM Opportunity o JOIN FETCH o.postedBy WHERE o.postedBy.id = :posterId AND o.expiresAt > CURRENT_TIMESTAMP ORDER BY o.createdAt DESC")
+    List<Opportunity> findByPosterId(@org.springframework.data.repository.query.Param("posterId") Long posterId);
 }

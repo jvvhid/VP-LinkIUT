@@ -32,7 +32,7 @@ public class Opportunity {
     private LocalDateTime expiresAt;
 
     public enum OpportunityType {
-        JOB, INTERNSHIP, MENTORSHIP
+        JOB, INTERNSHIP, MENTORSHIP, THESIS_MATCHMAKING
     }
 
     // ── Constructors ─────────────────────────────────────────
@@ -66,6 +66,7 @@ public class Opportunity {
             case JOB        -> "badge-job";
             case INTERNSHIP -> "badge-internship";
             case MENTORSHIP -> "badge-mentorship";
+            case THESIS_MATCHMAKING -> "badge-thesis";
         };
     }
 

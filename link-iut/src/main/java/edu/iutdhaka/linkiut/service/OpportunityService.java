@@ -31,6 +31,17 @@ public class OpportunityService {
         return opportunityRepository.findByTypeWithPoster(type);
     }
 
+    public List<Opportunity> searchOpportunities(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return getAllOpportunities();
+        }
+        return opportunityRepository.searchByTitleOrDescription(query.trim());
+    }
+
+    public List<Opportunity> getOpportunitiesByPosterId(Long posterId) {
+        return opportunityRepository.findByPosterId(posterId);
+    }
+
     @Transactional
     public Opportunity createOpportunity(String title, String description,
                                           Opportunity.OpportunityType type,
@@ -43,5 +54,17 @@ public class OpportunityService {
         opp.setCreatedAt(LocalDateTime.now());
         opp.setExpiresAt(LocalDateTime.now().plusDays(30));
         return opportunityRepository.save(opp);
+    }
+
+    @Transactional
+    public void deleteOpportunity(Long opportunityId, Long currentUserId) {
+        Opportunity opp = opportunityRepository.findById(opportunityId)
+                .orElseThrow(() -> new IllegalArgumentException("Opportunity not found"));
+        
+        if (!opp.getPostedBy().getId().equals(currentUserId)) {
+            throw new IllegalStateException("You can only delete your own opportunities");
+        }
+        
+        opportunityRepository.delete(opp);
     }
 }

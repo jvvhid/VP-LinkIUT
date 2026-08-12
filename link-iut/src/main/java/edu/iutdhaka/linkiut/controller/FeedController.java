@@ -33,18 +33,20 @@ public class FeedController {
     }
 
     /**
-     * HTMX partial: returns just the opportunity list fragment for live updates.
+     * HTMX partial: returns just the opportunity list fragment for live updates or search.
      */
     @GetMapping("/opportunities/list")
-    public String opportunityList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        model.addAttribute("opportunities", opportunityService.getAllOpportunities());
+    public String opportunityList(@RequestParam(required = false, name = "q") String query,
+                                  Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (query != null && !query.trim().isEmpty()) {
+            model.addAttribute("opportunities", opportunityService.searchOpportunities(query));
+        } else {
+            model.addAttribute("opportunities", opportunityService.getAllOpportunities());
+        }
         addCurrentUser(model, userDetails);
         return "feed/index :: opportunity-list";
     }
 
-    /**
-     * HTMX: create a new opportunity, return the new card as a fragment.
-     */
     @PostMapping("/opportunities")
     public String createOpportunity(@RequestParam String title,
             @RequestParam String description,
@@ -56,6 +58,17 @@ public class FeedController {
         model.addAttribute("opp", opp);
         addCurrentUser(model, userDetails);
         return "feed/index :: opportunity-card";
+    }
+
+    /**
+     * HTMX: delete an opportunity
+     */
+    @DeleteMapping("/opportunities/{id}")
+    @ResponseBody
+    public String deleteOpportunity(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        AppUser currentUser = getCurrentUser(userDetails);
+        opportunityService.deleteOpportunity(id, currentUser.getId());
+        return ""; // Return empty string to swap outerHTML and remove the element
     }
 
     // ── Helpers ──────────────────────────────────────────────

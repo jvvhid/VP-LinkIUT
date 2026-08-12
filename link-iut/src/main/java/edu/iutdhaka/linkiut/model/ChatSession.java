@@ -81,6 +81,6 @@ public class ChatSession {
     }
 
     public boolean isExpired() {
-        return status == Status.EXPIRED || LocalDateTime.now().isAfter(slaDeadline);
+        return false;
     }
 }

@@ -33,6 +33,11 @@ public class UserProfile {
     @Column(name = "linkedin_url")
     private String linkedinUrl;
 
+    @Column(name = "office_hours")
+    private String officeHours;
+
+    private String hostel;
+
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("startDate DESC")
     private List<Experience> experiences = new ArrayList<>();
@@ -70,6 +75,12 @@ public class UserProfile {
 
     public String getLinkedinUrl() { return linkedinUrl; }
     public void setLinkedinUrl(String linkedinUrl) { this.linkedinUrl = linkedinUrl; }
+
+    public String getOfficeHours() { return officeHours; }
+    public void setOfficeHours(String officeHours) { this.officeHours = officeHours; }
+
+    public String getHostel() { return hostel; }
+    public void setHostel(String hostel) { this.hostel = hostel; }
 
     public List<Experience> getExperiences() { return experiences; }
     public void setExperiences(List<Experience> experiences) { this.experiences = experiences; }

@@ -18,10 +18,12 @@ public class ProfileController {
 
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
+    private final edu.iutdhaka.linkiut.service.OpportunityService opportunityService;
 
-    public ProfileController(ProfileRepository profileRepository, UserRepository userRepository) {
+    public ProfileController(ProfileRepository profileRepository, UserRepository userRepository, edu.iutdhaka.linkiut.service.OpportunityService opportunityService) {
         this.profileRepository = profileRepository;
         this.userRepository = userRepository;
+        this.opportunityService = opportunityService;
     }
 
     /**
@@ -35,6 +37,7 @@ public class ProfileController {
 
         model.addAttribute("profile", profile);
         model.addAttribute("profileUser", profile.getUser());
+        model.addAttribute("opportunities", opportunityService.getOpportunitiesByPosterId(userId));
 
         // Add current user for "Start Chat" button visibility
         if (userDetails != null) {
@@ -46,5 +49,27 @@ public class ProfileController {
         }
 
         return "profile/view";
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/office-hours")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public String updateOfficeHours(@org.springframework.web.bind.annotation.RequestParam String officeHours,
+                                    @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) return "Error: Not logged in";
+        
+        AppUser currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+                
+        if (currentUser.getRole() != AppUser.Role.ALUMNI) {
+            return "Error: Only Alumni can set office hours.";
+        }
+                
+        UserProfile profile = profileRepository.findByUserIdWithDetails(currentUser.getId())
+                .orElseThrow(() -> new IllegalStateException("Profile not found"));
+                
+        profile.setOfficeHours(officeHours);
+        profileRepository.save(profile);
+        
+        return officeHours;
     }
 }

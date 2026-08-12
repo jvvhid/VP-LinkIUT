@@ -7,6 +7,7 @@ import edu.iutdhaka.linkiut.repository.UserRepository;
 import edu.iutdhaka.linkiut.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -24,10 +25,12 @@ public class MessageController {
 
     private final MessageService messageService;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public MessageController(MessageService messageService, UserRepository userRepository) {
+    public MessageController(MessageService messageService, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
         this.messageService = messageService;
         this.userRepository = userRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     /**
@@ -95,6 +98,10 @@ public class MessageController {
         AppUser currentUser = getCurrentUser(userDetails);
         try {
             Message msg = messageService.sendMessage(sessionId, currentUser.getId(), content);
+            
+            // Broadcast over WebSocket to trigger background updates for other participants
+            messagingTemplate.convertAndSend("/topic/chat/" + sessionId, "NEW_MESSAGE");
+            
             model.addAttribute("msg", msg);
             model.addAttribute("currentUser", currentUser);
             return "messages/chat :: message-bubble";
@@ -105,7 +112,7 @@ public class MessageController {
     }
 
     /**
-     * HTMX polling: return new messages since lastId.
+     * HTMX + WebSocket polling: return new messages since lastId and swap the loader.
      */
     @GetMapping("/{sessionId}/poll")
     public String pollMessages(@PathVariable Long sessionId,
@@ -120,7 +127,7 @@ public class MessageController {
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("activeChat", chatSession);
         model.addAttribute("lastMessageId", newMessages.isEmpty() ? lastId : newMessages.get(newMessages.size() - 1).getId());
-        return "messages/chat :: new-messages";
+        return "messages/chat :: new-messages-loader";
     }
 
     private AppUser getCurrentUser(UserDetails userDetails) {

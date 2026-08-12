@@ -63,6 +63,8 @@ public class DataLoader implements CommandLineRunner {
         alumniProfile.setCurrentCompany("Google");
         alumniProfile.setLocation("Mountain View, CA");
         alumniProfile.setLinkedinUrl("https://linkedin.com/in/farhanr");
+        alumniProfile.setHostel("South Hostel");
+        alumniProfile.setOfficeHours("Saturdays 10:00 AM - 12:00 PM");
 
         Experience exp1 = new Experience();
         exp1.setProfile(alumniProfile);
@@ -103,6 +105,7 @@ public class DataLoader implements CommandLineRunner {
         studentProfile.setBatch("2024");
         studentProfile.setLocation("Dhaka, BD");
         studentProfile.setLinkedinUrl("https://linkedin.com/in/nadiah");
+        studentProfile.setHostel("North Hostel");
 
         Experience exp3 = new Experience();
         exp3.setProfile(studentProfile);

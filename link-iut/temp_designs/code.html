@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LINKIUT - Main Dashboard Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800&amp;family=Hanken+Grotesk:wght@400&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface-variant": "#57423e",
+                      "on-primary-fixed": "#3f0300",
+                      "primary-fixed-dim": "#ffb4a6",
+                      "secondary-fixed-dim": "#c1c8ca",
+                      "surface-container-highest": "#e3e2e1",
+                      "primary-container": "#8e2d1d",
+                      "on-background": "#1a1c1c",
+                      "on-tertiary-fixed-variant": "#3e484c",
+                      "outline": "#8a716d",
+                      "surface-tint": "#a33c2b",
+                      "primary": "#6e1609",
+                      "inverse-on-surface": "#f1f0f0",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#d9e4e9",
+                      "surface-container-low": "#f4f3f2",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary": "#2f393d",
+                      "on-tertiary": "#ffffff",
+                      "inverse-surface": "#2f3130",
+                      "secondary": "#586062",
+                      "background": "#faf9f8",
+                      "surface-bright": "#faf9f8",
+                      "surface-dim": "#dadad9",
+                      "on-secondary-container": "#5d6466",
+                      "tertiary-container": "#455054",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed-variant": "#41484a",
+                      "on-surface": "#1a1c1c",
+                      "inverse-primary": "#ffb4a6",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#e9e8e7",
+                      "on-primary-container": "#ffab9c",
+                      "secondary-container": "#dae1e3",
+                      "on-secondary-fixed": "#161d1f",
+                      "outline-variant": "#dec0ba",
+                      "on-primary-fixed-variant": "#832516",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-container": "#b7c2c6",
+                      "surface-variant": "#e3e2e1",
+                      "surface-container": "#eeeeed",
+                      "surface": "#faf9f8",
+                      "on-tertiary-fixed": "#131d21",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#dde4e6",
+                      "tertiary-fixed-dim": "#bdc8cd",
+                      "primary-fixed": "#ffdad4"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "border-width": "3px",
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "isometric-depth": "4px",
+                      "margin-mobile": "20px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-sm": [
+                              "Anybody"
+                      ],
+                      "headline-md": [
+                              "Anybody"
+                      ],
+                      "headline-xl": [
+                              "Anybody"
+                      ],
+                      "headline-lg": [
+                              "Anybody"
+                      ],
+                      "headline-xl-mobile": [
+                              "Anybody"
+                      ],
+                      "body-lg": [
+                              "Hanken Grotesk"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-xl-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .shadow-isometric {
+            box-shadow: 4px 4px 0px 0px rgba(26, 28, 28, 1);
+        }
+        .hover-isometric:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row">
+<!-- TopNavBar (Mobile Only) -->
+<header class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 border-b-3 border-on-surface shadow-[4px_4px_0px_0px_rgba(26,28,28,1)] flex justify-between items-center w-full px-margin-mobile h-[72px] z-50 md:hidden sticky">
+<div class="text-headline-md font-headline-md font-extrabold text-primary tracking-tighter">LINKIUT</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all" data-icon="person_search">person_search</span>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="bg-surface-container-low text-primary font-label-md text-label-md docked left-0 h-screen w-64 border-r-3 border-on-surface flat against background fixed left-0 top-0 h-full hidden md:flex flex-col z-40">
+<div class="p-6 border-b-3 border-on-surface">
+<h1 class="font-headline-sm text-primary">IUT ALUMNI</h1>
+<p class="font-body-md text-on-surface-variant">Modular Network</p>
+</div>
+<div class="flex flex-col gap-2 p-4 flex-1">
+<a class="bg-primary text-on-primary border-3 border-on-surface shadow-[4px_4px_0px_0px_rgba(26,28,28,1)] m-2 flex items-center gap-3 p-3 modular snap-to-grid movement" href="#">
+<span class="material-symbols-outlined" data-icon="dynamic_feed">dynamic_feed</span>
+                Feed
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+                Messages
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Network
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+                Mentorship
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+                Jobs
+            </a>
+</div>
+<div class="p-4 border-t-3 border-on-surface">
+<button class="w-full bg-primary text-on-primary border-3 border-on-surface shadow-isometric hover-isometric transition-all font-headline-sm uppercase py-2 mb-4">POST BRICK</button>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-margin-mobile md:p-margin-desktop bg-background min-h-screen">
+<!-- Top App Bar Content (Desktop) -->
+<div class="hidden md:flex justify-between items-center mb-12 border-b-3 border-on-surface pb-6">
+<h2 class="text-headline-lg font-headline-lg font-extrabold text-primary tracking-tighter">LINKIUT Dashboard</h2>
+<div class="flex items-center gap-6">
+<div class="relative border-3 border-on-surface shadow-isometric bg-surface flex items-center px-4 py-2">
+<span class="material-symbols-outlined text-on-surface-variant mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none outline-none font-body-md text-on-surface placeholder:text-on-surface-variant w-64 focus:ring-0 p-0" placeholder="Search bricks..." type="text"/>
+</div>
+<div class="flex gap-4">
+<button class="bg-surface border-3 border-on-surface shadow-isometric p-2 hover-isometric transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+<button class="bg-surface border-3 border-on-surface shadow-isometric p-2 hover-isometric transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="person_search">person_search</span>
+</button>
+<img alt="User Avatar" class="w-12 h-12 object-cover border-3 border-on-surface shadow-isometric rounded-none" data-alt="A professional headshot of a young university alumni in a modern, well-lit studio. They are smiling slightly. The lighting is crisp and clear, contributing to a modern, bright aesthetic with subtle architectural shadows in the background, matching a brutalist design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHCpjxnHLdgAwKDJ28V7RequGRuyta-DH9BddtXuhvaWS9GEq33S_McfmSGyjUPpbxcK47qpCQMh3Zlw0JLuGoqZkPKpoJl2QwVOrTKH9EDNaZxlTe7xRiSuMmmw_s4GAzAz-_k0QFLU0H8IdO2c8iWo_Jw1Deblz4u67IH3_lRibtt62FOv-FM-5e6RnN7TVPoKvtbJmyJcckjW0Wuma0h-RYf8jtp-itU2Qm-hF3mT5WhvP8cDSA7A"/>
+</div>
+<button class="bg-primary text-on-primary border-3 border-on-surface shadow-isometric hover-isometric transition-all font-headline-sm uppercase px-6 py-2">Create Opportunity</button>
+</div>
+</div>
+<!-- Bento Grid Feed -->
+<div class="grid grid-cols-4 md:grid-cols-12 gap-gutter">
+<!-- Welcome Brick -->
+<div class="col-span-4 md:col-span-8 border-3 border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform duration-200">
+<div class="h-10 bg-primary border-b-3 border-on-surface flex items-center px-4">
+<span class="font-label-md text-label-md text-on-primary uppercase">System Update</span>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between" data-alt="A stylized architectural rendering of a modern university campus building made of interlocking terracotta bricks. The image has a slightly isometric perspective, strong hard-edged shadows, and a clean, light-mode minimalist aesthetic. It evokes stability and structural growth." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCaqxQZL02992YMEaNUNOYT9y660WhDPvx99rP1ef6WprN-sQT2eRlB7NYinKnvaxh2c8ceO-5CHw0RfQJLMLVh9Y9KcJXQ-x895s6MeF4SR-Xz2UkTQK2wwaZ5SLqQkBw86qFNxV3HtLwkZMCbktcsm2GcgcjY3Wy-nwjB9xu0Pbix6K6j0Yiy3PulzodJaDIfzCiS2u6lTHmYZDfjUmm4lNKNGGEriOjb6pKi3VCNrC3ZplTbJLuPvg')">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-2">Build Your Network Block by Block</h3>
+<p class="font-body-md text-on-surface-variant mb-6">Welcome to the newly modularized LINKIUT feed. Connect with alumni, discover structural career paths, and lay the foundation for your next big move.</p>
+</div>
+</div>
+</div>
+<!-- Stats Brick -->
+<div class="col-span-4 md:col-span-4 border-3 border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform duration-200">
+<div class="h-10 bg-surface-variant border-b-3 border-on-surface flex items-center px-4">
+<span class="font-label-md text-label-md text-on-surface uppercase">Network Strength</span>
+</div>
+<div class="p-6 flex flex-col gap-4">
+<div class="border-3 border-on-surface p-4 flex justify-between items-center shadow-isometric bg-surface-container-low">
+<span class="font-body-md text-on-surface">Active Bricks</span>
+<span class="font-headline-md text-primary">1,402</span>
+</div>
+<div class="border-3 border-on-surface p-4 flex justify-between items-center shadow-isometric bg-surface-container-low">
+<span class="font-body-md text-on-surface">New Connections</span>
+<span class="font-headline-md text-primary">+24</span>
+</div>
+</div>
+</div>
+<!-- Job Opportunity Brick -->
+<div class="col-span-4 md:col-span-6 border-3 border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform duration-200">
+<div class="h-10 bg-tertiary text-on-tertiary border-b-3 border-on-surface flex items-center justify-between px-4">
+<span class="font-label-md text-label-md uppercase">Job Opening</span>
+<span class="material-symbols-outlined" data-icon="work">work</span>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Senior Structural Engineer</h4>
+<p class="font-body-md text-primary">Architrave Group</p>
+</div>
+<img class="w-16 h-16 border-3 border-on-surface object-cover shadow-[2px_2px_0px_0px_rgba(26,28,28,1)]" data-alt="A minimalist logo for an architectural firm named Architrave Group. The logo features a solid geometric shape, perhaps an interlocking A and G, rendered in deep charcoal gray and terracotta red. It has a flat, clean vector aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnhrH9EmVDQdwQAUu0HZHwKx9MrskBW-F7pkYOyP9upNA2fByX0R-vcG8Wa7v3YXFXQU3__swQnBlZk87QX51P6C4uazwoDOvwqvODphIt7k-OyJIxgEmuMQrW_yI5_OrfA2Qte1nh4ZyWCpW3FbsotiyoytQUWSti47snEbxddPkDV2hDzfjm6rwY8wxgs8S7SbiCmaQZv3fTrq0icoZYWA6yMYSJ7XQtzVeamMZtryHqHbxkYg8-qQ"/>
+</div>
+<p class="font-body-md text-on-surface-variant mb-6">Looking for experienced engineers to lead the new civic center project. Must have 5+ years experience in large-scale modular construction.</p>
+<div class="flex gap-2 mb-6">
+<span class="bg-surface-variant text-on-surface px-3 py-1 font-label-md text-label-md">Full-time</span>
+<span class="bg-surface-variant text-on-surface px-3 py-1 font-label-md text-label-md">On-site</span>
+</div>
+<button class="w-full bg-surface border-3 border-on-surface text-on-surface font-headline-sm py-2 shadow-isometric hover-isometric transition-all uppercase">Apply Now</button>
+</div>
+</div>
+<!-- Mentorship Brick -->
+<div class="col-span-4 md:col-span-6 border-3 border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform duration-200">
+<div class="h-10 bg-primary-container text-on-primary-container border-b-3 border-on-surface flex items-center justify-between px-4">
+<span class="font-label-md text-label-md uppercase">Mentorship</span>
+<span class="material-symbols-outlined" data-icon="school">school</span>
+</div>
+<div class="p-6 flex flex-col h-full justify-between">
+<div class="flex items-center gap-4 mb-4">
+<img class="w-16 h-16 border-3 border-on-surface object-cover shadow-[2px_2px_0px_0px_rgba(26,28,28,1)]" data-alt="A portrait of a distinguished older professional, likely a senior mentor or professor. The photo is styled with high contrast, sharp architectural shadows, and a clean white background. They wear a simple, structured dark jacket. The aesthetic is professional and slightly brutalist." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1U723uub45K61zXMHu2JwpTp7NrB9IEpnEaWHXUN2E8XcP8Q1lgwu2YzKRHcwG03jNJiOAac3L_kdNa0bzNuQjwfy8SI-dqBOua-6TKcrp0D3uDYdMRmlE3yflqiDSl3SJrPfSlJSnePcB8aIN-4nqiyQYdiw1rDs-niLksWhOILls1JslfcmXUbf7yvbZGodZGN_ydoc_MGwOSu_2anvkt3TM9Hc39wSHjgeh0dV5vVbBrE0Dkm4tw"/>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Dr. Elena Rostova</h4>
+<p class="font-body-md text-on-surface-variant">Class of '98 • Urban Planning</p>
+</div>
+</div>
+<p class="font-body-md text-on-surface-variant mb-6">Offering weekly portfolio reviews and career guidance for recent graduates entering the civic design sector. 2 slots remaining this semester.</p>
+<button class="w-full bg-surface border-3 border-on-surface text-on-surface font-headline-sm py-2 shadow-isometric hover-isometric transition-all uppercase">Request Mentorship</button>
+</div>
+</div>
+<!-- Event Brick (Full Width) -->
+<div class="col-span-4 md:col-span-12 border-3 border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform duration-200 relative overflow-hidden">
+<div class="h-10 bg-secondary text-on-secondary border-b-3 border-on-surface flex items-center justify-between px-4 z-10 relative">
+<span class="font-label-md text-label-md uppercase">Upcoming Event</span>
+<span class="material-symbols-outlined" data-icon="event">event</span>
+</div>
+<div class="p-6 md:p-12 flex flex-col md:flex-row justify-between items-center z-10 relative">
+<div class="mb-6 md:mb-0 md:w-2/3">
+<h3 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-surface mb-2">Annual Alumni Symposium</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Join us for a day of interlocking ideas and structural networking at the main campus. Featuring keynote speakers from top architectural and engineering firms.</p>
+</div>
+<div class="border-3 border-on-surface bg-primary text-on-primary p-4 shadow-isometric text-center">
+<div class="font-headline-lg text-headline-lg">OCT</div>
+<div class="font-headline-xl text-headline-xl">24</div>
+</div>
+</div>
+<!-- Background Pattern -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #1a1c1c 0, #1a1c1c 2px, transparent 2px, transparent 10px);"></div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (Mobile) -->
+<button class="md:hidden fixed bottom-6 right-6 w-16 h-16 bg-primary text-on-primary border-3 border-on-surface rounded-full shadow-isometric flex items-center justify-center z-50 hover-isometric transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</body></html>
