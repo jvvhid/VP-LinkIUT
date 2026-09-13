@@ -27,6 +27,7 @@ public class NetworkController {
     public String index(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         List<UserProfile> profiles = profileRepository.searchNetwork(null, null, null, null);
         model.addAttribute("profiles", profiles);
+        model.addAttribute("activePage", "network");
         addCurrentUser(model, userDetails);
         return "network/index";
     }

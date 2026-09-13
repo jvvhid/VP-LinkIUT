@@ -6,7 +6,7 @@
     <title>Sign Up — LinkIUT</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800&family=Hanken+Grotesk:wght@400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -14,56 +14,60 @@
             theme: {
                 extend: {
                     fontFamily: { 
-                        'headline-lg': ['Inter', 'sans-serif'], 
-                        'headline-md': ['Inter', 'sans-serif'], 
-                        'headline-sm': ['Inter', 'sans-serif'],
-                        'body-md': ['Roboto', 'sans-serif'],
-                        'body-sm': ['Roboto', 'sans-serif'],
-                        'label-md': ['Inter', 'sans-serif']
+                        'headline-lg': ['Anybody', 'sans-serif'], 
+                        'headline-md': ['Anybody', 'sans-serif'], 
+                        'headline-sm': ['Anybody', 'sans-serif'],
+                        'body-md': ['Hanken Grotesk', 'sans-serif'],
+                        'body-sm': ['Hanken Grotesk', 'sans-serif'],
+                        'label-md': ['JetBrains Mono', 'monospace']
                     },
                     colors: {
-                        primary: '#FF5A5F',
-                        'on-primary': '#FFFFFF',
-                        'primary-container': '#FFD9DB',
-                        'on-primary-container': '#410002',
-                        secondary: '#00A699',
-                        'on-secondary': '#FFFFFF',
-                        tertiary: '#FC642D',
-                        'on-tertiary': '#FFFFFF',
-                        background: '#F7F7F9',
-                        'on-background': '#1A1C1C',
-                        surface: '#FFFFFF',
-                        'on-surface': '#1A1C1C',
-                        'surface-variant': '#E3E2E6',
-                        'on-surface-variant': '#444749',
-                        'surface-container-low': '#F3F3F6',
-                        'surface-container-highest': '#E3E2E6',
-                        error: '#BA1A1A',
-                        'on-error': '#FFFFFF',
-                        'error-container': '#FFDAD6',
-                        'on-error-container': '#410002',
+                      "primary":                    "#8B2500",
+                      "on-primary":                 "#FFFFFF",
+                      "primary-container":          "#C0392B",
+                      "on-primary-container":       "#FFD4CC",
+                      "secondary":                  "#2C3E50",
+                      "on-secondary":               "#FFFFFF",
+                      "tertiary":                   "#D4A76A",
+                      "on-tertiary":                "#2D1E0F",
+                      "background":                 "#F5F0EB",
+                      "on-background":              "#2D2926",
+                      "surface":                    "#FAF7F2",
+                      "on-surface":                 "#2D2926",
+                      "surface-variant":            "#E8DDD0",
+                      "on-surface-variant":         "#6B5B4E",
+                      "surface-container-low":      "#F5EDE5",
+                      "surface-container-highest":  "#DDD5CC",
+                      "error":                      "#BA1A1A",
+                      "on-error":                   "#FFFFFF",
+                      "error-container":            "#FFDAD6",
+                      "on-error-container":         "#410002"
                     },
                     spacing: { 'gutter': '24px' },
-                    boxShadow: { 'isometric': '4px 4px 0px 0px rgba(26,28,28,1)' }
+                    boxShadow: { 'isometric': '4px 4px 0px 0px rgba(45,41,38,1)' }
                 }
             }
         }
     </script>
     <style>
-        * { font-family: 'Roboto', sans-serif; }
-        h1, h2, h3, h4, h5, h6, .font-headline-lg, .font-headline-md, .font-headline-sm, .font-label-md {
-            font-family: 'Inter', sans-serif;
+        * { font-family: 'Hanken Grotesk', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline-lg, .font-headline-md, .font-headline-sm {
+            font-family: 'Anybody', sans-serif;
             font-weight: 800;
         }
-        body { background: #F7F7F9; color: #1A1C1C; }
+        .font-label-md {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        body { background: #F5F0EB; color: #2D2926; }
         .hover-isometric { transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out; }
-        .hover-isometric:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px rgba(26,28,28,1); cursor: pointer; }
+        .hover-isometric:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px rgba(45,41,38,1); cursor: pointer; }
         .hover-isometric:active { transform: translate(4px, 4px); box-shadow: none; }
         @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-fade-in-up { animation: fade-in-up 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 py-8 antialiased bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M20%2020.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0%2020h2v20H0V20zm4%200h2v20H4V20zm4%200h2v20H8V20zm4%200h2v20h-2V20zm4%200h2v20h-2V20zm4%204V20h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v-2z%22%20fill%3D%22%231a1c1c%22%20fill-opacity%3D%220.03%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] overflow-hidden">
+<body class="min-h-screen flex items-center justify-center p-4 py-8 antialiased bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M20%2020.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0%2020h2v20H0V20zm4%200h2v20H4V20zm4%200h2v20H8V20zm4%200h2v20h-2V20zm4%200h2v20h-2V20zm4%204V20h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v-2z%22%20fill%3D%22%232D2926%22%20fill-opacity%3D%220.04%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] overflow-y-auto">
 
 
 
@@ -91,14 +95,14 @@
                 <div>
                     <label class="block font-label-md text-on-surface uppercase mb-2" for="displayName">Full Name</label>
                     <input type="text" id="displayName" name="displayName" placeholder="Farhan Rahman"
-                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" required>
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(45,41,38,0.2)] focus:outline-none focus:border-primary" required>
                 </div>
 
                 <!-- Email -->
                 <div>
                     <label class="block font-label-md text-on-surface uppercase mb-2" for="reg-email">Email</label>
                     <input type="email" id="reg-email" name="email" placeholder="you@iut.edu"
-                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" required>
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(45,41,38,0.2)] focus:outline-none focus:border-primary" required>
                 </div>
 
                 <!-- Role Selection -->
@@ -107,13 +111,13 @@
                     <div class="grid grid-cols-2 gap-4">
                         <label class="cursor-pointer">
                             <input type="radio" name="role" value="STUDENT" class="peer sr-only" checked>
-                            <div class="flex items-center justify-center gap-2 px-4 py-3 border-[3px] border-on-surface bg-surface text-on-surface font-label-md uppercase peer-checked:bg-tertiary peer-checked:text-on-tertiary peer-checked:shadow-[inset_4px_4px_0px_0px_rgba(26,28,28,0.4)] transition-all">
+                            <div class="flex items-center justify-center gap-2 px-4 py-3 border-[3px] border-on-surface bg-surface text-on-surface font-label-md uppercase peer-checked:bg-tertiary peer-checked:text-on-tertiary peer-checked:shadow-[inset_4px_4px_0px_0px_rgba(45,41,38,0.4)] transition-all">
                                 <span class="material-symbols-outlined text-sm">menu_book</span> Student
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="radio" name="role" value="ALUMNI" class="peer sr-only">
-                            <div class="flex items-center justify-center gap-2 px-4 py-3 border-[3px] border-on-surface bg-surface text-on-surface font-label-md uppercase peer-checked:bg-secondary peer-checked:text-on-secondary peer-checked:shadow-[inset_4px_4px_0px_0px_rgba(26,28,28,0.4)] transition-all">
+                            <div class="flex items-center justify-center gap-2 px-4 py-3 border-[3px] border-on-surface bg-surface text-on-surface font-label-md uppercase peer-checked:bg-secondary peer-checked:text-on-secondary peer-checked:shadow-[inset_4px_4px_0px_0px_rgba(45,41,38,0.4)] transition-all">
                                 <span class="material-symbols-outlined text-sm">school</span> Alumni
                             </div>
                         </label>
@@ -125,7 +129,7 @@
                     <div>
                         <label class="block font-label-md text-on-surface uppercase mb-2" for="department">Department</label>
                         <select id="department" name="department"
-                                class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary">
+                                class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(45,41,38,0.2)] focus:outline-none focus:border-primary">
                             <option value="">Select...</option>
                             <option value="CSE">CSE</option>
                             <option value="EEE">EEE</option>
@@ -138,7 +142,7 @@
                     <div>
                         <label class="block font-label-md text-on-surface uppercase mb-2" for="batch">Batch</label>
                         <input type="text" id="batch" name="batch" placeholder="e.g. 2024"
-                               class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary">
+                               class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(45,41,38,0.2)] focus:outline-none focus:border-primary">
                     </div>
                 </div>
 
@@ -146,21 +150,21 @@
                 <div>
                     <label class="block font-label-md text-on-surface uppercase mb-2" for="headline">Headline <span class="font-body-md text-on-surface-variant normal-case">(optional)</span></label>
                     <input type="text" id="headline" name="headline" placeholder="e.g. Aspiring ML Engineer"
-                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary">
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(45,41,38,0.2)] focus:outline-none focus:border-primary">
                 </div>
 
                 <!-- Password -->
                 <div>
                     <label class="block font-label-md text-on-surface uppercase mb-2" for="reg-password">Password</label>
                     <input type="password" id="reg-password" name="password" placeholder="Min 6 characters"
-                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" required minlength="6">
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(45,41,38,0.2)] focus:outline-none focus:border-primary" required minlength="6">
                 </div>
 
                 <!-- Confirm Password -->
                 <div>
                     <label class="block font-label-md text-on-surface uppercase mb-2" for="confirmPassword">Confirm Password</label>
                     <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••"
-                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" required>
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(45,41,38,0.2)] focus:outline-none focus:border-primary" required>
                 </div>
 
                 <button type="submit" id="register-submit"

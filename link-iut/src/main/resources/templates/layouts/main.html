@@ -1,187 +1,512 @@
 <!DOCTYPE html>
-<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title layout:title-pattern="$CONTENT_TITLE — LinkIUT">LinkIUT</title>
-    
+
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <!-- SockJS and STOMP for WebSockets -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
+    <!-- Tribute.js for Mentions -->
+    <link rel="stylesheet" href="https://unpkg.com/tributejs/dist/tribute.css" />
+    <script src="https://unpkg.com/tributejs/dist/tribute.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800&family=Hanken+Grotesk:wght@400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800&family=Hanken+Grotesk:wght@400&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+        }
+    </script>
     <script id="tailwind-config">
         tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "on-surface-variant": "#57423e",
-                      "on-primary-fixed": "#3f0300",
-                      "primary-fixed-dim": "#ffb4a6",
-                      "secondary-fixed-dim": "#c1c8ca",
-                      "surface-container-highest": "#e3e2e1",
-                      "primary-container": "#8e2d1d",
-                      "on-background": "#1a1c1c",
-                      "on-tertiary-fixed-variant": "#3e484c",
-                      "outline": "#8a716d",
-                      "surface-tint": "#a33c2b",
-                      "primary": "#6e1609",
-                      "inverse-on-surface": "#f1f0f0",
-                      "error-container": "#ffdad6",
-                      "tertiary-fixed": "#d9e4e9",
-                      "surface-container-low": "#f4f3f2",
-                      "on-secondary": "#ffffff",
-                      "surface-container-lowest": "#ffffff",
-                      "tertiary": "#2f393d",
-                      "on-tertiary": "#ffffff",
-                      "inverse-surface": "#2f3130",
-                      "secondary": "#586062",
-                      "background": "#faf9f8",
-                      "surface-bright": "#faf9f8",
-                      "surface-dim": "#dadad9",
-                      "on-secondary-container": "#5d6466",
-                      "tertiary-container": "#455054",
-                      "on-primary": "#ffffff",
-                      "on-secondary-fixed-variant": "#41484a",
-                      "on-surface": "#1a1c1c",
-                      "inverse-primary": "#ffb4a6",
-                      "error": "#ba1a1a",
-                      "surface-container-high": "#e9e8e7",
-                      "on-primary-container": "#ffab9c",
-                      "secondary-container": "#dae1e3",
-                      "on-secondary-fixed": "#161d1f",
-                      "outline-variant": "#dec0ba",
-                      "on-primary-fixed-variant": "#832516",
-                      "on-error-container": "#93000a",
-                      "on-tertiary-container": "#b7c2c6",
-                      "surface-variant": "#e3e2e1",
-                      "surface-container": "#eeeeed",
-                      "surface": "#faf9f8",
-                      "on-tertiary-fixed": "#131d21",
-                      "on-error": "#ffffff",
-                      "secondary-fixed": "#dde4e6",
-                      "tertiary-fixed-dim": "#bdc8cd",
-                      "primary-fixed": "#ffdad4"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0px",
-                      "lg": "0px",
-                      "xl": "0px",
-                      "full": "0px"
-              },
-              "spacing": {
-                      "unit": "8px",
-                      "border-width": "3px",
-                      "margin-desktop": "64px",
-                      "gutter": "24px",
-                      "isometric-depth": "4px",
-                      "margin-mobile": "20px"
-              },
-              "fontFamily": {
-                      "label-md": ["JetBrains Mono"],
-                      "body-md": ["Hanken Grotesk"],
-                      "headline-sm": ["Anybody"],
-                      "headline-md": ["Anybody"],
-                      "headline-xl": ["Anybody"],
-                      "headline-lg": ["Anybody"],
-                      "headline-xl-mobile": ["Anybody"],
-                      "body-lg": ["Hanken Grotesk"]
-              },
-              "fontSize": {
-                      "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                      "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                      "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
-                      "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
-                      "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
-                      "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
-                      "headline-xl-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "800" }],
-                      "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
-              }
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "var(--color-primary)",
+                        "on-primary": "var(--color-on-primary)",
+                        "primary-container": "var(--color-primary-container)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "secondary": "var(--color-secondary)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "tertiary": "var(--color-tertiary)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "background": "var(--color-background)",
+                        "on-background": "var(--color-on-background)",
+                        "surface": "var(--color-surface)",
+                        "on-surface": "var(--color-on-surface)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "error": "var(--color-error)",
+                        "on-error": "var(--color-on-error)",
+                        "error-container": "var(--color-error-container)",
+                        "on-error-container": "var(--color-on-error-container)",
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "0px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "border-width": "3px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "isometric-depth": "4px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-sm": ["Anybody"],
+                        "headline-md": ["Anybody"],
+                        "headline-xl": ["Anybody"],
+                        "headline-lg": ["Anybody"],
+                        "headline-xl-mobile": ["Anybody"],
+                        "body-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-xl-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
             }
-          }
         }
     </script>
     <style>
-        .shadow-isometric { box-shadow: 4px 4px 0px 0px rgba(26, 28, 28, 1); }
-        .hover-isometric { transition: transform 0.2s, box-shadow 0.2s; }
-        .hover-isometric:hover { transform: translate(4px, 4px); box-shadow: none; }
-        
-        /* Badge colors */
-        .badge-job        { background: var(--tw-colors-secondary); color: white; }
-        .badge-internship { background: var(--tw-colors-tertiary); color: white; }
-        .badge-mentorship { background: var(--tw-colors-primary-container); color: white; }
-        .badge-student    { background: var(--tw-colors-tertiary); color: white; }
-        .badge-alumni     { background: var(--tw-colors-primary); color: white; }
+        /* Attractive Sophisticated Palette */
+        :root {
+            --color-background: #F4F1EA;
+            --color-on-background: #0A1128;
+            --color-surface: #FFFFFF;
+            --color-on-surface: #0A1128;
+            --color-primary: #7B241C;
+            --color-on-primary: #FFFFFF;
+            --color-primary-container: #922B21;
+            --color-on-primary-container: #FFFFFF;
+            --color-secondary: #0A1128;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #D4AF37;
+            --color-on-tertiary: #0A1128;
+            --color-surface-variant: #EAE6DF;
+            --color-on-surface-variant: #5A6D7C;
+            --color-surface-container-low: #F9F8F6;
+            --color-surface-container-highest: #D5D0C5;
+            --color-error: #C0392B;
+            --color-on-error: #FFFFFF;
+            --color-error-container: #F2D7D5;
+            --color-on-error-container: #641E16;
+        }
+
+        .dark {
+            --color-background: #000000;
+            --color-on-background: #FFFFFF;
+            --color-surface: #000000;
+            --color-on-surface: #FFFFFF;
+            --color-primary: #8B4513;
+            /* Saddle Brown */
+            --color-on-primary: #FFFFFF;
+            --color-primary-container: #000000;
+            --color-on-primary-container: #8B4513;
+            --color-secondary: #000000;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #F59E0B;
+            --color-on-tertiary: #000000;
+            --color-surface-variant: #000000;
+            --color-on-surface-variant: #94A3B8;
+            --color-surface-container-low: #000000;
+            --color-surface-container-highest: #111111;
+            --color-error: #EF4444;
+            --color-on-error: #000000;
+            --color-error-container: #000000;
+            --color-on-error-container: #EF4444;
+        }
+
+        .shadow-isometric {
+            box-shadow: 4px 4px 0px 0px var(--color-on-surface);
+        }
+
+        .hover-isometric {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hover-isometric:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+
+        /* Sidebar Toggle Styles */
+        #sidebar {
+            transition: width 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        body.sidebar-collapsed #sidebar {
+            width: 80px;
+        }
+
+        body.sidebar-collapsed .sidebar-text {
+            display: none;
+            opacity: 0;
+        }
+
+        body.sidebar-collapsed #sidebar-toggle {
+            transform: rotate(180deg);
+        }
+
+        @media (min-width: 768px) {
+            body.sidebar-collapsed main {
+                margin-left: 80px !important;
+            }
+        }
+
+        /* Badge colors — linked to theme */
+        .badge-job {
+            background: var(--color-secondary);
+            color: var(--color-on-secondary);
+        }
+
+        .badge-internship {
+            background: var(--color-tertiary);
+            color: var(--color-on-tertiary);
+        }
+
+        .badge-mentorship {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+        }
+
+        .badge-student {
+            background: var(--color-surface-variant);
+            color: var(--color-on-surface-variant);
+        }
+
+        .badge-alumni {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+        }
+
+        /* Keyframe animations */
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fade-in-up {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.4s ease-out forwards;
+        }
+
+        .animate-fade-in-up {
+            animation: fade-in-up 0.4s ease-out forwards;
+        }
+    </style>
+    <style>
+        .tribute-container {
+            z-index: 9999 !important;
+        }
     </style>
 </head>
+
 <body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row">
-    
+
     <!-- TopNavBar (Mobile Only) -->
-    <header class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 border-b-[3px] border-on-surface shadow-[4px_4px_0px_0px_rgba(26,28,28,1)] flex justify-between items-center w-full px-5 h-[72px] z-50 md:hidden sticky">
+    <header
+        class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 border-b-[3px] border-on-surface shadow-[4px_4px_0px_0px_rgba(45,41,38,1)] flex justify-between items-center w-full px-5 h-[72px] z-50 md:hidden sticky">
         <div class="text-headline-md font-headline-md font-extrabold text-primary tracking-tighter">LINKIUT</div>
         <div class="flex gap-4">
-            <span class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all">notifications</span>
-            <span class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all">person_search</span>
+            <span id="theme-toggle-mobile"
+                class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all">light_mode</span>
+            <div class="relative inline-block">
+                <span class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                      hx-get="/notifications/unread-count" hx-trigger="load, every 30s" hx-target="#notif-badge-mobile">notifications</span>
+                <span id="notif-badge-mobile" class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
+            </div>
+            <span
+                class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all">person_search</span>
         </div>
     </header>
 
     <!-- SideNavBar (Desktop) -->
-    <nav class="bg-surface-container-low text-primary font-label-md text-label-md docked left-0 h-screen w-64 border-r-[3px] border-on-surface fixed left-0 top-0 h-full hidden md:flex flex-col z-40">
-        <div class="p-6 border-b-[3px] border-on-surface">
-            <h1 class="font-headline-sm text-primary">IUT ALUMNI</h1>
-            <p class="font-body-md text-on-surface-variant">Modular Network</p>
+    <nav id="sidebar"
+        class="bg-secondary text-on-secondary font-label-md text-label-md fixed left-0 top-0 w-64 h-screen border-r-[3px] border-on-surface hidden md:flex flex-col z-40">
+        <div class="p-6 border-b-[3px] border-on-surface flex justify-between items-center whitespace-nowrap">
+            <div class="sidebar-text">
+                <h1 class="font-headline-sm text-primary">IUT ALUMNI</h1>
+                <p class="font-body-md text-on-secondary/70">Modular Network</p>
+            </div>
+            <button id="sidebar-toggle"
+                class="material-symbols-outlined text-on-secondary hover:text-primary transition-colors focus:outline-none shrink-0">menu_open</button>
         </div>
-        <div class="flex flex-col gap-2 p-4 flex-1">
-            <a th:href="@{/}" class="flex items-center gap-3 p-3 transition-colors text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high">
-                <span class="material-symbols-outlined">dynamic_feed</span> Feed
+        <div class="flex flex-col gap-2 p-4 flex-1 whitespace-nowrap overflow-hidden">
+            <a th:href="@{/feed}"
+                th:classappend="${activePage == 'feed' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 transition-colors text-on-secondary hover:bg-black/20">
+                <span class="material-symbols-outlined shrink-0">dynamic_feed</span> <span
+                    class="sidebar-text">Feed</span>
             </a>
-            <a th:href="@{/network}" class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors">
-                <span class="material-symbols-outlined">group</span> IUT Network
+            <a th:href="@{/network}"
+                th:classappend="${activePage == 'network' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">group</span> <span class="sidebar-text">IUT
+                    Network</span>
             </a>
-            <a th:href="@{/messages}" class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors">
-                <span class="material-symbols-outlined">forum</span> Messages
+            <a th:href="@{/messages}"
+                th:classappend="${activePage == 'messages' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">forum</span> <span class="sidebar-text">Messages</span>
             </a>
-            <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}" class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors">
-                <span class="material-symbols-outlined">person</span> Profile
-            </a>
-            <a th:if="${currentUser != null && currentUser.role.name() == 'ALUMNI'}" th:href="@{/profile/{id}#opportunities(id=${currentUser.id})}" class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors">
-                <span class="material-symbols-outlined">work</span> Posted Opportunities
-            </a>
-        </div>
-        
-        <div class="p-4 border-t-[3px] border-on-surface" th:if="${currentUser != null}">
-            <!-- User Card -->
-            <div class="flex items-center gap-3 p-3 mb-4 border-[3px] border-on-surface bg-surface shadow-isometric">
-                <div class="w-10 h-10 bg-primary flex items-center justify-center text-sm font-bold text-on-primary border-[3px] border-on-surface">
-                    <span th:text="${currentUser.initials}">FR</span>
+            <a th:href="@{/notifications}"
+                th:classappend="${activePage == 'notifications' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <div class="relative inline-block shrink-0">
+                    <span class="material-symbols-outlined block">notifications</span>
+                    <span id="notif-badge-desktop" 
+                          hx-get="/notifications/unread-count" hx-trigger="load, every 30s"
+                          class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
                 </div>
-                <div class="flex-1 min-w-0">
+                <span class="sidebar-text">Notifications</span>
+            </a>
+            <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}"
+                th:classappend="${activePage == 'profile' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">person</span> <span class="sidebar-text">Profile</span>
+            </a>
+            <a th:if="${currentUser != null && currentUser.role.name() == 'ALUMNI'}"
+                th:href="@{/profile/{id}#opportunities(id=${currentUser.id})}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">work</span> <span class="sidebar-text">Posted
+                    Opportunities</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t-[3px] border-on-surface whitespace-nowrap overflow-hidden"
+            th:if="${currentUser != null}">
+            <!-- Dark Mode Toggle -->
+            <button id="theme-toggle"
+                class="w-full flex items-center justify-between p-3 mb-4 text-on-secondary border-[3px] border-on-surface hover:bg-black/20 transition-colors hover-isometric shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]">
+                <span class="font-label-md uppercase sidebar-text">Theme</span>
+                <span class="material-symbols-outlined shrink-0 dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined shrink-0 hidden dark:block">light_mode</span>
+            </button>
+            <!-- User Card -->
+            <div
+                class="flex items-center gap-3 p-3 mb-4 border-[3px] border-on-surface bg-surface text-on-surface shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]">
+                <div
+                    class="w-10 h-10 shrink-0 bg-primary flex items-center justify-center text-sm font-bold text-on-primary border-[3px] border-on-surface overflow-hidden">
+                    <img th:if="${currentUser.avatarUrl != null}" th:src="${currentUser.avatarUrl}" class="w-full h-full object-cover">
+                    <span th:if="${currentUser.avatarUrl == null}" th:text="${currentUser.initials}">FR</span>
+                </div>
+                <div class="flex-1 min-w-0 sidebar-text">
                     <p class="font-headline-sm text-[16px] truncate" th:text="${currentUser.displayName}">User</p>
                     <p class="font-label-md text-on-surface-variant truncate" th:text="${currentUser.role}">ROLE</p>
                 </div>
             </div>
-            
+
             <form th:action="@{/logout}" method="post">
-                <button type="submit" class="w-full flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-colors">
-                    <span class="material-symbols-outlined">logout</span> Logout
+                <button type="submit"
+                    class="w-full flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                    <span class="material-symbols-outlined shrink-0">logout</span> <span
+                        class="sidebar-text">Logout</span>
                 </button>
             </form>
         </div>
     </nav>
 
     <!-- Main Content Canvas -->
-    <main class="flex-1 md:ml-64 p-5 md:p-[64px] bg-background min-h-screen">
+    <main class="flex-1 md:ml-64 p-5 pb-24 md:pb-5 md:p-[64px] bg-background min-h-screen transition-all duration-300">
         <div layout:fragment="content">
             <!-- Page content injected here -->
         </div>
     </main>
 
+    <!-- Mobile Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t-[3px] border-on-surface flex justify-around items-center h-16 z-50 md:hidden"
+        th:if="${currentUser != null}">
+        <a th:href="@{/feed}"
+            th:classappend="${activePage == 'feed' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'feed' ? 'fill-current' : ''}">dynamic_feed</span>
+            <span class="font-label-md text-[10px] uppercase">Feed</span>
+        </a>
+        <a th:href="@{/network}"
+            th:classappend="${activePage == 'network' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'network' ? 'fill-current' : ''}">group</span>
+            <span class="font-label-md text-[10px] uppercase">Network</span>
+        </a>
+        <a th:href="@{/messages}"
+            th:classappend="${activePage == 'messages' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'messages' ? 'fill-current' : ''}">forum</span>
+            <span class="font-label-md text-[10px] uppercase">Chat</span>
+        </a>
+        <a th:href="@{/notifications}"
+            th:classappend="${activePage == 'notifications' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'notifications' ? 'fill-current' : ''}">notifications</span>
+            <span class="font-label-md text-[10px] uppercase">Alerts</span>
+        </a>
+        <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}"
+            th:classappend="${activePage == 'profile' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'profile' ? 'fill-current' : ''}">person</span>
+            <span class="font-label-md text-[10px] uppercase">Profile</span>
+        </a>
+    </nav>
+
     <!-- Background Pattern -->
-    <div class="fixed inset-0 opacity-10 pointer-events-none -z-10" style="background-image: repeating-linear-gradient(45deg, #1a1c1c 0, #1a1c1c 2px, transparent 2px, transparent 10px);"></div>
+    <div class="fixed inset-0 opacity-[0.04] pointer-events-none -z-10"
+        style="background-image: radial-gradient(circle, #2D2926 1px, transparent 1px); background-size: 20px 20px;">
+    </div>
+
+    <script>
+
+        // Restore Sidebar State
+        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+
+        // Sidebar Toggle Logic
+        const sidebarBtn = document.getElementById('sidebar-toggle');
+        if (sidebarBtn) {
+            sidebarBtn.addEventListener('click', () => {
+                document.body.classList.toggle('sidebar-collapsed');
+                localStorage.setItem('sidebar-collapsed', document.body.classList.contains('sidebar-collapsed'));
+            });
+        }
+
+        // HTMX CSRF Configuration
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+            if (csrfHeader && csrfToken) {
+                evt.detail.headers[csrfHeader] = csrfToken;
+            }
+        });
+
+        // Dark mode toggle functionality
+        const toggleBtn = document.getElementById('theme-toggle');
+        const toggleMobileBtn = document.getElementById('theme-toggle-mobile');
+
+        function switchTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', switchTheme);
+        }
+        if (toggleMobileBtn) {
+            toggleMobileBtn.addEventListener('click', switchTheme);
+        }
+
+        // HTMX After Swap fixes and Tribute init
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.detail.target.id === 'message-list') {
+                const msgs = document.getElementById('message-list');
+                if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            }
+            initTribute();
+        });
+
+        // Initialize Tribute.js for mentions
+        let tribute = null;
+        function initTribute() {
+            const elements = document.querySelectorAll('.mentionable');
+            if (elements.length > 0) {
+                if (!tribute) {
+                    tribute = new Tribute({
+                        values: function (text, cb) {
+                            fetch('/api/users/search-mentions?q=' + text)
+                                .then(res => res.json())
+                                .then(data => cb(data))
+                                .catch(() => cb([]));
+                        },
+                        lookup: 'displayName',
+                        fillAttr: 'handle',
+                        menuItemTemplate: function (item) {
+                            return `<div class="flex items-center gap-2 p-1">
+                                        <div class="w-6 h-6 bg-primary text-on-primary text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
+                                            ${item.original.avatarUrl ? `<img src="${item.original.avatarUrl}" class="w-full h-full object-cover">` : item.original.initials}
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-sm leading-tight text-on-surface">${item.original.displayName}</div>
+                                            <div class="text-[10px] text-on-surface-variant leading-tight">@${item.original.handle}</div>
+                                        </div>
+                                    </div>`;
+                        },
+                        selectTemplate: function (item) {
+                            return '@' + item.original.handle;
+                        },
+                        requireLeadingSpace: true
+                    });
+                }
+                elements.forEach(el => {
+                    if (!el.hasAttribute('data-tribute')) {
+                        tribute.attach(el);
+                    }
+                });
+            }
+        }
+        
+        // Initial attach
+        initTribute();
+    </script>
 </body>
+
 </html>

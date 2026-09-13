@@ -1,597 +1,80 @@
-# LinkIUT
+# LinkIUT 🎓
 
-LinkIUT is an alumni-student networking platform built for the Islamic University of Technology (IUT). The platform enables students and alumni to connect, share opportunities, showcase profiles, and communicate through a structured mentorship and networking system.
+LinkIUT is a dedicated networking platform built for students and alumni of the Islamic University of Technology (IUT). It bridges the gap between current students and alumni by providing a robust ecosystem for professional networking, mentoring, and community engagement.
 
----
+## ✨ Features
 
-# Project Overview
+- **Role-Based Authentication:** Dedicated onboarding for Students and Alumni with specialized profiles.
+- **Dynamic Interactive Feed:** Share posts, run polls, and interact with the community using likes and comments without page reloads (powered by HTMX).
+- **Real-Time Messaging:**
+  - One-on-one direct messaging and Group chats (up to 99 members).
+  - Rich media support: Send photos, videos, and **record voice messages directly in the browser**.
+  - Powered by WebSockets (STOMP/SockJS) for instant delivery.
+- **Professional Profiles:** Showcase your headline, skills, education, and experience. Upload profile and cover photos.
+- **Networking System:** Connect with alumni for mentorship or students for guidance.
+- **Modern UI/UX:** A stunning, responsive isometric design built with Tailwind CSS.
+- **Real-time Notifications:** Get notified when someone connects with you, likes your post, or comments on your thread.
 
-The goal of LinkIUT is to bridge the gap between current students and alumni by providing:
+## 🚀 Tech Stack
 
-* Professional networking
-* Alumni mentorship
-* Internship opportunities
-* Job postings
-* Career guidance
-* Direct messaging between users
+- **Backend:** Java, Spring Boot, Spring Security, Spring WebSocket
+- **Frontend:** Thymeleaf, Tailwind CSS, HTMX, JavaScript
+- **Database:** MySQL, Spring Data JPA (Hibernate)
 
-The application is built using:
+## 🛠️ How to Run Locally
 
-* Java 21
-* Spring Boot 3
-* Spring Security
-* Spring Data JPA
-* Thymeleaf
-* HTMX
-* Tailwind CSS
-* H2 Database (Development)
-* PostgreSQL (Production Ready)
+Follow these steps to run LinkIUT on any device.
 
----
+### Prerequisites
 
-# Technology Stack
+1. **Java Development Kit (JDK):** Version 17 or higher.
+2. **MySQL Server:** Ensure MySQL is installed and running on your local machine.
 
-## Backend
+### 1. Database Setup
 
-* Spring Boot
-* Spring Security
-* Spring Data JPA
-* Hibernate
-* Maven
+Create a new MySQL database named `linkiut`:
 
-## Frontend
-
-* Thymeleaf
-* HTMX
-* Tailwind CSS
-* HTML5
-
-## Database
-
-Development:
-
-* H2 In-Memory Database
-
-Production:
-
-* PostgreSQL
-
----
-
-# Project Structure
-
-```text
-src
-├── main
-│   ├── java
-│   │   └── edu.iutdhaka.linkiut
-│   │       ├── config
-│   │       ├── controller
-│   │       ├── model
-│   │       ├── repository
-│   │       ├── service
-│   │       └── LinkIutApplication.java
-│   │
-│   └── resources
-│       ├── templates
-│       ├── static
-│       ├── application.yml
-│       └── schema.sql
+```sql
+CREATE DATABASE linkiut;
 ```
 
----
+*Note: The application is configured to connect to `jdbc:mysql://localhost:3306/linkiut` with the username `root` and password `root`. If your MySQL credentials differ, update the `application.properties` file.*
 
-# Core Architecture
+### 2. Configure Application Properties
 
-The application follows a layered Spring Boot architecture:
+Open `link-iut/src/main/resources/application.properties` and verify your database credentials:
 
-```text
-Browser
-   ↓
-Controller
-   ↓
-Service
-   ↓
-Repository
-   ↓
-Database
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/linkiut?createDatabaseIfNotExist=true&useSSL=false
+spring.datasource.username=root
+spring.datasource.password=your_password_here
 ```
 
-Each layer has a specific responsibility.
+### 3. Build and Run
 
----
+You can run the application directly using the Maven Wrapper included in the repository.
 
-# Configuration Layer
+Navigate to the `link-iut` directory in your terminal:
 
-## config/
-
-Contains application-wide configurations.
-
-### SecurityConfig.java
-
-Responsible for:
-
-* Spring Security configuration
-* Login page configuration
-* Logout configuration
-* Authentication rules
-* Password encryption using BCrypt
-
-Features:
-
-* Custom login page
-* BCrypt password hashing
-* User authentication through database
-* Route protection
-
----
-
-# Controller Layer
-
-Controllers handle incoming HTTP requests.
-
-## RegistrationController.java
-
-Handles:
-
-### GET /register
-
-Displays registration page.
-
-### POST /register
-
-Creates a new user.
-
-Validations:
-
-* Password confirmation check
-* Duplicate email prevention
-* Minimum password length
-
-Creates:
-
-* AppUser record
-* UserProfile record
-
----
-
-## FeedController.java
-
-Responsible for:
-
-* Homepage feed
-* Opportunity listing
-* Opportunity creation
-
----
-
-## ProfileController.java
-
-Responsible for:
-
-* Viewing user profiles
-* Displaying profile details
-* Displaying projects and experiences
-
----
-
-## MessageController.java
-
-Responsible for:
-
-* Opening chat sessions
-* Sending messages
-* Viewing chat history
-
----
-
-# Model Layer
-
-Models represent database entities.
-
-## AppUser.java
-
-Represents:
-
-```text
-app_user
+**On Windows:**
+```cmd
+cd link-iut
+.\mvnw.cmd clean spring-boot:run
 ```
 
-Fields:
-
-* id
-* email
-* passwordHash
-* role
-* displayName
-* avatarUrl
-* createdAt
-
-User Roles:
-
-* STUDENT
-* ALUMNI
-
----
-
-## UserProfile.java
-
-Represents:
-
-```text
-user_profile
-```
-
-Contains:
-
-* headline
-* bio
-* department
-* batch
-* currentCompany
-* location
-* linkedinUrl
-
-Each user has exactly one profile.
-
----
-
-## Experience.java
-
-Represents work experience.
-
-Contains:
-
-* title
-* company
-* dates
-* description
-
----
-
-## Project.java
-
-Represents portfolio projects.
-
-Contains:
-
-* project name
-* description
-* tech stack
-* repository URL
-
----
-
-## Opportunity.java
-
-Represents:
-
-* Jobs
-* Internships
-* Mentorships
-
-Opportunity Types:
-
-* JOB
-* INTERNSHIP
-* MENTORSHIP
-
----
-
-## ChatSession.java
-
-Represents a conversation between:
-
-* Student
-* Alumni
-
-Contains:
-
-* session status
-* creation time
-* SLA deadline
-
-Status:
-
-* ACTIVE
-* EXPIRED
-* CLOSED
-
----
-
-## Message.java
-
-Represents individual chat messages.
-
-Contains:
-
-* sender
-* content
-* timestamp
-
----
-
-# Repository Layer
-
-Repositories communicate with the database.
-
-## UserRepository
-
-Responsible for:
-
-```java
-findByEmail(...)
-existsByEmail(...)
-save(...)
-```
-
-Used during:
-
-* Login
-* Registration
-
----
-
-## ProfileRepository
-
-Handles:
-
-* Profile retrieval
-* Profile updates
-
----
-
-## OpportunityRepository
-
-Handles:
-
-* Opportunity listing
-* Opportunity creation
-
----
-
-## ChatSessionRepository
-
-Handles:
-
-* Chat sessions
-* Session expiration checks
-
----
-
-## MessageRepository
-
-Handles:
-
-* Message storage
-* Message retrieval
-
----
-
-# Service Layer
-
-Services contain business logic.
-
-## OpportunityService
-
-Responsibilities:
-
-* Create opportunities
-* Fetch opportunities
-* Validate opportunity data
-
----
-
-## MessageService
-
-Responsibilities:
-
-* Create chat sessions
-* Send messages
-* Retrieve chat history
-
----
-
-# Database
-
-## schema.sql
-
-Creates all database tables.
-
-Tables:
-
-### app_user
-
-Stores:
-
-* User accounts
-* Roles
-* Credentials
-
-### user_profile
-
-Stores:
-
-* Extended profile information
-
-### experience
-
-Stores:
-
-* Professional experiences
-
-### project
-
-Stores:
-
-* User projects
-
-### opportunity
-
-Stores:
-
-* Jobs
-* Internships
-* Mentorships
-
-### chat_session
-
-Stores:
-
-* Conversations
-
-### message
-
-Stores:
-
-* Chat messages
-
----
-
-# Authentication Flow
-
-Registration:
-
-```text
-User
- ↓
-Registration Form
- ↓
-Validation
- ↓
-Password Hashing
- ↓
-Save User
- ↓
-Save Profile
-```
-
-Login:
-
-```text
-User
- ↓
-Login Form
- ↓
-Spring Security
- ↓
-UserRepository
- ↓
-Database Lookup
- ↓
-Password Verification
- ↓
-Authentication
-```
-
----
-
-# Frontend Pages
-
-## login.html
-
-Features:
-
-* User login
-* Demo credentials
-* Error handling
-* Registration link
-
----
-
-## register.html
-
-Features:
-
-* User registration
-* Role selection
-* Validation feedback
-
----
-
-## index.html
-
-Features:
-
-* Opportunity feed
-* Posting opportunities
-* Live updates
-
----
-
-## chat.html
-
-Features:
-
-* Messaging interface
-* Real-time updates
-* Session status
-
----
-
-## view.html
-
-Features:
-
-* Profile display
-* Experience timeline
-* Project showcase
-
----
-
-# Running the Project
-
-## Requirements
-
-* Java 21
-* Maven Wrapper (included)
-
-## Start Application
-
+**On macOS/Linux:**
 ```bash
-mvnw.cmd spring-boot:run
+cd link-iut
+./mvnw clean spring-boot:run
 ```
 
-Application URL:
+### 4. Access the Application
 
-```text
-http://localhost:8080
-```
+Once the server has started, open your web browser and navigate to:
+`http://localhost:8080`
 
----
+The application comes with an automatic `DataLoader` that populates the database with demo users, posts, and chats on the first run.
 
-# Development Database
+## 🤝 Contributing
 
-Current configuration:
-
-```yaml
-jdbc:h2:mem:linkiut_db
-```
-
-Benefits:
-
-* Zero setup
-* Fast startup
-* Ideal for development
-
----
-
-# Future Improvements
-
-* PostgreSQL migration
-* Real-time WebSocket chat
-* Alumni verification
-* Resume uploads
-* OAuth authentication
-* Notifications
-* Search and filtering
-* Profile recommendations
-* Mobile responsive enhancements
-
----
-
-# Authors
-
-Developed as an alumni-student networking platform for IUT students and alumni.
-
-Built using Spring Boot, Thymeleaf, HTMX, and Tailwind CSS.
+We welcome contributions to LinkIUT! Please ensure you branch off from `main`, make your feature changes, and submit a pull request for review.

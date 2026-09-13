@@ -1,235 +1,359 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/main}">
+
 <head>
     <title th:text="${profileUser.displayName + ' — Profile'}">Profile</title>
 </head>
+
 <body>
-<div layout:fragment="content">
+    <div layout:fragment="content">
 
-    <!-- ═══ Hero Brick ═══ -->
-    <div class="border-[3px] border-on-surface shadow-isometric bg-surface mb-8 flex flex-col hover-isometric transition-transform animate-fade-in">
-        <!-- Cover gradient -->
-        <div class="h-48 border-b-[3px] border-on-surface relative"
-             th:classappend="${profileUser.role.name() == 'ALUMNI' ? 'bg-secondary' : 'bg-primary'}">
-            <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%231a1c1c%22%20fill-opacity%3D%220.1%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]"></div>
-        </div>
-
-        <div class="px-8 pb-8 relative flex flex-col md:flex-row items-center md:items-end gap-6">
-            <!-- Avatar -->
-            <div class="-mt-16 md:-mt-20 w-32 h-32 md:w-40 md:h-40 bg-surface border-[3px] border-on-surface shadow-[4px_4px_0px_0px_rgba(26,28,28,1)] flex items-center justify-center">
-                <span class="text-4xl md:text-5xl font-headline-lg text-on-surface font-extrabold" th:text="${profileUser.initials}">FR</span>
-            </div>
-            
-            <div class="flex-1 text-center md:text-left mt-4 md:mt-0">
-                <div class="flex flex-col md:flex-row items-center gap-3 mb-2">
-                    <h1 class="font-headline-lg text-headline-lg text-on-surface" th:text="${profileUser.displayName}">User Name</h1>
-                    <span class="font-label-md text-label-md px-3 py-1 border-[3px] border-on-surface uppercase"
-                          th:classappend="${profileUser.role.name() == 'ALUMNI' ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary'}"
-                          th:text="${profileUser.role}">ROLE</span>
+        <!-- ═══ Hero Brick ═══ -->
+        <div
+            class="border-[3px] border-on-surface shadow-isometric bg-surface mb-8 flex flex-col hover-isometric transition-transform animate-fade-in">
+            <!-- Cover gradient -->
+            <div class="h-48 border-b-[3px] border-on-surface relative"
+                th:classappend="${profileUser.role.name() == 'ALUMNI' ? 'bg-secondary' : 'bg-primary'}">
+                <div
+                    class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%231a1c1c%22%20fill-opacity%3D%220.1%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]">
                 </div>
-                <p class="font-body-md text-on-surface-variant mb-4" th:text="${profile.headline}">Headline</p>
-                
-                <div class="flex flex-wrap justify-center md:justify-start items-center gap-4 text-on-surface-variant font-body-sm">
-                    <span th:if="${profile.location}" class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric">
-                        <span class="material-symbols-outlined text-sm">location_on</span>
-                        <span th:text="${profile.location}">Location</span>
-                    </span>
-                    <span th:if="${profile.department}" class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric">
-                        <span class="material-symbols-outlined text-sm">school</span>
-                        <span th:text="${profile.department + ' · Batch ' + profile.batch}">CSE · Batch 2024</span>
-                    </span>
-                    <span th:if="${profile.hostel}" class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric">
-                        <span class="material-symbols-outlined text-sm">apartment</span>
-                        <span th:text="${profile.hostel}">South Hostel</span>
-                    </span>
-                    <a th:if="${profile.linkedinUrl}" th:href="${profile.linkedinUrl}" target="_blank"
-                       class="flex items-center gap-1 bg-primary text-on-primary border-[3px] border-on-surface px-3 py-1 shadow-isometric hover-isometric transition-transform">
-                        <span class="material-symbols-outlined text-sm">link</span>
-                        LinkedIn
+            </div>
+
+            <div class="px-8 pb-8 relative flex flex-col md:flex-row items-center md:items-end gap-6">
+                <!-- Avatar -->
+                <div
+                    class="-mt-16 md:-mt-20 w-32 h-32 md:w-40 md:h-40 bg-surface border-[3px] border-on-surface shadow-[4px_4px_0px_0px_rgba(26,28,28,1)] flex items-center justify-center overflow-hidden">
+                    <img th:if="${profileUser.avatarUrl != null}" th:src="${profileUser.avatarUrl}" class="w-full h-full object-cover">
+                    <span th:if="${profileUser.avatarUrl == null}" class="text-4xl md:text-5xl font-headline-lg text-on-surface font-extrabold"
+                        th:text="${profileUser.initials}">FR</span>
+                </div>
+
+                <div class="flex-1 text-center md:text-left mt-4 md:mt-0">
+                    <div class="flex flex-col md:flex-row items-center gap-3 mb-2">
+                        <h1 class="font-headline-lg text-headline-lg text-on-surface"
+                            th:text="${profileUser.displayName}">User Name</h1>
+                        <span class="font-label-md text-label-md px-3 py-1 border-[3px] border-on-surface uppercase"
+                            th:classappend="${profileUser.role.name() == 'ALUMNI' ? 'bg-secondary text-on-secondary' : 'bg-primary text-on-primary'}"
+                            th:text="${profileUser.role}">ROLE</span>
+                    </div>
+                    <p class="font-body-md text-on-surface-variant mb-4" th:text="${profile.headline}">Headline</p>
+
+                    <div
+                        class="flex flex-wrap justify-center md:justify-start items-center gap-4 text-on-surface-variant font-body-sm">
+                        <span th:if="${profile.location}"
+                            class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric">
+                            <span class="material-symbols-outlined text-sm">location_on</span>
+                            <span th:text="${profile.location}">Location</span>
+                        </span>
+                        <span th:if="${profile.department}"
+                            class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric">
+                            <span class="material-symbols-outlined text-sm">school</span>
+                            <span th:text="${profile.department + ' · Batch ' + profile.batch}">CSE · Batch 2024</span>
+                        </span>
+                        <span th:if="${profile.hostel}"
+                            class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric">
+                            <span class="material-symbols-outlined text-sm">apartment</span>
+                            <span th:text="${profile.hostel}">South Hostel</span>
+                        </span>
+                        <span
+                            class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric">
+                            <span class="material-symbols-outlined text-sm">visibility</span>
+                            <span th:text="${profileViews + ' Profile Views'}">0 Profile Views</span>
+                        </span>
+                        <span
+                            class="flex items-center gap-1 bg-surface-container-low border-[3px] border-on-surface px-3 py-1 shadow-isometric cursor-pointer hover-isometric"
+                            onclick="window.location.href='/network'">
+                            <span class="material-symbols-outlined text-sm">group</span>
+                            <span th:text="${connectionCount + ' Connections'}">500+ Connections</span>
+                        </span>
+                        <a th:if="${profile.linkedinUrl}" th:href="${profile.linkedinUrl}" target="_blank"
+                            class="flex items-center gap-1 bg-primary text-on-primary border-[3px] border-on-surface px-3 py-1 shadow-isometric hover-isometric transition-transform">
+                            <span class="material-symbols-outlined text-sm">link</span>
+                            LinkedIn
+                        </a>
+                        <a th:if="${profile.githubUrl}" th:href="${profile.githubUrl}" target="_blank"
+                            class="flex items-center gap-1 bg-secondary text-on-secondary border-[3px] border-on-surface px-3 py-1 shadow-isometric hover-isometric transition-transform">
+                            <span class="material-symbols-outlined text-sm">code</span>
+                            GitHub
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-4 mt-6 md:mt-0 flex-wrap" th:if="${!isOwnProfile}">
+                    <!-- Connection Buttons -->
+                    <form th:if="${connectionStatus == null}"
+                        th:action="@{/connections/request/{id}(id=${profileUser.id})}" method="post">
+                        <button type="submit"
+                            class="bg-tertiary text-on-tertiary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">person_add</span> Connect
+                        </button>
+                    </form>
+                    <div th:if="${connectionStatus == 'PENDING_SENT'}">
+                        <button disabled
+                            class="bg-surface-variant text-on-surface-variant font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 flex items-center gap-2 cursor-not-allowed">
+                            <span class="material-symbols-outlined text-lg">schedule</span> Pending
+                        </button>
+                    </div>
+                    <div th:if="${connectionStatus == 'PENDING_RECEIVED'}" class="flex gap-2">
+                        <form th:action="@{/connections/accept/{id}(id=${connectionId})}" method="post">
+                            <input type="hidden" name="redirectUrl" th:value="'/profile/' + ${profileUser.id}">
+                            <button type="submit"
+                                class="bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface px-4 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined text-lg">check</span> Accept
+                            </button>
+                        </form>
+                        <form th:action="@{/connections/reject/{id}(id=${connectionId})}" method="post">
+                            <input type="hidden" name="redirectUrl" th:value="'/profile/' + ${profileUser.id}">
+                            <button type="submit"
+                                class="bg-surface text-on-surface font-headline-sm uppercase border-[3px] border-on-surface px-4 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined text-lg">close</span>
+                            </button>
+                        </form>
+                    </div>
+                    <div th:if="${connectionStatus == 'CONNECTED'}">
+                        <form th:action="@{/connections/remove/{id}(id=${connectionId})}" method="post">
+                            <input type="hidden" name="redirectUrl" th:value="'/profile/' + ${profileUser.id}">
+                            <button type="submit"
+                                class="bg-secondary text-on-secondary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined text-lg">how_to_reg</span> Connected
+                            </button>
+                        </form>
+                    </div>
+
+                    <form
+                        th:if="${profileUser.role.name() == 'ALUMNI' && profile.officeHours != null && !profile.officeHours.isBlank()}"
+                        th:action="@{/messages/start/{id}(id=${profileUser.id})}" method="post">
+                        <!-- Pass a pre-filled initial message parameter (handled in chat controller if needed, or just normal chat start with a visual hint) -->
+                        <button type="submit"
+                            class="bg-secondary text-on-secondary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover-isometric transition-all flex items-center gap-2"
+                            th:title="'Available: ' + ${profile.officeHours}">
+                            <span class="material-symbols-outlined text-lg">event_available</span>
+                            Book Office Hours
+                        </button>
+                    </form>
+
+                    <form th:action="@{/messages/start/{id}(id=${profileUser.id})}" method="post">
+                        <button type="submit"
+                            class="bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">chat</span>
+                            Start Chat
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Edit Profile Button -->
+                <div class="flex gap-4 mt-6 md:mt-0" th:if="${isOwnProfile}">
+                    <a th:href="@{/profile/edit}"
+                        class="bg-surface-variant text-on-surface font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">edit</span>
+                        Edit Profile
                     </a>
                 </div>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="flex gap-4 mt-6 md:mt-0" th:if="${!isOwnProfile}">
-                <form th:if="${profileUser.role.name() == 'ALUMNI' && profile.officeHours != null && !profile.officeHours.isBlank()}" th:action="@{/messages/start/{id}(id=${profileUser.id})}" method="post">
-                    <!-- Pass a pre-filled initial message parameter (handled in chat controller if needed, or just normal chat start with a visual hint) -->
-                    <button type="submit" class="bg-secondary text-on-secondary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover-isometric transition-all flex items-center gap-2" th:title="'Available: ' + ${profile.officeHours}">
-                        <span class="material-symbols-outlined text-lg">event_available</span>
-                        Book Office Hours
-                    </button>
-                </form>
-
-                <form th:action="@{/messages/start/{id}(id=${profileUser.id})}" method="post">
-                    <button type="submit" class="bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">chat</span>
-                        Start Chat
-                    </button>
-                </form>
-            </div>
-
-            <!-- Edit Profile Button -->
-            <div class="flex gap-4 mt-6 md:mt-0" th:if="${isOwnProfile}">
-                <a href="/login" class="bg-surface-variant text-on-surface font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-isometric hover-isometric transition-all flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg">edit</span>
-                    Edit Profile
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-4 md:grid-cols-12 gap-gutter">
-        
-        <!-- ═══ Office Hours Brick ═══ -->
-        <div th:if="${profileUser.role.name() == 'ALUMNI'}" class="col-span-4 md:col-span-12 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
-            <div class="h-10 bg-secondary border-b-[3px] border-on-surface flex items-center px-4">
-                <span class="font-label-md text-label-md text-on-secondary uppercase">Office Hours (Mentorship)</span>
-            </div>
-            <div class="p-6">
-                <!-- If own profile, allow editing -->
-                <form th:if="${isOwnProfile}" hx-post="/profile/office-hours" hx-swap="none" class="flex flex-col md:flex-row gap-4" onsubmit="alert('Office hours saved successfully!')">
-                    <input type="text" name="officeHours" placeholder="e.g. Saturdays 10 AM - 12 PM" 
-                           th:value="${profile.officeHours}"
-                           class="flex-1 bg-background border-[3px] border-on-surface p-3 font-body-md shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,1)] focus:outline-none focus:border-primary">
-                    <button type="submit" class="bg-primary text-on-primary border-[3px] border-on-surface px-6 py-2 font-headline-sm uppercase shadow-isometric hover-isometric transition-transform">Save</button>
-                </form>
-                
-                <!-- If other profile, just display -->
-                <p th:if="${!isOwnProfile}" class="font-body-md text-on-surface leading-relaxed">
-                    <span th:if="${profile.officeHours != null && !profile.officeHours.isBlank()}" th:text="${profile.officeHours}" class="font-bold text-lg">Saturdays 10 AM - 12 PM</span>
-                    <span th:if="${profile.officeHours == null || profile.officeHours.isBlank()}" class="text-on-surface-variant italic">No office hours set.</span>
-                </p>
-            </div>
         </div>
 
-        <!-- ═══ Bio Brick ═══ -->
-        <div th:if="${profile.bio}" class="col-span-4 md:col-span-12 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
-            <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
-                <span class="font-label-md text-label-md text-on-surface uppercase">About</span>
-            </div>
-            <div class="p-6">
-                <p class="font-body-md text-on-surface leading-relaxed" th:text="${profile.bio}">Bio text</p>
-            </div>
-        </div>
+        <div class="grid grid-cols-4 md:grid-cols-12 gap-gutter">
 
-        <!-- ═══ Experience Timeline Brick ═══ -->
-        <div class="col-span-4 md:col-span-6 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
-            <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
-                <span class="font-label-md text-label-md text-on-surface uppercase">Experience</span>
+            <!-- ═══ Office Hours Brick ═══ -->
+            <div th:if="${profileUser.role.name() == 'ALUMNI'}"
+                class="col-span-4 md:col-span-12 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+                <div class="h-10 bg-secondary border-b-[3px] border-on-surface flex items-center px-4">
+                    <span class="font-label-md text-label-md text-on-secondary uppercase">Office Hours
+                        (Mentorship)</span>
+                </div>
+                <div class="p-6">
+                    <!-- If own profile, allow editing -->
+                    <form th:if="${isOwnProfile}" hx-post="/profile/office-hours" hx-swap="none"
+                        class="flex flex-col md:flex-row gap-4" onsubmit="alert('Office hours saved successfully!')">
+                        <input type="text" name="officeHours" placeholder="e.g. Saturdays 10 AM - 12 PM"
+                            th:value="${profile.officeHours}"
+                            class="flex-1 bg-background border-[3px] border-on-surface p-3 font-body-md shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,1)] focus:outline-none focus:border-primary">
+                        <button type="submit"
+                            class="bg-primary text-on-primary border-[3px] border-on-surface px-6 py-2 font-headline-sm uppercase shadow-isometric hover-isometric transition-transform">Save</button>
+                    </form>
+
+                    <!-- If other profile, just display -->
+                    <p th:if="${!isOwnProfile}" class="font-body-md text-on-surface leading-relaxed">
+                        <span th:if="${profile.officeHours != null && !profile.officeHours.isBlank()}"
+                            th:text="${profile.officeHours}" class="font-bold text-lg">Saturdays 10 AM - 12 PM</span>
+                        <span th:if="${profile.officeHours == null || profile.officeHours.isBlank()}"
+                            class="text-on-surface-variant italic">No office hours set.</span>
+                    </p>
+                </div>
             </div>
-            
-            <div class="p-6 flex-1 bg-background">
-                <div th:if="${profile.experiences != null && !profile.experiences.isEmpty()}" class="space-y-6">
-                    
-                    <div th:each="exp : ${profile.experiences}" class="relative pl-6 border-l-[3px] border-primary">
-                        <!-- Square Node -->
-                        <div class="absolute -left-[10px] top-0 w-4 h-4 border-[3px] border-on-surface bg-surface"></div>
-                        
-                        <div class="bg-surface border-[3px] border-on-surface shadow-isometric p-4 ml-4">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-headline-sm text-on-surface" th:text="${exp.title}">Title</h3>
-                                <span th:if="${exp.current}" class="font-label-md text-[10px] uppercase bg-secondary text-on-secondary px-2 py-1 border-[3px] border-on-surface">Current</span>
+
+            <!-- ═══ Bio Brick ═══ -->
+            <div th:if="${profile.bio}"
+                class="col-span-4 md:col-span-12 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+                <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
+                    <span class="font-label-md text-label-md text-on-surface uppercase">About</span>
+                </div>
+                <div class="p-6">
+                    <p class="font-body-md text-on-surface leading-relaxed" th:text="${profile.bio}">Bio text</p>
+                </div>
+            </div>
+
+            <!-- ═══ Skills Brick ═══ -->
+            <div th:if="${profile.skills != null && !profile.skills.isBlank()}"
+                class="col-span-4 md:col-span-12 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+                <div class="h-10 bg-tertiary border-b-[3px] border-on-surface flex items-center px-4">
+                    <span class="font-label-md text-label-md text-on-tertiary uppercase">Skills</span>
+                </div>
+                <div class="p-6 flex flex-wrap gap-3">
+                    <div th:each="skill : ${profile.skillList}"
+                        class="flex items-center gap-2 border-[3px] border-on-surface px-3 py-2 bg-surface-container-low shadow-[2px_2px_0px_0px_rgba(26,28,28,1)]">
+                        <span class="font-label-md uppercase text-on-surface" th:text="${skill}">Java</span>
+                        <button th:if="${!isOwnProfile}"
+                            class="text-tertiary hover:text-tertiary-container font-bold text-sm bg-surface border-[2px] border-on-surface px-2 shadow-[1px_1px_0px_0px_rgba(26,28,28,1)] hover-isometric"
+                            th:hx-post="@{/profile/{id}/endorse(id=${profileUser.id}, skill=${skill})}"
+                            hx-swap="outerHTML">+1</button>
+                        <span class="font-label-md text-on-surface-variant ml-1"
+                            th:text="${endorsementCounts[skill] ?: 0}">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ Experience Timeline Brick ═══ -->
+            <div
+                class="col-span-4 md:col-span-6 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+                <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
+                    <span class="font-label-md text-label-md text-on-surface uppercase">Experience</span>
+                </div>
+
+                <div class="p-6 flex-1 bg-background">
+                    <div th:if="${profile.experiences != null && !profile.experiences.isEmpty()}" class="space-y-6">
+
+                        <div th:each="exp : ${profile.experiences}" class="relative pl-6 border-l-[3px] border-primary">
+                            <!-- Square Node -->
+                            <div class="absolute -left-[10px] top-0 w-4 h-4 border-[3px] border-on-surface bg-surface">
                             </div>
-                            <p class="font-body-md font-bold text-primary mb-1" th:text="${exp.company}">Company</p>
-                            <p class="font-label-md text-on-surface-variant mb-3 border-b-[3px] border-on-surface border-dotted pb-2">
-                                <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Jan 2020</span>
-                                <span> — </span>
-                                <span th:text="${exp.current ? 'Present' : #temporals.format(exp.endDate, 'MMM yyyy')}">Present</span>
-                            </p>
-                            <p th:if="${exp.description}" class="font-body-sm text-on-surface-variant" th:text="${exp.description}">Description</p>
+
+                            <div class="bg-surface border-[3px] border-on-surface shadow-isometric p-4 ml-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-headline-sm text-on-surface" th:text="${exp.title}">Title</h3>
+                                    <span th:if="${exp.current}"
+                                        class="font-label-md text-[10px] uppercase bg-secondary text-on-secondary px-2 py-1 border-[3px] border-on-surface">Current</span>
+                                </div>
+                                <p class="font-body-md font-bold text-primary mb-1" th:text="${exp.company}">Company</p>
+                                <p
+                                    class="font-label-md text-on-surface-variant mb-3 border-b-[3px] border-on-surface border-dotted pb-2">
+                                    <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Jan 2020</span>
+                                    <span> — </span>
+                                    <span
+                                        th:text="${exp.current ? 'Present' : #temporals.format(exp.endDate, 'MMM yyyy')}">Present</span>
+                                </p>
+                                <p th:if="${exp.description}" class="font-body-sm text-on-surface-variant"
+                                    th:text="${exp.description}">Description</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div th:if="${profile.experiences == null || profile.experiences.isEmpty()}" class="h-full flex flex-col items-center justify-center p-8 text-center border-[3px] border-on-surface border-dashed">
-                    <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">work_history</span>
-                    <span class="font-body-md text-on-surface-variant">No experience structural blocks added yet.</span>
+                    <div th:if="${profile.experiences == null || profile.experiences.isEmpty()}"
+                        class="h-full flex flex-col items-center justify-center p-8 text-center border-[3px] border-on-surface border-dashed">
+                        <span
+                            class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">work_history</span>
+                        <span class="font-body-md text-on-surface-variant">No experience structural blocks added
+                            yet.</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- ═══ Projects Brick ═══ -->
+            <div
+                class="col-span-4 md:col-span-6 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+                <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
+                    <span class="font-label-md text-label-md text-on-surface uppercase">Projects</span>
+                </div>
+
+                <div class="p-6 flex-1 bg-background">
+                    <div th:if="${profile.projects != null && !profile.projects.isEmpty()}" class="space-y-6">
+
+                        <div th:each="proj : ${profile.projects}"
+                            class="bg-surface border-[3px] border-on-surface shadow-isometric p-5">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-headline-sm text-on-surface" th:text="${proj.name}">Project Name</h3>
+                                <a th:if="${proj.repoUrl}" th:href="${proj.repoUrl}" target="_blank"
+                                    class="bg-surface-variant border-[3px] border-on-surface p-1 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover:bg-primary hover:text-on-primary transition-colors">
+                                    <span class="material-symbols-outlined text-sm">code</span>
+                                </a>
+                            </div>
+                            <p class="font-body-md text-on-surface-variant mb-4" th:text="${proj.description}">
+                                Description</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span th:each="tech : ${proj.techList}"
+                                    class="font-label-md text-[10px] uppercase border-[3px] border-on-surface bg-surface-container-low px-2 py-1"
+                                    th:text="${tech}">Java</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div th:if="${profile.projects == null || profile.projects.isEmpty()}"
+                        class="h-full flex flex-col items-center justify-center p-8 text-center border-[3px] border-on-surface border-dashed">
+                        <span
+                            class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">construction</span>
+                        <span class="font-body-md text-on-surface-variant">No project builds added yet.</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <!-- ═══ Projects Brick ═══ -->
-        <div class="col-span-4 md:col-span-6 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+        <!-- ═══ Opportunities Brick ═══ -->
+        <div id="opportunities" th:if="${opportunities != null && !opportunities.isEmpty()}"
+            class="mt-8 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
             <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
-                <span class="font-label-md text-label-md text-on-surface uppercase">Projects</span>
+                <span class="font-label-md text-label-md text-on-surface uppercase">Opportunities Posted</span>
             </div>
-            
+
             <div class="p-6 flex-1 bg-background">
-                <div th:if="${profile.projects != null && !profile.projects.isEmpty()}" class="space-y-6">
-                    
-                    <div th:each="proj : ${profile.projects}" class="bg-surface border-[3px] border-on-surface shadow-isometric p-5">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-headline-sm text-on-surface" th:text="${proj.name}">Project Name</h3>
-                            <a th:if="${proj.repoUrl}" th:href="${proj.repoUrl}" target="_blank"
-                               class="bg-surface-variant border-[3px] border-on-surface p-1 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover:bg-primary hover:text-on-primary transition-colors">
-                                <span class="material-symbols-outlined text-sm">code</span>
-                            </a>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div th:each="opp : ${opportunities}" th:id="'profile-opp-' + ${opp.id}"
+                        class="border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform">
+                        <div class="h-10 border-b-[3px] border-on-surface flex items-center justify-between px-4"
+                            th:classappend="${opp.opportunityType == 'JOB' ? 'bg-secondary text-on-secondary' : (opp.opportunityType == 'INTERNSHIP' ? 'bg-tertiary text-on-tertiary' : (opp.opportunityType == 'THESIS_MATCHMAKING' ? 'bg-error-container text-on-error-container' : 'bg-primary-container text-on-primary-container'))}">
+                            <span class="font-label-md text-label-md uppercase"
+                                th:text="${opp.opportunityType == 'THESIS_MATCHMAKING' ? 'THESIS / CAPSTONE' : opp.opportunityType}">JOB</span>
+                            <span class="material-symbols-outlined"
+                                th:text="${opp.opportunityType == 'JOB' ? 'work' : (opp.opportunityType == 'INTERNSHIP' ? 'school' : (opp.opportunityType == 'THESIS_MATCHMAKING' ? 'science' : 'group'))}">work</span>
                         </div>
-                        <p class="font-body-md text-on-surface-variant mb-4" th:text="${proj.description}">Description</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span th:each="tech : ${proj.techList}"
-                                  class="font-label-md text-[10px] uppercase border-[3px] border-on-surface bg-surface-container-low px-2 py-1"
-                                  th:text="${tech}">Java</span>
-                        </div>
-                    </div>
-                    
-                </div>
 
-                <div th:if="${profile.projects == null || profile.projects.isEmpty()}" class="h-full flex flex-col items-center justify-center p-8 text-center border-[3px] border-on-surface border-dashed">
-                    <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">construction</span>
-                    <span class="font-body-md text-on-surface-variant">No project builds added yet.</span>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ═══ Opportunities Brick ═══ -->
-    <div id="opportunities" th:if="${opportunities != null && !opportunities.isEmpty()}" class="mt-8 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
-        <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
-            <span class="font-label-md text-label-md text-on-surface uppercase">Opportunities Posted</span>
-        </div>
-        
-        <div class="p-6 flex-1 bg-background">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div th:each="opp : ${opportunities}" class="border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform">
-                    <div class="h-10 border-b-[3px] border-on-surface flex items-center justify-between px-4"
-                         th:classappend="${opp.type.name() == 'JOB' ? 'bg-secondary text-on-secondary' : (opp.type.name() == 'INTERNSHIP' ? 'bg-tertiary text-on-tertiary' : (opp.type.name() == 'THESIS_MATCHMAKING' ? 'bg-error-container text-on-error-container' : 'bg-primary-container text-on-primary-container'))}">
-                        <span class="font-label-md text-label-md uppercase" th:text="${opp.type.name() == 'THESIS_MATCHMAKING' ? 'THESIS / CAPSTONE' : opp.type}">JOB</span>
-                        <span class="material-symbols-outlined" th:text="${opp.type.name() == 'JOB' ? 'work' : (opp.type.name() == 'INTERNSHIP' ? 'school' : (opp.type.name() == 'THESIS_MATCHMAKING' ? 'science' : 'group'))}">work</span>
-                    </div>
-                    
-                    <div class="p-4 flex flex-col h-full justify-between">
-                        <div>
-                            <h4 class="font-headline-sm text-on-surface mb-2" th:text="${opp.title}">Title</h4>
-                            <p class="font-body-md text-on-surface-variant mb-4 line-clamp-3" th:text="${opp.description}">Description...</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-2 border-t-[3px] border-dotted border-on-surface pt-4">
-                            <span class="text-xs font-bold text-on-surface-variant" th:text="${opp.timeAgo}">2h ago</span>
-                            <form th:if="${currentUser != null && currentUser.id != opp.postedBy.id}" th:action="@{/messages/start/{id}(id=${opp.postedBy.id})}" method="post">
-                                <button type="submit" class="bg-primary text-on-primary font-headline-sm text-sm uppercase border-[3px] border-on-surface px-4 py-1 shadow-isometric hover-isometric transition-all flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-sm">chat</span>
-                                    Apply
-                                </button>
-                            </form>
-                            <button th:if="${currentUser != null && currentUser.id == opp.postedBy.id}"
-                                    th:hx-delete="@{/opportunities/{id}(id=${opp.id})}"
+                        <div class="p-4 flex flex-col h-full justify-between">
+                            <div>
+                                <h4 class="font-headline-sm text-on-surface mb-2" th:text="${opp.opportunityTitle}">Title</h4>
+                                <p class="font-body-md text-on-surface-variant mb-4 line-clamp-3"
+                                    th:text="${opp.content}">Description...</p>
+                            </div>
+                            <div
+                                class="flex justify-between items-center mt-2 border-t-[3px] border-dotted border-on-surface pt-4">
+                                <span class="text-xs font-bold text-on-surface-variant" th:text="${opp.timeAgo}">2h
+                                    ago</span>
+                                <form th:if="${currentUser != null && currentUser.id != opp.author.id}"
+                                    th:action="@{/messages/start/{id}(id=${opp.author.id})}" method="post">
+                                    <button type="submit"
+                                        class="bg-primary text-on-primary font-headline-sm text-sm uppercase border-[3px] border-on-surface px-4 py-1 shadow-isometric hover-isometric transition-all flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">chat</span>
+                                        Apply
+                                    </button>
+                                </form>
+                                <button th:if="${currentUser != null && currentUser.id == opp.author.id}"
+                                    th:hx-delete="@{/posts/{id}(id=${opp.id})}"
                                     hx-confirm="Are you sure you want to delete this opportunity?"
-                                    hx-target="closest .border-\[3px\]"
-                                    hx-swap="outerHTML"
+                                    hx-target="closest [id^='profile-opp-']" hx-swap="outerHTML"
                                     class="bg-error text-on-error font-headline-sm text-sm uppercase border-[3px] border-on-surface px-4 py-1 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover-isometric transition-all flex items-center gap-1 cursor-pointer">
-                                <span class="material-symbols-outlined text-sm">delete</span>
-                                Delete
-                            </button>
+                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-</div>
+    </div>
 </body>
+
 </html>

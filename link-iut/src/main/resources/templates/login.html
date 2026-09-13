@@ -1,85 +1,133 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In — LinkIUT</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800&family=Hanken+Grotesk:wght@400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: "class",
             theme: {
                 extend: {
                     fontFamily: { 
-                        'headline-lg': ['Inter', 'sans-serif'], 
-                        'headline-md': ['Inter', 'sans-serif'], 
-                        'headline-sm': ['Inter', 'sans-serif'],
-                        'body-md': ['Roboto', 'sans-serif'],
-                        'body-sm': ['Roboto', 'sans-serif'],
-                        'label-md': ['Inter', 'sans-serif']
+                        'headline-lg': ['Anybody', 'sans-serif'], 
+                        'headline-md': ['Anybody', 'sans-serif'], 
+                        'headline-sm': ['Anybody', 'sans-serif'],
+                        'body-md': ['Hanken Grotesk', 'sans-serif'],
+                        'body-sm': ['Hanken Grotesk', 'sans-serif'],
+                        'label-md': ['JetBrains Mono', 'monospace']
                     },
                     colors: {
-                        primary: '#FF5A5F',
-                        'on-primary': '#FFFFFF',
-                        'primary-container': '#FFD9DB',
-                        'on-primary-container': '#410002',
-                        secondary: '#00A699',
-                        'on-secondary': '#FFFFFF',
-                        tertiary: '#FC642D',
-                        'on-tertiary': '#FFFFFF',
-                        background: '#F7F7F9',
-                        'on-background': '#1A1C1C',
-                        surface: '#FFFFFF',
-                        'on-surface': '#1A1C1C',
-                        'surface-variant': '#E3E2E6',
-                        'on-surface-variant': '#444749',
-                        'surface-container-low': '#F3F3F6',
-                        'surface-container-highest': '#E3E2E6',
-                        error: '#BA1A1A',
-                        'on-error': '#FFFFFF',
-                        'error-container': '#FFDAD6',
-                        'on-error-container': '#410002',
+                        "primary": "var(--color-primary)",
+                        "on-primary": "var(--color-on-primary)",
+                        "primary-container": "var(--color-primary-container)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "secondary": "var(--color-secondary)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "tertiary": "var(--color-tertiary)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "background": "var(--color-background)",
+                        "on-background": "var(--color-on-background)",
+                        "surface": "var(--color-surface)",
+                        "on-surface": "var(--color-on-surface)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "error": "var(--color-error)",
+                        "on-error": "var(--color-on-error)",
+                        "error-container": "var(--color-error-container)",
+                        "on-error-container": "var(--color-on-error-container)",
                     },
                     spacing: { 'gutter': '24px' },
-                    boxShadow: { 'isometric': '4px 4px 0px 0px rgba(26,28,28,1)' }
+                    boxShadow: { 'isometric': '4px 4px 0px 0px var(--color-on-surface)' }
                 }
             }
         }
     </script>
     <style>
-        * { font-family: 'Roboto', sans-serif; }
-        h1, h2, h3, h4, h5, h6, .font-headline-lg, .font-headline-md, .font-headline-sm, .font-label-md {
-            font-family: 'Inter', sans-serif;
+        /* Attractive Sophisticated Palette */
+        :root {
+            --color-background: #F4F1EA;
+            --color-on-background: #2C3E50;
+            --color-surface: #FFFFFF;
+            --color-on-surface: #2C3E50;
+            --color-primary: #D35400;
+            --color-on-primary: #FFFFFF;
+            --color-primary-container: #E67E22;
+            --color-on-primary-container: #FFFFFF;
+            --color-secondary: #2C3E50;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #16A085;
+            --color-on-tertiary: #FFFFFF;
+            --color-surface-variant: #EAE6DF;
+            --color-on-surface-variant: #5A6D7C;
+            --color-surface-container-low: #F9F8F6;
+            --color-surface-container-highest: #D5D0C5;
+            --color-error: #C0392B;
+            --color-on-error: #FFFFFF;
+            --color-error-container: #F2D7D5;
+            --color-on-error-container: #641E16;
+        }
+        .dark {
+            --color-background: #000000;
+            --color-on-background: #FFFFFF;
+            --color-surface: #000000;
+            --color-on-surface: #FFFFFF;
+            --color-primary: #E67E22;
+            --color-on-primary: #000000;
+            --color-primary-container: #000000;
+            --color-on-primary-container: #E67E22;
+            --color-secondary: #000000;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #1ABC9C;
+            --color-on-tertiary: #000000;
+            --color-surface-variant: #000000;
+            --color-on-surface-variant: #A4B0BE;
+            --color-surface-container-low: #000000;
+            --color-surface-container-highest: #111111;
+            --color-error: #E74C3C;
+            --color-on-error: #000000;
+            --color-error-container: #000000;
+            --color-on-error-container: #E74C3C;
+        }
+
+        * { font-family: 'Hanken Grotesk', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline-lg, .font-headline-md, .font-headline-sm {
+            font-family: 'Anybody', sans-serif;
             font-weight: 800;
         }
-        body { background: #F7F7F9; color: #1A1C1C; }
+        .font-label-md {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        body { background: var(--color-background); color: var(--color-on-background); }
         .hover-isometric { transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out; }
-        .hover-isometric:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px rgba(26,28,28,1); cursor: pointer; }
+        .hover-isometric:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px var(--color-on-surface); cursor: pointer; }
         .hover-isometric:active { transform: translate(4px, 4px); box-shadow: none; }
         @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-fade-in-up { animation: fade-in-up 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 antialiased bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M20%2020.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0%2020h2v20H0V20zm4%200h2v20H4V20zm4%200h2v20H8V20zm4%200h2v20h-2V20zm4%200h2v20h-2V20zm4%204V20h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v2h20v2H20v-2z%22%20fill%3D%22%231a1c1c%22%20fill-opacity%3D%220.03%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] overflow-hidden">
-
-
-
+<body class="min-h-screen flex flex-col items-center justify-center py-10 px-4 antialiased overflow-y-auto bg-background text-on-background">
     <!-- Main Content Wrapper -->
-    <div id="main-content" class="w-full max-w-md">
+    <div id="main-content" class="w-full max-w-md mx-auto">
         <!-- Logo -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 border-[3px] border-on-surface bg-primary shadow-isometric mb-4">
-                <span class="material-symbols-outlined text-4xl text-on-primary font-bold">link</span>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 border-[3px] border-on-surface bg-primary shadow-isometric mb-3">
+                <span class="material-symbols-outlined text-3xl text-on-primary font-bold">link</span>
             </div>
-            <h1 class="text-4xl font-headline-lg text-on-surface tracking-tighter">LINKIUT</h1>
-            <p class="text-sm font-label-md text-on-surface-variant uppercase mt-2">Alumni-Student Networking Hub</p>
+            <h1 class="text-3xl font-headline-lg text-on-surface tracking-tighter">LINKIUT</h1>
+            <p class="text-xs font-label-md text-on-surface-variant uppercase mt-1">Alumni-Student Networking Hub</p>
         </div>
 
         <!-- Login Section -->
-        <div class="col-span-4 md:col-start-4 md:col-span-6 lg:col-start-5 lg:col-span-4 mt-8 md:mt-24 border-[3px] border-on-surface shadow-isometric bg-surface p-8 flex flex-col hover-isometric transition-transform animate-fade-in-up">
+        <div class="border-[3px] border-on-surface shadow-isometric bg-surface p-8 flex flex-col hover-isometric transition-transform animate-fade-in-up">
             
             <!-- Error -->
             <div th:if="${param.error}" class="mb-6 p-4 border-[3px] border-on-surface bg-error-container text-on-error-container font-body-md font-bold flex items-center gap-2">
@@ -103,15 +151,15 @@
                 <div>
                     <label class="block font-label-md text-on-surface uppercase mb-2" for="username">Email</label>
                     <input type="text" id="username" name="username" placeholder="alumni@iut.edu"
-                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" required>
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface focus:outline-none focus:border-primary" required>
                 </div>
                 <div>
                     <label class="block font-label-md text-on-surface uppercase mb-2" for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="••••••••"
-                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" required>
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface focus:outline-none focus:border-primary" required>
                 </div>
                 <button type="submit" id="login-submit"
-                        class="w-full bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface py-3 shadow-isometric hover-isometric transition-all">
+                        class="w-full bg-primary text-on-primary font-headline-md uppercase border-[3px] border-on-surface py-3 shadow-isometric hover-isometric transition-all">
                     Sign In
                 </button>
             </form>
@@ -120,13 +168,13 @@
             <div class="mt-8 pt-6 border-t-[3px] border-on-surface border-dotted">
                 <p class="font-label-md text-on-surface-variant text-center mb-4 uppercase">Demo Accounts</p>
                 <div class="grid grid-cols-2 gap-4">
-                    <button onclick="document.getElementById('username').value='alumni@iut.edu'; document.getElementById('password').value='password';"
-                            class="font-label-md uppercase bg-secondary text-on-secondary border-[3px] border-on-surface py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover-isometric transition-all text-center flex justify-center items-center gap-1">
+                    <button onclick="document.getElementById('username').value='alumni@iut.edu'; document.getElementById('password').value='123456';"
+                            class="font-label-md uppercase bg-secondary text-on-secondary border-[3px] border-on-surface py-2 shadow-isometric hover-isometric transition-all text-center flex justify-center items-center gap-1">
                         <span class="material-symbols-outlined text-sm">school</span>
                         ALUMNI
                     </button>
-                    <button onclick="document.getElementById('username').value='student@iut.edu'; document.getElementById('password').value='password';"
-                            class="font-label-md uppercase bg-tertiary text-on-tertiary border-[3px] border-on-surface py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover-isometric transition-all text-center flex justify-center items-center gap-1">
+                    <button onclick="document.getElementById('username').value='student@iut.edu'; document.getElementById('password').value='123456';"
+                            class="font-label-md uppercase bg-tertiary text-on-tertiary border-[3px] border-on-surface py-2 shadow-isometric hover-isometric transition-all text-center flex justify-center items-center gap-1">
                         <span class="material-symbols-outlined text-sm">menu_book</span>
                         STUDENT
                     </button>
@@ -141,7 +189,7 @@
             </div>
         </div>
 
-        <p class="text-center font-label-md text-on-surface-variant uppercase mt-8 text-xs">IUT Dhaka — Islamic University of Technology</p>
+        <p class="mt-8 text-center font-label-md text-on-surface-variant uppercase text-xs">IUT Dhaka — Islamic University of Technology</p>
     </div>
 
 

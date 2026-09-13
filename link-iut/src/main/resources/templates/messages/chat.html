@@ -1,196 +1,433 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/main}">
+
 <head>
     <title>Messages</title>
 </head>
+
 <body>
-<div layout:fragment="content">
+    <div layout:fragment="content">
 
-    <div class="flex h-[calc(100vh-5rem)] lg:h-[calc(100vh-8rem)] gap-gutter animate-fade-in">
+        <div class="flex h-[calc(100vh-5rem)] lg:h-[calc(100vh-8rem)] gap-gutter animate-fade-in">
 
-        <!-- ═══ Session List (Left Panel) ═══ -->
-        <div class="hidden md:flex flex-col w-80 bg-surface border-[3px] border-on-surface shadow-isometric">
-            <div class="h-14 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
-                <h2 class="font-headline-sm text-on-surface uppercase">Conversations</h2>
-            </div>
-            <div class="flex-1 overflow-y-auto p-4 space-y-2">
-                <th:block th:if="${chatSessions != null && !chatSessions.isEmpty()}">
-                    <a th:each="cs : ${chatSessions}"
-                       th:href="@{/messages/{id}(id=${cs.id})}"
-                       class="flex items-center gap-3 p-3 border-[3px] border-on-surface hover-isometric transition-transform bg-surface"
-                       th:classappend="${activeChat != null && activeChat.id == cs.id ? 'shadow-[inset_4px_4px_0px_0px_rgba(26,28,28,1)] bg-surface-container-high' : 'shadow-isometric'}">
-                        
-                        <div class="relative">
-                            <div class="w-10 h-10 border-[3px] border-on-surface bg-primary text-on-primary flex items-center justify-center font-bold">
-                                <span th:text="${cs.getOtherParticipant(currentUser.id).initials}">FR</span>
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="font-body-md font-bold text-on-surface truncate" th:text="${cs.getOtherParticipant(currentUser.id).displayName}">User</p>
-                            <p class="font-label-md text-on-surface-variant truncate">Active</p>
-                        </div>
-                    </a>
-                </th:block>
-
-                <!-- Empty State -->
-                <div th:if="${chatSessions == null || chatSessions.isEmpty()}" class="flex flex-col items-center justify-center h-full text-center p-4 border-[3px] border-on-surface border-dashed">
-                    <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">forum</span>
-                    <p class="font-body-md text-on-surface-variant">No conversations yet</p>
+            <!-- ═══ Session List (Left Panel) ═══ -->
+            <div id="sidebar" class="hidden md:flex flex-col w-80 shrink-0 bg-surface border-[3px] border-on-surface shadow-isometric absolute md:relative z-10 h-full">
+                <div class="h-14 bg-surface-variant border-b-[3px] border-on-surface flex items-center justify-between px-4">
+                    <h2 class="font-headline-sm text-on-surface uppercase">Conversations</h2>
+                    <button type="button" onclick="document.getElementById('createGroupModal').classList.remove('hidden')" class="bg-primary text-on-primary border-[3px] border-on-surface px-2 py-1 shadow-isometric hover-isometric transition-transform text-xs font-bold uppercase shrink-0">
+                        + Group
+                    </button>
                 </div>
-            </div>
-        </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-2">
+                    <th:block th:if="${chatSessions != null && !chatSessions.isEmpty()}">
+                        <a th:each="cs : ${chatSessions}" th:href="@{/messages/{id}(id=${cs.id})}"
+                            class="flex items-center gap-3 p-3 border-[3px] border-on-surface hover-isometric transition-transform bg-surface"
+                            th:classappend="${activeChat != null && activeChat.id == cs.id ? 'shadow-[inset_4px_4px_0px_0px_rgba(26,28,28,1)] bg-surface-container-high' : 'shadow-isometric'}">
 
-        <!-- ═══ Chat Area (Right Panel) ═══ -->
-        <div class="flex-1 flex flex-col bg-surface border-[3px] border-on-surface shadow-isometric">
-
-            <!-- ── Active Chat View ── -->
-            <th:block th:if="${activeChat != null}">
-                <!-- Chat Header -->
-                <div class="h-16 bg-surface-container-low border-b-[3px] border-on-surface flex items-center justify-between px-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 border-[3px] border-on-surface bg-primary text-on-primary flex items-center justify-center font-bold">
-                            <span th:text="${activeChat.getOtherParticipant(currentUser.id).initials}">FR</span>
-                        </div>
-                        <div>
-                            <p class="font-headline-sm text-on-surface" th:text="${activeChat.getOtherParticipant(currentUser.id).displayName}">User</p>
-                            <span class="font-label-md bg-surface-variant border-[3px] border-on-surface px-2 py-0.5"
-                                  th:text="${activeChat.getOtherParticipant(currentUser.id).role}">ROLE</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Messages Area -->
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-background">
-                    <!-- Render existing messages -->
-                    <th:block th:each="msg : ${chatMessages}">
-                        <div class="flex" th:classappend="${msg.sender.id == currentUser.id ? 'justify-end' : 'justify-start'}">
-                            <div class="flex flex-col max-w-[75%]" th:classappend="${msg.sender.id == currentUser.id ? 'items-end' : 'items-start'}">
-                                <div class="p-4 border-[3px] border-on-surface shadow-isometric"
-                                     th:classappend="${msg.sender.id == currentUser.id ? 'bg-primary-container text-on-primary-container' : 'bg-surface text-on-surface'}">
-                                    <p class="font-body-md" th:text="${msg.content}">Message text</p>
+                            <div class="relative">
+                                <div th:if="${!cs.isGroup}" class="w-10 h-10 border-[3px] border-on-surface bg-primary text-on-primary flex items-center justify-center font-bold overflow-hidden">
+                                    <img th:if="${cs.getOtherParticipant(currentUser.id).avatarUrl != null}" th:src="${cs.getOtherParticipant(currentUser.id).avatarUrl}" class="w-full h-full object-cover">
+                                    <span th:if="${cs.getOtherParticipant(currentUser.id).avatarUrl == null}" th:text="${cs.getOtherParticipant(currentUser.id).initials}">FR</span>
                                 </div>
-                                <span class="font-label-md text-[10px] text-on-surface-variant mt-2" th:text="${msg.formattedTime}">12:00</span>
+                                <div th:if="${cs.isGroup}" class="w-10 h-10 border-[3px] border-on-surface bg-tertiary text-on-tertiary flex items-center justify-center font-bold overflow-hidden">
+                                    <img th:if="${cs.groupCoverPhoto != null}" th:src="${cs.groupCoverPhoto}" class="w-full h-full object-cover">
+                                    <span th:if="${cs.groupCoverPhoto == null}" class="material-symbols-outlined">group</span>
+                                </div>
                             </div>
-                        </div>
+                            <div class="flex-1 min-w-0">
+                                <p th:if="${!cs.isGroup}" class="font-body-md font-bold text-on-surface truncate"
+                                    th:text="${cs.getOtherParticipant(currentUser.id).displayName}">User</p>
+                                <p th:if="${cs.isGroup}" class="font-body-md font-bold text-on-surface truncate"
+                                    th:text="${cs.groupName}">Group</p>
+                                <p class="font-label-md text-on-surface-variant truncate" th:text="${cs.isGroup ? cs.participants.size() + ' members' : 'Active'}">Active</p>
+                            </div>
+                        </a>
                     </th:block>
 
-                    <!-- HTMX WebSocket trigger for new messages -->
-                    <div id="new-messages-area"
-                         th:hx-get="@{/messages/{id}/poll(id=${activeChat.id}, lastId=${lastMessageId})}"
-                         hx-trigger="newMessage from:body"
-                         hx-swap="outerHTML">
+                    <!-- Empty State -->
+                    <div th:if="${chatSessions == null || chatSessions.isEmpty()}"
+                        class="flex flex-col items-center justify-center h-full text-center p-4 border-[3px] border-on-surface border-dashed">
+                        <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">forum</span>
+                        <p class="font-body-md text-on-surface-variant">No conversations yet</p>
                     </div>
-                </div>
-
-                <!-- Message Input -->
-                <div class="p-4 border-t-[3px] border-on-surface bg-surface">
-                    <form class="flex gap-4"
-                          th:action="@{/messages/{id}/send(id=${activeChat.id})}"
-                          th:hx-post="@{/messages/{id}/send(id=${activeChat.id})}"
-                          hx-target="#chat-messages"
-                          hx-swap="none"
-                          hx-on::after-request="this.reset(); document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight">
-                        <input type="text" name="content" placeholder="Type a message..."
-                               class="flex-1 border-[3px] border-on-surface bg-surface-container-low p-3 font-body-md shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" required autocomplete="off" id="msg-input">
-                        <button type="submit" class="bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-2 shadow-isometric hover-isometric transition-all" id="msg-send">
-                            SEND
-                        </button>
-                    </form>
-                </div>
-
-            </th:block>
-
-            <!-- ── No Session Selected ── -->
-            <th:block th:if="${activeChat == null}">
-                <div class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-background">
-                    <div class="w-20 h-20 border-[3px] border-on-surface bg-surface-variant flex items-center justify-center mb-6 shadow-isometric">
-                        <span class="material-symbols-outlined text-4xl text-on-surface-variant">forum</span>
-                    </div>
-                    <h3 class="font-headline-lg text-on-surface mb-2">Select a Chat</h3>
-                    <p class="font-body-md text-on-surface-variant">Choose a chat from the sidebar to start communicating.</p>
-                </div>
-            </th:block>
-        </div>
-    </div>
-
-    <!-- ═══ HTMX Fragments (returned by controller) ═══ -->
-    <th:block th:if="${false}">
-        <!-- Fragment: message-bubble (for HTMX send response) -->
-        <th:block th:fragment="message-bubble" th:if="${msg != null}">
-            <div class="flex mt-4" th:classappend="${msg.sender.id == currentUser.id ? 'justify-end' : 'justify-start'}">
-                <div class="flex flex-col max-w-[75%]" th:classappend="${msg.sender.id == currentUser.id ? 'items-end' : 'items-start'}">
-                    <div class="p-4 border-[3px] border-on-surface shadow-isometric"
-                         th:classappend="${msg.sender.id == currentUser.id ? 'bg-primary-container text-on-primary-container' : 'bg-surface text-on-surface'}">
-                        <p class="font-body-md" th:text="${msg.content}">Message text</p>
-                    </div>
-                    <span class="font-label-md text-[10px] text-on-surface-variant mt-2" th:text="${msg.formattedTime}">12:00</span>
                 </div>
             </div>
-        </th:block>
 
-        <!-- Fragment: new-messages-loader (returns the messages PLUS a new loader div) -->
-        <th:block th:fragment="new-messages-loader" th:if="${activeChat != null}">
-            <th:block th:each="msg : ${chatMessages}">
-                <div class="flex mt-4" th:classappend="${msg.sender.id == currentUser.id ? 'justify-end' : 'justify-start'}">
-                    <div class="flex flex-col max-w-[75%]" th:classappend="${msg.sender.id == currentUser.id ? 'items-end' : 'items-start'}">
-                        <div class="p-4 border-[3px] border-on-surface shadow-isometric"
-                             th:classappend="${msg.sender.id == currentUser.id ? 'bg-primary-container text-on-primary-container' : 'bg-surface text-on-surface'}">
-                            <p class="font-body-md" th:text="${msg.content}">Message text</p>
+            <!-- ═══ Chat Area (Right Panel) ═══ -->
+            <div class="flex-1 flex flex-col bg-surface border-[3px] border-on-surface shadow-isometric">
+
+                <!-- ── Active Chat View ── -->
+                <th:block th:if="${activeChat != null}">
+                    <!-- Chat Header -->
+                    <div
+                        class="h-16 bg-surface-container-low border-b-[3px] border-on-surface flex items-center justify-between px-6">
+                        <div class="flex items-center gap-3">
+                            <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden border-[3px] border-on-surface p-1 shadow-isometric bg-surface hover-isometric">
+                                <span class="material-symbols-outlined">menu</span>
+                            </button>
+                            <th:block th:if="${!activeChat.isGroup}">
+                                <div class="w-10 h-10 border-[3px] border-on-surface bg-primary text-on-primary flex items-center justify-center font-bold overflow-hidden">
+                                    <img th:if="${activeChat.getOtherParticipant(currentUser.id).avatarUrl != null}" th:src="${activeChat.getOtherParticipant(currentUser.id).avatarUrl}" class="w-full h-full object-cover">
+                                    <span th:if="${activeChat.getOtherParticipant(currentUser.id).avatarUrl == null}" th:text="${activeChat.getOtherParticipant(currentUser.id).initials}">FR</span>
+                                </div>
+                                <div>
+                                    <p class="font-headline-sm text-on-surface"
+                                        th:text="${activeChat.getOtherParticipant(currentUser.id).displayName}">User</p>
+                                    <span
+                                        class="font-label-md bg-surface-variant border-[3px] border-on-surface px-2 py-0.5"
+                                        th:text="${activeChat.getOtherParticipant(currentUser.id).role}">ROLE</span>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${activeChat.isGroup}">
+                                <div class="w-10 h-10 border-[3px] border-on-surface bg-tertiary text-on-tertiary flex items-center justify-center font-bold overflow-hidden">
+                                    <img th:if="${activeChat.groupCoverPhoto != null}" th:src="${activeChat.groupCoverPhoto}" class="w-full h-full object-cover">
+                                    <span th:if="${activeChat.groupCoverPhoto == null}" class="material-symbols-outlined">group</span>
+                                </div>
+                                <div>
+                                    <p class="font-headline-sm text-on-surface"
+                                        th:text="${activeChat.groupName}">Group</p>
+                                    <span class="font-label-md text-on-surface-variant" th:text="${activeChat.participants.size() + ' members'}">3 members</span>
+                                </div>
+                            </th:block>
                         </div>
-                        <span class="font-label-md text-[10px] text-on-surface-variant mt-2" th:text="${msg.formattedTime}">12:00</span>
+                    </div>
+
+                    <!-- Messages Area -->
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-background">
+                        <!-- Render existing messages -->
+                        <th:block th:each="msg : ${chatMessages}">
+                            <div class="flex"
+                                th:classappend="${msg.sender.id == currentUser.id ? 'justify-end' : 'justify-start'}">
+                                <div class="flex flex-col max-w-[75%]"
+                                    th:classappend="${msg.sender.id == currentUser.id ? 'items-end' : 'items-start'}">
+                                    <span th:if="${activeChat.isGroup && msg.sender.id != currentUser.id}" class="text-[10px] font-bold text-on-surface mb-1" th:text="${msg.sender.displayName}">Name</span>
+                                    <div class="p-4 border-[3px] border-on-surface shadow-isometric flex flex-col gap-2"
+                                        th:classappend="${msg.sender.id == currentUser.id ? 'bg-primary-container text-on-primary-container' : 'bg-surface text-on-surface'}">
+                                        <img th:if="${msg.photoUrl != null}" th:src="${msg.photoUrl}" class="max-w-[200px] h-auto border-[3px] border-on-surface object-cover">
+                                        <video th:if="${msg.videoUrl != null}" th:src="${msg.videoUrl}" controls class="max-w-[200px] h-auto border-[3px] border-on-surface"></video>
+                                        <audio th:if="${msg.audioUrl != null}" th:src="${msg.audioUrl}" controls class="max-w-full border-[3px] border-on-surface h-10"></audio>
+                                        <p th:if="${msg.content != null && !msg.content.isEmpty()}" class="font-body-md" th:text="${msg.content}">Message text</p>
+                                    </div>
+                                    <span class="font-label-md text-[10px] text-on-surface-variant mt-2"
+                                        th:text="${msg.formattedTime}">12:00</span>
+                                </div>
+                            </div>
+                        </th:block>
+
+                        <!-- HTMX WebSocket trigger for new messages -->
+                        <div id="new-messages-area"
+                            th:hx-get="@{/messages/{id}/poll(id=${activeChat.id}, lastId=${lastMessageId})}"
+                            hx-trigger="newMessage from:body" hx-swap="outerHTML">
+                        </div>
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="p-4 border-t-[3px] border-on-surface bg-surface flex flex-col gap-2">
+                        <form class="flex gap-4" th:action="@{/messages/{id}/send(id=${activeChat.id})}"
+                            th:hx-post="@{/messages/{id}/send(id=${activeChat.id})}" hx-target="#new-messages-area"
+                            hx-swap="beforebegin"
+                            hx-on::before-request="window._justSentMessage = true"
+                            hx-on::after-request="this.reset(); clearChatMedia(); document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight"
+                            enctype="multipart/form-data">
+                            
+                            <label class="cursor-pointer bg-surface-variant text-on-surface-variant border-[3px] border-on-surface p-2 flex items-center justify-center hover-isometric transition-transform" title="Attach Photo">
+                                <span class="material-symbols-outlined">image</span>
+                                <input type="file" name="photo" accept="image/*" class="hidden">
+                            </label>
+
+                            <label class="cursor-pointer bg-surface-variant text-on-surface-variant border-[3px] border-on-surface p-2 flex items-center justify-center hover-isometric transition-transform" title="Attach Video">
+                                <span class="material-symbols-outlined">videocam</span>
+                                <input type="file" name="video" accept="video/*" class="hidden">
+                            </label>
+
+                            <!-- Voice Record Button -->
+                            <button type="button" id="record-btn" class="bg-surface-variant text-on-surface-variant border-[3px] border-on-surface p-2 flex items-center justify-center hover-isometric transition-colors" title="Record Voice Message">
+                                <span class="material-symbols-outlined" id="record-icon">mic</span>
+                            </button>
+                            <input type="file" name="audio" accept="audio/*" id="audio-input" class="hidden">
+
+                            <input type="text" name="content" placeholder="Type a message..."
+                                class="flex-1 border-[3px] border-on-surface bg-surface-container-low p-3 font-body-md shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary"
+                                autocomplete="off" id="msg-input">
+                            <button type="submit"
+                                class="bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-2 shadow-isometric hover-isometric transition-all"
+                                id="msg-send">
+                                SEND
+                            </button>
+                        </form>
+                        
+                        <!-- Client-Side File Preview -->
+                        <div id="chat-media-preview" class="hidden flex flex-col gap-2 mt-2 p-2 bg-surface-container-low border-[3px] border-on-surface shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]">
+                            <div class="flex gap-2 items-center">
+                                <span id="chat-media-name" class="font-label-sm text-on-surface truncate max-w-[200px]"></span>
+                                <button type="button" onclick="clearChatMedia()" class="text-error border-[3px] border-error px-1 bg-error-container hover-isometric material-symbols-outlined text-sm font-bold">close</button>
+                            </div>
+                            <audio id="audio-preview-player" controls class="hidden w-full h-8"></audio>
+                        </div>
+                    </div>
+
+                </th:block>
+
+                <!-- ── No Session Selected ── -->
+                <th:block th:if="${activeChat == null}">
+                    <div class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-background relative">
+                        <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden absolute top-4 left-4 border-[3px] border-on-surface p-1 shadow-isometric bg-surface hover-isometric">
+                            <span class="material-symbols-outlined">menu</span>
+                        </button>
+                        <div
+                            class="w-20 h-20 border-[3px] border-on-surface bg-surface-variant flex items-center justify-center mb-6 shadow-isometric">
+                            <span class="material-symbols-outlined text-4xl text-on-surface-variant">forum</span>
+                        </div>
+                        <h3 class="font-headline-lg text-on-surface mb-2">Select a Chat</h3>
+                        <p class="font-body-md text-on-surface-variant">Choose a chat from the sidebar to start
+                            communicating.</p>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+        <!-- ═══ HTMX Fragments (returned by controller) ═══ -->
+        <th:block th:if="${false}">
+            <!-- Fragment: message-bubble (for HTMX send response) -->
+            <th:block th:fragment="message-bubble" th:if="${msg != null}">
+                <div class="flex mt-4"
+                    th:classappend="${msg.sender.id == currentUser.id ? 'justify-end' : 'justify-start'}">
+                    <div class="flex flex-col max-w-[75%]"
+                        th:classappend="${msg.sender.id == currentUser.id ? 'items-end' : 'items-start'}">
+                        <span th:if="${activeChat.isGroup && msg.sender.id != currentUser.id}" class="text-[10px] font-bold text-on-surface mb-1" th:text="${msg.sender.displayName}">Name</span>
+                        <div class="p-4 border-[3px] border-on-surface shadow-isometric flex flex-col gap-2"
+                            th:classappend="${msg.sender.id == currentUser.id ? 'bg-primary-container text-on-primary-container' : 'bg-surface text-on-surface'}">
+                            <img th:if="${msg.photoUrl != null}" th:src="${msg.photoUrl}" class="max-w-[200px] h-auto border-[3px] border-on-surface object-cover">
+                            <video th:if="${msg.videoUrl != null}" th:src="${msg.videoUrl}" controls class="max-w-[200px] h-auto border-[3px] border-on-surface"></video>
+                            <audio th:if="${msg.audioUrl != null}" th:src="${msg.audioUrl}" controls class="max-w-full border-[3px] border-on-surface h-10"></audio>
+                            <p th:if="${msg.content != null && !msg.content.isEmpty()}" class="font-body-md" th:text="${msg.content}">Message text</p>
+                        </div>
+                        <span class="font-label-md text-[10px] text-on-surface-variant mt-2"
+                            th:text="${msg.formattedTime}">12:00</span>
                     </div>
                 </div>
             </th:block>
-            <div id="new-messages-area"
-                 th:hx-get="@{/messages/{id}/poll(id=${activeChat.id}, lastId=${lastMessageId})}"
-                 hx-trigger="newMessage from:body"
-                 hx-swap="outerHTML">
-            </div>
-        </th:block>
 
-        <!-- Fragment: session-expired (HTMX error response) -->
-        <th:block th:fragment="session-expired">
-            <div class="flex justify-center mt-4">
-                <div class="border-[3px] border-on-surface bg-error-container text-on-error-container px-6 py-2 font-body-md font-bold">
-                    ⚠ Session expired. No new messages can be sent.
+            <!-- Fragment: new-messages-loader (returns the messages PLUS a new loader div) -->
+            <th:block th:fragment="new-messages-loader" th:if="${activeChat != null}">
+                <th:block th:each="msg : ${chatMessages}">
+                    <div class="flex mt-4"
+                        th:classappend="${msg.sender.id == currentUser.id ? 'justify-end' : 'justify-start'}">
+                        <div class="flex flex-col max-w-[75%]"
+                            th:classappend="${msg.sender.id == currentUser.id ? 'items-end' : 'items-start'}">
+                            <span th:if="${activeChat.isGroup && msg.sender.id != currentUser.id}" class="text-[10px] font-bold text-on-surface mb-1" th:text="${msg.sender.displayName}">Name</span>
+                            <div class="p-4 border-[3px] border-on-surface shadow-isometric flex flex-col gap-2"
+                                th:classappend="${msg.sender.id == currentUser.id ? 'bg-primary-container text-on-primary-container' : 'bg-surface text-on-surface'}">
+                                <img th:if="${msg.photoUrl != null}" th:src="${msg.photoUrl}" class="max-w-[200px] h-auto border-[3px] border-on-surface object-cover">
+                                <video th:if="${msg.videoUrl != null}" th:src="${msg.videoUrl}" controls class="max-w-[200px] h-auto border-[3px] border-on-surface"></video>
+                                <audio th:if="${msg.audioUrl != null}" th:src="${msg.audioUrl}" controls class="max-w-full border-[3px] border-on-surface h-10"></audio>
+                                <p th:if="${msg.content != null && !msg.content.isEmpty()}" class="font-body-md" th:text="${msg.content}">Message text</p>
+                            </div>
+                            <span class="font-label-md text-[10px] text-on-surface-variant mt-2"
+                                th:text="${msg.formattedTime}">12:00</span>
+                        </div>
+                    </div>
+                </th:block>
+                <div id="new-messages-area"
+                    th:hx-get="@{/messages/{id}/poll(id=${activeChat.id}, lastId=${lastMessageId})}"
+                    hx-trigger="newMessage from:body" hx-swap="outerHTML">
                 </div>
-            </div>
+            </th:block>
+
+            <!-- Fragment: session-expired (HTMX error response) -->
+            <th:block th:fragment="session-expired">
+                <div class="flex justify-center mt-4">
+                    <div
+                        class="border-[3px] border-on-surface bg-error-container text-on-error-container px-6 py-2 font-body-md font-bold">
+                        ⚠ Session expired. No new messages can be sent.
+                    </div>
+                </div>
+            </th:block>
         </th:block>
-    </th:block>
 
-    <!-- Scripts -->
-    <script th:if="${activeChat != null}">
+        <!-- Create Group Modal -->
+        <div id="createGroupModal" class="fixed inset-0 z-50 hidden bg-on-surface/50 flex items-center justify-center p-4">
+            <div class="bg-surface border-[3px] border-on-surface shadow-isometric p-6 max-w-md w-full relative">
+                <button type="button" onclick="document.getElementById('createGroupModal').classList.add('hidden')" class="absolute top-4 right-4 text-on-surface hover:text-primary material-symbols-outlined">close</button>
+                <h3 class="font-headline-md mb-4 uppercase">Create Group Chat</h3>
+                <form th:action="@{/messages/group/create}" method="post" enctype="multipart/form-data" class="space-y-4">
+                    <div>
+                        <label class="block font-label-lg mb-1">Group Name</label>
+                        <input type="text" name="name" required class="w-full border-[3px] border-on-surface bg-surface-container-low p-2 font-body-md focus:outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]">
+                    </div>
+                    <div>
+                        <label class="block font-label-lg mb-1">Cover Photo (Optional)</label>
+                        <input type="file" name="coverPhoto" accept="image/*" class="w-full border-[3px] border-on-surface bg-surface-container-low p-2 font-body-md focus:outline-none focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block font-label-lg mb-1">Select Members (Max 99)</label>
+                        <input type="text" id="memberSearch" placeholder="Search members by name..." class="w-full border-[3px] border-on-surface bg-surface-container p-2 mb-2 font-body-sm shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] focus:outline-none focus:border-primary" onkeyup="filterMembers()">
+                        <div class="border-[3px] border-on-surface bg-surface-container-low max-h-40 overflow-y-auto p-2" id="memberList">
+                            <th:block th:each="user : ${allUsers}">
+                                <label class="flex items-center gap-2 p-1 hover:bg-surface-variant cursor-pointer member-item">
+                                    <input type="checkbox" name="participants" th:value="${user.id}" class="w-4 h-4 border-[3px] border-on-surface rounded-none checked:bg-primary accent-primary">
+                                    <span class="font-body-md member-name" th:text="${user.displayName}">Name</span>
+                                    <span class="font-label-sm text-on-surface-variant ml-auto" th:text="${user.role}">Role</span>
+                                </label>
+                            </th:block>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-2 shadow-isometric hover-isometric transition-all">
+                        CREATE GROUP
+                    </button>
+                </form>
+            </div>
+        </div>
 
-        // Auto-scroll to bottom on load
-        const chatBox = document.getElementById('chat-messages');
-        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        <!-- Scripts -->
+        <script th:if="${activeChat != null}">
 
-        // WebSocket initialization
-        (function() {
-            var activeSessionId = [[${activeChat.id}]];
-            var socket = new SockJS('/ws');
-            var stompClient = Stomp.over(socket);
+            // Auto-scroll to bottom on load
+            const chatBox = document.getElementById('chat-messages');
+            if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Flag to suppress duplicate message on sender side
+            window._justSentMessage = false;
+
+            // WebSocket initialization
+            (function () {
+                var activeSessionId = [[${ activeChat.id }]];
+                var socket = new SockJS('/ws');
+                var stompClient = Stomp.over(socket);
+
+                // Disable STOMP debug logs in production
+                stompClient.debug = function () { };
+
+                stompClient.connect({}, function (frame) {
+                    console.log('Connected to WebSocket');
+                    stompClient.subscribe('/topic/chat/' + activeSessionId, function (message) {
+                        // If we just sent a message, skip the poll (HTMX already rendered it)
+                        if (window._justSentMessage) {
+                            window._justSentMessage = false;
+                            return;
+                        }
+                        // Trigger HTMX to fetch the new message by dispatching a custom event on the body
+                        document.body.dispatchEvent(new Event('newMessage'));
+                        // Scroll down after appending
+                        setTimeout(() => {
+                            const cb = document.getElementById('chat-messages');
+                            if (cb) cb.scrollTop = cb.scrollHeight;
+                        }, 100);
+                    });
+                });
+            })();
+        </script>
+        
+        <script th:if="${activeChat != null}">
+            // Member search filter for group creation
+            function filterMembers() {
+                const search = document.getElementById('memberSearch').value.toLowerCase();
+                const items = document.querySelectorAll('.member-item');
+                items.forEach(item => {
+                    const name = item.querySelector('.member-name').textContent.toLowerCase();
+                    if (name.includes(search)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
             
-            // Disable STOMP debug logs in production
-            stompClient.debug = null;
-
-            stompClient.connect({}, function (frame) {
-                console.log('Connected to WebSocket');
-                stompClient.subscribe('/topic/chat/' + activeSessionId, function (message) {
-                    // Trigger HTMX to fetch the new message by dispatching a custom event on the body
-                    document.body.dispatchEvent(new Event('newMessage'));
-                    // Scroll down after appending
-                    setTimeout(() => {
-                        const cb = document.getElementById('chat-messages');
-                        if (cb) cb.scrollTop = cb.scrollHeight;
-                    }, 100);
+            // Media Preview Logic
+            document.querySelectorAll('input[name="photo"], input[name="video"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const preview = document.getElementById('chat-media-preview');
+                    const nameEl = document.getElementById('chat-media-name');
+                    const audioPlayer = document.getElementById('audio-preview-player');
+                    if (this.files.length > 0) {
+                        nameEl.textContent = this.files[0].name;
+                        preview.classList.remove('hidden');
+                        if (audioPlayer) audioPlayer.classList.add('hidden');
+                    }
                 });
             });
-        })();
-    </script>
 
-</div>
+            function clearChatMedia() {
+                document.querySelector('input[name="photo"]').value = '';
+                document.querySelector('input[name="video"]').value = '';
+                const audioInput = document.getElementById('audio-input');
+                if (audioInput) audioInput.value = '';
+                const preview = document.getElementById('chat-media-preview');
+                const audioPlayer = document.getElementById('audio-preview-player');
+                if (preview) preview.classList.add('hidden');
+                if (audioPlayer) audioPlayer.classList.add('hidden');
+            }
+
+            // --- Voice Messaging Logic ---
+            let mediaRecorder = null;
+            let audioChunks = [];
+            const recordBtn = document.getElementById('record-btn');
+            const recordIcon = document.getElementById('record-icon');
+            const audioInput = document.getElementById('audio-input');
+            const audioPreviewPlayer = document.getElementById('audio-preview-player');
+            const previewContainer = document.getElementById('chat-media-preview');
+            const mediaNameEl = document.getElementById('chat-media-name');
+
+            if (recordBtn) {
+                recordBtn.addEventListener('click', async () => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                    } else {
+                        try {
+                            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                            mediaRecorder = new MediaRecorder(stream);
+                            audioChunks = [];
+
+                            mediaRecorder.addEventListener('dataavailable', event => {
+                                if (event.data.size > 0) {
+                                    audioChunks.push(event.data);
+                                }
+                            });
+
+                            mediaRecorder.addEventListener('stop', () => {
+                                // Stop all tracks
+                                stream.getTracks().forEach(track => track.stop());
+
+                                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                                const audioUrl = URL.createObjectURL(audioBlob);
+                                
+                                // Create a File object to put into the file input
+                                const file = new File([audioBlob], 'voicemessage.webm', { type: 'audio/webm', lastModified: new Date().getTime() });
+                                const dataTransfer = new DataTransfer();
+                                dataTransfer.items.add(file);
+                                audioInput.files = dataTransfer.files;
+
+                                // Show preview
+                                mediaNameEl.textContent = 'Voice Message';
+                                previewContainer.classList.remove('hidden');
+                                audioPreviewPlayer.src = audioUrl;
+                                audioPreviewPlayer.classList.remove('hidden');
+                                audioPreviewPlayer.classList.add('block');
+
+                                // Reset button UI
+                                recordBtn.classList.remove('bg-error', 'text-on-error', 'animate-pulse');
+                                recordBtn.classList.add('bg-surface-variant', 'text-on-surface-variant');
+                                recordIcon.textContent = 'mic';
+                            });
+
+                            mediaRecorder.start();
+                            
+                            // Update button UI to recording state
+                            recordBtn.classList.remove('bg-surface-variant', 'text-on-surface-variant');
+                            recordBtn.classList.add('bg-error', 'text-on-error', 'animate-pulse');
+                            recordIcon.textContent = 'stop';
+                            
+                        } catch (err) {
+                            console.error('Error accessing microphone', err);
+                            alert('Could not access microphone. Please allow permissions.');
+                        }
+                    }
+                });
+            }
+        </script>
+        
+    </div>
 </body>
+
 </html>

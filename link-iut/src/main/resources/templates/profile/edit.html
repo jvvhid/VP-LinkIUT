@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/main}">
+
+<head>
+    <title>Edit Profile</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+
+        <div class="flex items-center gap-4 mb-8">
+            <a th:href="@{/profile/{id}(id=${currentUser.id})}"
+                class="bg-surface-variant border-[3px] border-on-surface shadow-isometric hover-isometric transition-all p-2 flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-surface">arrow_back</span>
+            </a>
+            <h2 class="text-headline-lg font-headline-lg font-extrabold text-primary tracking-tighter uppercase">Edit
+                Profile</h2>
+        </div>
+
+        <!-- Avatar Upload -->
+        <div class="border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col mb-8">
+            <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center px-4">
+                <span class="font-label-md text-label-md text-on-surface uppercase">Profile Picture</span>
+            </div>
+            <div class="p-6 flex flex-col md:flex-row items-center gap-6">
+                <div class="w-32 h-32 border-[3px] border-on-surface shadow-[4px_4px_0px_0px_rgba(26,28,28,1)] flex items-center justify-center bg-primary overflow-hidden">
+                    <img th:if="${currentUser.avatarUrl != null}" th:src="${currentUser.avatarUrl}" class="w-full h-full object-cover">
+                    <span th:if="${currentUser.avatarUrl == null}" class="text-on-primary font-bold text-4xl" th:text="${currentUser.initials}">FR</span>
+                </div>
+                <div class="flex flex-col gap-4 w-full md:w-auto">
+                    <form th:action="@{/profile/avatar}" method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
+                        <input type="file" name="avatar" accept="image/*" class="font-body-md text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:border-[3px] file:border-on-surface file:font-headline-sm file:bg-surface-variant file:text-on-surface hover:file:bg-black/10 cursor-pointer transition-colors" required>
+                        <button type="submit" class="bg-primary text-on-primary border-[3px] border-on-surface font-headline-sm py-2 px-8 shadow-isometric hover-isometric transition-all uppercase cursor-pointer w-full">Upload Picture</button>
+                    </form>
+                    <form th:if="${currentUser.avatarUrl != null}" th:action="@{/profile/avatar/remove}" method="post">
+                        <button type="submit" class="bg-error text-on-error border-[3px] border-on-surface font-headline-sm py-2 px-8 shadow-isometric hover-isometric transition-all uppercase cursor-pointer w-full">Remove Picture</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Edit Form -->
+        <div class="border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col mb-12">
+            <div class="h-10 bg-primary border-b-[3px] border-on-surface flex items-center px-4">
+                <span class="font-label-md text-label-md text-on-primary uppercase">Basic Info</span>
+            </div>
+            <form th:action="@{/profile/edit}" method="post" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Display Name</label>
+                    <input type="text" name="displayName" th:value="${currentUser.displayName}"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]"
+                        required>
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Headline</label>
+                    <input type="text" name="headline" th:value="${profile.headline}"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]">
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Bio</label>
+                    <textarea name="bio" rows="4"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)] resize-none"
+                        th:text="${profile.bio}"></textarea>
+                </div>
+
+                <div class="col-span-1">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Department</label>
+                    <select name="department"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]">
+                        <option value="CSE" th:selected="${profile.department == 'CSE'}">CSE</option>
+                        <option value="EEE" th:selected="${profile.department == 'EEE'}">EEE</option>
+                        <option value="MCE" th:selected="${profile.department == 'MCE'}">MCE</option>
+                        <option value="CEE" th:selected="${profile.department == 'CEE'}">CEE</option>
+                        <option value="BTM" th:selected="${profile.department == 'BTM'}">BTM</option>
+                        <option value="SWE" th:selected="${profile.department == 'SWE'}">SWE</option>
+                    </select>
+                </div>
+
+                <div class="col-span-1">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Batch</label>
+                    <input type="text" name="batch" th:value="${profile.batch}"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]"
+                        placeholder="e.g. 2018">
+                </div>
+
+                <div class="col-span-1">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Hostel</label>
+                    <select name="hostel"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]">
+                        <option value="" th:selected="${profile.hostel == null || profile.hostel == ''}">None</option>
+                        <option value="North Hostel" th:selected="${profile.hostel == 'North Hostel'}">North Hostel
+                        </option>
+                        <option value="South Hostel" th:selected="${profile.hostel == 'South Hostel'}">South Hostel
+                        </option>
+                        <option value="Female Hostel" th:selected="${profile.hostel == 'Female Hostel'}">Female Hostel
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-span-1">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Location</label>
+                    <input type="text" name="location" th:value="${profile.location}"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]">
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">LinkedIn URL</label>
+                    <input type="url" name="linkedinUrl" th:value="${profile.linkedinUrl}"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]">
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block font-label-md text-label-md text-on-surface uppercase mb-2">Skills (Comma
+                        separated)</label>
+                    <input type="text" name="skills" th:value="${profile.skills}"
+                        class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface outline-none focus:border-primary shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.2)]"
+                        placeholder="e.g. Java, Python, React">
+                </div>
+
+                <div class="col-span-1 md:col-span-2 mt-4 flex justify-end">
+                    <button type="submit"
+                        class="bg-primary text-on-primary border-[3px] border-on-surface font-headline-sm py-3 px-8 shadow-isometric hover-isometric transition-all uppercase">Save
+                        Changes</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-12">
+
+            <!-- Experiences -->
+            <div class="border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col">
+                <div class="h-10 bg-secondary border-b-[3px] border-on-surface flex items-center px-4">
+                    <span class="font-label-md text-label-md text-on-secondary uppercase">Experiences</span>
+                </div>
+                <div class="p-6">
+                    <!-- List -->
+                    <div id="experience-list" class="space-y-4 mb-8">
+                        <th:block th:each="exp : ${profile.experiences}">
+                            <div th:fragment="experience-item" th:id="'exp-' + ${exp.id}"
+                                class="border-[3px] border-on-surface bg-surface-container-low p-4 flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-bold text-on-surface" th:text="${exp.title}">Title</h4>
+                                    <p class="text-sm text-on-surface-variant" th:text="${exp.company}">Company</p>
+                                </div>
+                                <button th:hx-delete="@{/profile/experience/{id}(id=${exp.id})}"
+                                    hx-target="closest [id^='exp-']" hx-swap="outerHTML"
+                                    class="text-error hover:text-error-container">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <!-- Add form -->
+                    <form th:action="@{/profile/experience}" hx-post="/profile/experience" hx-target="#experience-list"
+                        hx-swap="beforeend" hx-on::after-request="this.reset()"
+                        class="space-y-3 border-t-[3px] border-on-surface pt-4">
+                        <h4 class="font-label-md uppercase mb-2">Add Experience</h4>
+                        <input type="text" name="title" placeholder="Job Title"
+                            class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary"
+                            required>
+                        <input type="text" name="company" placeholder="Company"
+                            class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary"
+                            required>
+                        <div class="flex gap-2">
+                            <input type="date" name="startDate"
+                                class="w-1/2 bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary"
+                                required>
+                            <input type="date" name="endDate"
+                                class="w-1/2 bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary">
+                        </div>
+                        <textarea name="description" placeholder="Description"
+                            class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary resize-none"></textarea>
+                        <button type="submit"
+                            class="bg-secondary text-on-secondary border-[3px] border-on-surface font-headline-sm py-2 px-4 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] uppercase text-sm w-full">Add</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Projects -->
+            <div class="border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col">
+                <div class="h-10 bg-tertiary border-b-[3px] border-on-surface flex items-center px-4">
+                    <span class="font-label-md text-label-md text-on-tertiary uppercase">Projects</span>
+                </div>
+                <div class="p-6">
+                    <!-- List -->
+                    <div id="project-list" class="space-y-4 mb-8">
+                        <th:block th:each="proj : ${profile.projects}">
+                            <div th:fragment="project-item" th:id="'proj-' + ${proj.id}"
+                                class="border-[3px] border-on-surface bg-surface-container-low p-4 flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-bold text-on-surface" th:text="${proj.name}">Name</h4>
+                                    <p class="text-sm text-on-surface-variant" th:text="${proj.techStack}">Tech</p>
+                                </div>
+                                <button th:hx-delete="@{/profile/project/{id}(id=${proj.id})}"
+                                    hx-target="closest [id^='proj-']" hx-swap="outerHTML"
+                                    class="text-error hover:text-error-container">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <!-- Add form -->
+                    <form th:action="@{/profile/project}" hx-post="/profile/project" hx-target="#project-list"
+                        hx-swap="beforeend" hx-on::after-request="this.reset()"
+                        class="space-y-3 border-t-[3px] border-on-surface pt-4">
+                        <h4 class="font-label-md uppercase mb-2">Add Project</h4>
+                        <input type="text" name="name" placeholder="Project Name"
+                            class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary"
+                            required>
+                        <input type="text" name="techStack" placeholder="Tech Stack (e.g. Java, React)"
+                            class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary">
+                        <input type="url" name="repoUrl" placeholder="Repository URL"
+                            class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary">
+                        <textarea name="description" placeholder="Description"
+                            class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 text-sm outline-none focus:border-primary resize-none"></textarea>
+                        <button type="submit"
+                            class="bg-tertiary text-on-tertiary border-[3px] border-on-surface font-headline-sm py-2 px-4 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] uppercase text-sm w-full">Add</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <!-- Poll Results Fragment -->
+    <div th:if="${poll != null or opp?.poll != null}" class="mb-6 p-4 border-[3px] border-on-surface bg-surface-container-low shadow-isometric" th:id="'poll-' + ${poll != null ? poll.id : opp?.poll?.id}" th:fragment="poll-results">
+        <th:block th:with="currentPoll=${poll != null ? poll : opp?.poll}">
+            <h5 class="font-headline-sm text-on-surface mb-4" th:text="${currentPoll.question}">Poll Question</h5>
+            <div class="space-y-2">
+                <div th:each="opt : ${currentPoll.options}" class="flex items-center gap-2">
+                    <button type="button" class="bg-surface-variant text-on-surface border-[3px] border-on-surface py-2 px-4 font-label-md w-full text-left hover-isometric transition-all flex justify-between" 
+                            th:classappend="${userVoteOptionId == opt.id ? 'bg-primary text-on-primary' : ''}"
+                            th:attr="hx-post=@{/polls/{pollId}/vote(pollId=${currentPoll.id}, optionId=${opt.id})}, hx-target='#poll-' + ${currentPoll.id}"
+                            hx-swap="outerHTML">
+                        <span th:text="${opt.text}">Option</span>
+                        <span class="font-bold text-primary" th:text="${opt.voteCount} + ' votes'">0 votes</span>
+                    </button>
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+    <!-- Post Reactions Fragment -->
+    <div class="flex items-center gap-4 mt-4 border-t-[3px] border-on-surface pt-4 mb-4" th:fragment="post-reactions" th:id="'reactions-' + (${post != null ? post.id : opp?.id})">
+        <th:block th:with="currentPost=${post != null ? post : opp}">
+            <button type="button" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-primary transition-colors"
+                    th:attr="hx-post=@{/posts/{id}/like(id=${currentPost.id})}, hx-target='#reactions-' + ${currentPost.id}"
+                    hx-swap="outerHTML">
+                <span class="material-symbols-outlined">thumb_up</span>
+                <span th:text="${currentPost.likeCount}">0</span>
+            </button>
+            <button type="button" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-error transition-colors"
+                    th:attr="hx-post=@{/posts/{id}/dislike(id=${currentPost.id})}, hx-target='#reactions-' + ${currentPost.id}"
+                    hx-swap="outerHTML">
+                <span class="material-symbols-outlined">thumb_down</span>
+                <span th:text="${currentPost.dislikeCount}">0</span>
+            </button>
+            <button type="button" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-secondary transition-colors"
+                    th:onclick="'document.getElementById(\'comments-' + ${currentPost.id} + '\').classList.toggle(\'hidden\')'">
+                <span class="material-symbols-outlined">comment</span>
+                <span>Comment</span>
+            </button>
+        </th:block>
+    </div>
+
+    <!-- Comments List Fragment -->
+    <th:block th:fragment="comments-list">
+        <div th:each="c : ${comments}" class="border-[3px] border-on-surface p-3 bg-surface shadow-isometric mb-2">
+            <div class="flex justify-between items-start mb-2">
+                <span class="font-headline-sm text-primary" th:text="${c.author.displayName}">User</span>
+                <span class="text-xs text-on-surface-variant" th:text="${c.timeAgo}">1h ago</span>
+            </div>
+            <p class="font-body-md text-on-surface" th:utext="${c.content}">Comment text</p>
+        </div>
+    </th:block>
+
+    <!-- Single Comment Item Fragment -->
+    <th:block th:fragment="comment-item">
+        <div class="border-[3px] border-on-surface p-3 bg-surface shadow-isometric mb-2">
+            <div class="flex justify-between items-start mb-2">
+                <span class="font-headline-sm text-primary" th:text="${comment.author.displayName}">User</span>
+                <span class="text-xs text-on-surface-variant" th:text="${comment.timeAgo}">1h ago</span>
+            </div>
+            <p class="font-body-md text-on-surface" th:utext="${comment.content}">Comment text</p>
+        </div>
+    </th:block>
+
+</body>
+</html>
