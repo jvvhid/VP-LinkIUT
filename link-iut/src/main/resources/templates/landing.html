@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LinkIUT - Connect, Collaborate, Grow</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        /* Base styles */
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000000;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        /* Hover effects */
+        .hover-glow:hover {
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+            transform: scale(1.05);
+        }
+        
+        .hover-glow:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen flex items-center justify-center p-4 md:p-12 w-full h-screen">
+
+    <main class="w-full h-full max-w-7xl flex flex-col md:flex-row relative">
+        
+        <!-- Left Side: Typography and Call to Action -->
+        <div class="w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-center p-8 z-10 relative gap-12">
+            <!-- Connect Collaborate Grow -->
+            <img src="/images/connect.png" alt="Connect Collaborate Grow" class="w-full max-w-md animate-fade-in-up" style="animation-delay: 0.2s; opacity: 0;">
+            
+            <!-- Join LinkIUT Button -->
+            <a href="/login" class="w-2/3 max-w-sm transition-transform hover-glow cursor-pointer animate-fade-in-up" style="animation-delay: 0.6s; opacity: 0;">
+                <img src="/images/join.png" alt="Join LinkIUT" class="w-full h-auto">
+            </a>
+        </div>
+        
+        <!-- Right Side: ASCII Particle Animation -->
+        <div class="w-full md:w-1/2 h-1/2 md:h-full relative" id="animation-container">
+            <!-- Hidden source image -->
+            <img id="source-image" src="/images/brick.png" alt="Brick Structure" class="hidden" crossorigin="anonymous">
+            <!-- The particle canvas -->
+            <canvas id="ascii-canvas" class="w-full h-full block touch-none cursor-crosshair"></canvas>
+        </div>
+
+    </main>
+
+    <script src="/js/landing-animation.js"></script>
+</body>
+</html>

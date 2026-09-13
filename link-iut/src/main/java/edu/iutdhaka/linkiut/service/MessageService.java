@@ -45,11 +45,27 @@ public class MessageService {
     }
 
     /**
+     * Creates a group session with up to 100 members.
+     */
+    @Transactional
+    public ChatSession createGroupSession(String name, String coverPhoto, Long adminId, List<Long> participantIds) {
+        if (participantIds.size() >= 100) {
+            throw new IllegalArgumentException("Group cannot have more than 100 members");
+        }
+        AppUser admin = userRepository.findById(adminId)
+                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
+        java.util.Set<AppUser> participants = new java.util.HashSet<>(userRepository.findAllById(participantIds));
+        
+        ChatSession session = new ChatSession(name, coverPhoto, admin, participants);
+        return chatSessionRepository.save(session);
+    }
+
+    /**
      * Sends a message in an active session.
      * Rejects if session is EXPIRED or CLOSED.
      */
     @Transactional
-    public Message sendMessage(Long sessionId, Long senderId, String content) {
+    public Message sendMessage(Long sessionId, Long senderId, String content, String photoUrl, String videoUrl, String audioUrl) {
         ChatSession session = chatSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found"));
 
@@ -60,7 +76,12 @@ public class MessageService {
         AppUser sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new IllegalArgumentException("Sender not found"));
 
+        // SLA deadline is no longer refreshed on activity
+
         Message message = new Message(session, sender, content);
+        message.setPhotoUrl(photoUrl);
+        message.setVideoUrl(videoUrl);
+        message.setAudioUrl(audioUrl);
         return messageRepository.save(message);
     }
 
@@ -82,7 +103,7 @@ public class MessageService {
      * Returns a session by ID.
      */
     public ChatSession getSession(Long sessionId) {
-        return chatSessionRepository.findById(sessionId)
+        return chatSessionRepository.findByIdWithParticipants(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found"));
     }
 

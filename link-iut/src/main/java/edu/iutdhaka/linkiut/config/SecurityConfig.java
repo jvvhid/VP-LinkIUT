@@ -20,25 +20,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Permit static resources and H2 console
+
+            // Permit static resources, uploads, and landing page
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**", "/css/**", "/js/**", "/images/**", "/error", "/register").permitAll()
+                .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/uploads/**", "/error", "/register").permitAll()
                 .anyRequest().authenticated()
             )
             // Form login
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/feed", true)
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
-            )
-            // Disable CSRF for HTMX compatibility and H2 console
-            .csrf(csrf -> csrf.disable())
-            // Allow H2 console in iframes
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+            );
 
         return http.build();
     }

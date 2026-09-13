@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/main}">
+
+<head>
+    <title>Connections — LinkIUT</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+
+        <div class="mb-8">
+            <h1 class="font-headline-lg text-headline-lg text-on-surface mb-2 uppercase tracking-tighter">Your Network
+            </h1>
+            <p class="font-body-md text-on-surface-variant">Manage your connections and pending requests.</p>
+        </div>
+
+        <!-- Pending Requests -->
+        <div th:if="${!pendingRequests.isEmpty()}" class="mb-8">
+            <h2 class="font-headline-md text-on-surface mb-4 border-b-[3px] border-on-surface pb-2">Pending Requests
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                <div th:each="req : ${pendingRequests}"
+                    class="border-[3px] border-on-surface shadow-isometric bg-surface p-4 flex flex-col gap-4 hover-isometric transition-transform">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-primary flex items-center justify-center text-on-primary font-headline-sm border-[3px] border-on-surface overflow-hidden">
+                            <img th:if="${req.requester.avatarUrl != null}" th:src="${req.requester.avatarUrl}" class="w-full h-full object-cover">
+                            <span th:if="${req.requester.avatarUrl == null}" th:text="${req.requester.initials}">FR</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <a th:href="@{/profile/{id}(id=${req.requester.id})}"
+                                class="font-headline-sm text-on-surface hover:text-primary transition-colors truncate block"
+                                th:text="${req.requester.displayName}">Name</a>
+                            <p class="font-label-md text-on-surface-variant truncate" th:text="${req.requester.role}">
+                                ROLE</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-auto">
+                        <form th:action="@{/connections/accept/{id}(id=${req.id})}" method="post" class="flex-1">
+                            <input type="hidden" name="redirectUrl" value="/connections">
+                            <button type="submit"
+                                class="w-full bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface py-2 shadow-isometric hover-isometric transition-all text-sm">
+                                Accept
+                            </button>
+                        </form>
+                        <form th:action="@{/connections/reject/{id}(id=${req.id})}" method="post" class="flex-1">
+                            <input type="hidden" name="redirectUrl" value="/connections">
+                            <button type="submit"
+                                class="w-full bg-surface text-on-surface font-headline-sm uppercase border-[3px] border-on-surface py-2 shadow-isometric hover-isometric transition-all text-sm">
+                                Reject
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connections List -->
+        <div>
+            <h2 class="font-headline-md text-on-surface mb-4 border-b-[3px] border-on-surface pb-2">My Connections <span
+                    th:text="'(' + ${connections.size()} + ')'" class="text-primary"></span></h2>
+
+            <div th:if="${connections.isEmpty()}"
+                class="border-[3px] border-on-surface border-dashed p-8 text-center bg-surface-container-low">
+                <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-2">group_off</span>
+                <p class="font-body-md text-on-surface-variant">You haven't made any connections yet.</p>
+                <a href="/network"
+                    class="inline-block mt-4 text-primary font-headline-sm uppercase hover:underline">Find People</a>
+            </div>
+
+            <div th:if="${!connections.isEmpty()}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                <div th:each="conn : ${connections}"
+                    class="border-[3px] border-on-surface shadow-isometric bg-surface p-4 flex flex-col gap-4 hover-isometric transition-transform">
+                    <!-- Identify the other user -->
+                    <div th:with="otherUser=${conn.requester.id == currentUser.id ? conn.receiver : conn.requester}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-primary flex items-center justify-center text-on-primary font-headline-sm border-[3px] border-on-surface overflow-hidden">
+                                <img th:if="${otherUser.avatarUrl != null}" th:src="${otherUser.avatarUrl}" class="w-full h-full object-cover">
+                                <span th:if="${otherUser.avatarUrl == null}" th:text="${otherUser.initials}">FR</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <a th:href="@{/profile/{id}(id=${otherUser.id})}"
+                                    class="font-headline-sm text-on-surface hover:text-primary transition-colors truncate block"
+                                    th:text="${otherUser.displayName}">Name</a>
+                                <p class="font-label-md text-on-surface-variant truncate" th:text="${otherUser.role}">
+                                    ROLE</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <form th:action="@{/messages/start/{id}(id=${otherUser.id})}" method="post" class="flex-1">
+                                <button type="submit"
+                                    class="w-full bg-surface-variant text-on-surface font-headline-sm uppercase border-[3px] border-on-surface py-2 shadow-isometric hover-isometric transition-all text-sm flex items-center justify-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">chat</span> Message
+                                </button>
+                            </form>
+                            <form th:action="@{/connections/remove/{id}(id=${conn.id})}" method="post">
+                                <input type="hidden" name="redirectUrl" value="/connections">
+                                <button type="submit"
+                                    class="bg-surface text-on-surface font-headline-sm uppercase border-[3px] border-on-surface py-2 px-3 shadow-isometric hover-isometric transition-all text-sm flex items-center justify-center"
+                                    title="Remove Connection">
+                                    <span class="material-symbols-outlined text-sm text-error">person_remove</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

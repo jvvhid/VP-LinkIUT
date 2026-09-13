@@ -1,277 +1,512 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title layout:title-pattern="$CONTENT_TITLE — LinkIUT">LinkIUT</title>
-    <meta name="description" content="LinkIUT — Premium alumni-student networking hub for IUT Dhaka">
 
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <!-- SockJS and STOMP for WebSockets -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tribute.js for Mentions -->
+    <link rel="stylesheet" href="https://unpkg.com/tributejs/dist/tribute.css" />
+    <script src="https://unpkg.com/tributejs/dist/tribute.min.js"></script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800&family=Hanken+Grotesk:wght@400&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
     <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+        }
+    </script>
+    <script id="tailwind-config">
         tailwind.config = {
+            darkMode: "class",
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-                    colors: {
-                        brand: {
-                            50:  '#eef5ff',
-                            100: '#d9e8ff',
-                            200: '#bcd8ff',
-                            300: '#8ec0ff',
-                            400: '#599dff',
-                            500: '#3377ff',
-                            600: '#1b55f5',
-                            700: '#1440e1',
-                            800: '#1735b6',
-                            900: '#19318f',
-                            950: '#141f57',
-                        },
-                        surface: {
-                            50:  '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            700: '#1e293b',
-                            800: '#0f172a',
-                            850: '#0c1222',
-                            900: '#020617',
-                        },
-                        accent: {
-                            teal:   '#2dd4bf',
-                            amber:  '#fbbf24',
-                            rose:   '#fb7185',
-                            violet: '#a78bfa',
-                        }
+                    "colors": {
+                        "primary": "var(--color-primary)",
+                        "on-primary": "var(--color-on-primary)",
+                        "primary-container": "var(--color-primary-container)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "secondary": "var(--color-secondary)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "tertiary": "var(--color-tertiary)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "background": "var(--color-background)",
+                        "on-background": "var(--color-on-background)",
+                        "surface": "var(--color-surface)",
+                        "on-surface": "var(--color-on-surface)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "error": "var(--color-error)",
+                        "on-error": "var(--color-on-error)",
+                        "error-container": "var(--color-error-container)",
+                        "on-error-container": "var(--color-on-error-container)",
                     },
-                    animation: {
-                        'fade-in':       'fadeIn 0.5s ease-out forwards',
-                        'fade-in-up':    'fadeInUp 0.6s ease-out forwards',
-                        'slide-in-left': 'slideInLeft 0.4s ease-out forwards',
-                        'pulse-soft':    'pulseSoft 3s ease-in-out infinite',
-                        'glow':          'glow 4s ease-in-out infinite',
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "0px"
                     },
-                    keyframes: {
-                        fadeIn:       { '0%': { opacity: '0' },                                          '100%': { opacity: '1' } },
-                        fadeInUp:     { '0%': { opacity: '0', transform: 'translateY(20px)' },           '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        slideInLeft:  { '0%': { opacity: '0', transform: 'translateX(-20px)' },          '100%': { opacity: '1', transform: 'translateX(0)' } },
-                        pulseSoft:    { '0%, 100%': { opacity: '1' },                                     '50%': { opacity: '0.7' } },
-                        glow:         { '0%, 100%': { boxShadow: '0 0 20px rgba(51,119,255,0.15)' },     '50%': { boxShadow: '0 0 40px rgba(51,119,255,0.3)' } },
+                    "spacing": {
+                        "unit": "8px",
+                        "border-width": "3px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "isometric-depth": "4px",
+                        "margin-mobile": "20px"
                     },
-                    backdropBlur: { xs: '2px' },
+                    "fontFamily": {
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-sm": ["Anybody"],
+                        "headline-md": ["Anybody"],
+                        "headline-xl": ["Anybody"],
+                        "headline-lg": ["Anybody"],
+                        "headline-xl-mobile": ["Anybody"],
+                        "body-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-xl-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
                 }
             }
         }
     </script>
-
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-
-    <!-- Custom Styles -->
     <style>
-        * { font-family: 'Inter', system-ui, sans-serif; }
-
-        body {
-            background: #020617;
-            color: #e2e8f0;
-            min-height: 100vh;
+        /* Attractive Sophisticated Palette */
+        :root {
+            --color-background: #F4F1EA;
+            --color-on-background: #0A1128;
+            --color-surface: #FFFFFF;
+            --color-on-surface: #0A1128;
+            --color-primary: #7B241C;
+            --color-on-primary: #FFFFFF;
+            --color-primary-container: #922B21;
+            --color-on-primary-container: #FFFFFF;
+            --color-secondary: #0A1128;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #D4AF37;
+            --color-on-tertiary: #0A1128;
+            --color-surface-variant: #EAE6DF;
+            --color-on-surface-variant: #5A6D7C;
+            --color-surface-container-low: #F9F8F6;
+            --color-surface-container-highest: #D5D0C5;
+            --color-error: #C0392B;
+            --color-on-error: #FFFFFF;
+            --color-error-container: #F2D7D5;
+            --color-on-error-container: #641E16;
         }
 
-        /* Animated gradient background orbs */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.12;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .bg-orb-1 { width: 600px; height: 600px; background: #3377ff; top: -10%; left: -5%;  animation: drift1 20s ease-in-out infinite; }
-        .bg-orb-2 { width: 500px; height: 500px; background: #2dd4bf; top: 50%;  right: -10%; animation: drift2 25s ease-in-out infinite; }
-        .bg-orb-3 { width: 400px; height: 400px; background: #a78bfa; bottom: -5%; left: 30%; animation: drift3 22s ease-in-out infinite; }
-
-        @keyframes drift1 { 0%, 100% { transform: translate(0, 0); }       50% { transform: translate(50px, 30px); } }
-        @keyframes drift2 { 0%, 100% { transform: translate(0, 0); }       50% { transform: translate(-40px, -50px); } }
-        @keyframes drift3 { 0%, 100% { transform: translate(0, 0); }       50% { transform: translate(30px, -40px); } }
-
-        /* Glassmorphism card */
-        .glass {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .glass-light {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .dark {
+            --color-background: #000000;
+            --color-on-background: #FFFFFF;
+            --color-surface: #000000;
+            --color-on-surface: #FFFFFF;
+            --color-primary: #8B4513;
+            /* Saddle Brown */
+            --color-on-primary: #FFFFFF;
+            --color-primary-container: #000000;
+            --color-on-primary-container: #8B4513;
+            --color-secondary: #000000;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #F59E0B;
+            --color-on-tertiary: #000000;
+            --color-surface-variant: #000000;
+            --color-on-surface-variant: #94A3B8;
+            --color-surface-container-low: #000000;
+            --color-surface-container-highest: #111111;
+            --color-error: #EF4444;
+            --color-on-error: #000000;
+            --color-error-container: #000000;
+            --color-on-error-container: #EF4444;
         }
 
-        /* Badge colors */
-        .badge-job        { background: linear-gradient(135deg, #3377ff, #1b55f5); color: white; }
-        .badge-internship { background: linear-gradient(135deg, #2dd4bf, #14b8a6); color: #020617; }
-        .badge-mentorship { background: linear-gradient(135deg, #a78bfa, #8b5cf6); color: white; }
-        .badge-student    { background: linear-gradient(135deg, #2dd4bf, #14b8a6); color: #020617; }
-        .badge-alumni     { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #020617; }
-
-        /* Smooth scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        /* Hover lift effect */
-        .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(51, 119, 255, 0.15);
+        .shadow-isometric {
+            box-shadow: 4px 4px 0px 0px var(--color-on-surface);
         }
 
-        /* Nav link */
-        .nav-link {
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        .nav-link:hover, .nav-link.active {
-            background: rgba(51, 119, 255, 0.1);
-            border-left-color: #3377ff;
-            color: #3377ff;
+        .hover-isometric {
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        /* Staggered animation delays */
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-        .stagger-4 { animation-delay: 0.4s; }
-        .stagger-5 { animation-delay: 0.5s; }
-
-        /* Input styling */
-        .input-glass {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e2e8f0;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .input-glass:focus {
-            outline: none;
-            border-color: #3377ff;
-            box-shadow: 0 0 0 3px rgba(51, 119, 255, 0.15);
+        .hover-isometric:hover {
+            transform: translate(4px, 4px);
+            box-shadow: none;
         }
 
-        /* Button primary */
-        .btn-primary {
-            background: linear-gradient(135deg, #3377ff, #1b55f5);
-            color: white;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        /* Sidebar Toggle Styles */
+        #sidebar {
+            transition: width 0.3s ease;
+            overflow-x: hidden;
         }
-        .btn-primary:hover {
-            box-shadow: 0 8px 25px rgba(51, 119, 255, 0.35);
-            transform: translateY(-1px);
+
+        body.sidebar-collapsed #sidebar {
+            width: 80px;
         }
-        .btn-primary:active { transform: translateY(0); }
+
+        body.sidebar-collapsed .sidebar-text {
+            display: none;
+            opacity: 0;
+        }
+
+        body.sidebar-collapsed #sidebar-toggle {
+            transform: rotate(180deg);
+        }
+
+        @media (min-width: 768px) {
+            body.sidebar-collapsed main {
+                margin-left: 80px !important;
+            }
+        }
+
+        /* Badge colors — linked to theme */
+        .badge-job {
+            background: var(--color-secondary);
+            color: var(--color-on-secondary);
+        }
+
+        .badge-internship {
+            background: var(--color-tertiary);
+            color: var(--color-on-tertiary);
+        }
+
+        .badge-mentorship {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+        }
+
+        .badge-student {
+            background: var(--color-surface-variant);
+            color: var(--color-on-surface-variant);
+        }
+
+        .badge-alumni {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+        }
+
+        /* Keyframe animations */
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fade-in-up {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.4s ease-out forwards;
+        }
+
+        .animate-fade-in-up {
+            animation: fade-in-up 0.4s ease-out forwards;
+        }
+    </style>
+    <style>
+        .tribute-container {
+            z-index: 9999 !important;
+        }
     </style>
 </head>
-<body class="antialiased">
-    <!-- Background Orbs -->
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
 
-    <div class="relative z-10 flex min-h-screen">
-        <!-- ═══ Sidebar ═══ -->
-        <aside class="hidden lg:flex flex-col w-72 glass border-r border-white/5 p-6 fixed h-full">
-            <!-- Logo -->
-            <div class="flex items-center gap-3 mb-10">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-brand-400 to-accent-teal bg-clip-text text-transparent">LinkIUT</h1>
-                    <p class="text-[10px] text-surface-200/50 tracking-widest uppercase">Alumni Hub</p>
-                </div>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row">
+
+    <!-- TopNavBar (Mobile Only) -->
+    <header
+        class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 border-b-[3px] border-on-surface shadow-[4px_4px_0px_0px_rgba(45,41,38,1)] flex justify-between items-center w-full px-5 h-[72px] z-50 md:hidden sticky">
+        <div class="text-headline-md font-headline-md font-extrabold text-primary tracking-tighter">LINKIUT</div>
+        <div class="flex gap-4">
+            <span id="theme-toggle-mobile"
+                class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all">light_mode</span>
+            <div class="relative inline-block">
+                <span class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                      hx-get="/notifications/unread-count" hx-trigger="load, every 30s" hx-target="#notif-badge-mobile">notifications</span>
+                <span id="notif-badge-mobile" class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
             </div>
+            <span
+                class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-[2px] hover:translate-y-[2px] transition-all">person_search</span>
+        </div>
+    </header>
 
-            <!-- Navigation -->
-            <nav class="flex-1 space-y-1">
-                <a href="/" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-surface-200 hover:text-brand-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
-                    <span>Feed</span>
-                </a>
-                <a href="/messages" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-surface-200 hover:text-brand-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                    <span>Messages</span>
-                </a>
-                <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-surface-200 hover:text-brand-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                    <span>Profile</span>
-                </a>
-            </nav>
+    <!-- SideNavBar (Desktop) -->
+    <nav id="sidebar"
+        class="bg-secondary text-on-secondary font-label-md text-label-md fixed left-0 top-0 w-64 h-screen border-r-[3px] border-on-surface hidden md:flex flex-col z-40">
+        <div class="p-6 border-b-[3px] border-on-surface flex justify-between items-center whitespace-nowrap">
+            <div class="sidebar-text">
+                <h1 class="font-headline-sm text-primary">IUT ALUMNI</h1>
+                <p class="font-body-md text-on-secondary/70">Modular Network</p>
+            </div>
+            <button id="sidebar-toggle"
+                class="material-symbols-outlined text-on-secondary hover:text-primary transition-colors focus:outline-none shrink-0">menu_open</button>
+        </div>
+        <div class="flex flex-col gap-2 p-4 flex-1 whitespace-nowrap overflow-hidden">
+            <a th:href="@{/feed}"
+                th:classappend="${activePage == 'feed' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 transition-colors text-on-secondary hover:bg-black/20">
+                <span class="material-symbols-outlined shrink-0">dynamic_feed</span> <span
+                    class="sidebar-text">Feed</span>
+            </a>
+            <a th:href="@{/network}"
+                th:classappend="${activePage == 'network' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">group</span> <span class="sidebar-text">IUT
+                    Network</span>
+            </a>
+            <a th:href="@{/messages}"
+                th:classappend="${activePage == 'messages' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">forum</span> <span class="sidebar-text">Messages</span>
+            </a>
+            <a th:href="@{/notifications}"
+                th:classappend="${activePage == 'notifications' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <div class="relative inline-block shrink-0">
+                    <span class="material-symbols-outlined block">notifications</span>
+                    <span id="notif-badge-desktop" 
+                          hx-get="/notifications/unread-count" hx-trigger="load, every 30s"
+                          class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
+                </div>
+                <span class="sidebar-text">Notifications</span>
+            </a>
+            <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}"
+                th:classappend="${activePage == 'profile' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">person</span> <span class="sidebar-text">Profile</span>
+            </a>
+            <a th:if="${currentUser != null && currentUser.role.name() == 'ALUMNI'}"
+                th:href="@{/profile/{id}#opportunities(id=${currentUser.id})}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">work</span> <span class="sidebar-text">Posted
+                    Opportunities</span>
+            </a>
+        </div>
 
+        <div class="p-4 border-t-[3px] border-on-surface whitespace-nowrap overflow-hidden"
+            th:if="${currentUser != null}">
+            <!-- Dark Mode Toggle -->
+            <button id="theme-toggle"
+                class="w-full flex items-center justify-between p-3 mb-4 text-on-secondary border-[3px] border-on-surface hover:bg-black/20 transition-colors hover-isometric shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]">
+                <span class="font-label-md uppercase sidebar-text">Theme</span>
+                <span class="material-symbols-outlined shrink-0 dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined shrink-0 hidden dark:block">light_mode</span>
+            </button>
             <!-- User Card -->
-            <div th:if="${currentUser}" class="glass-light rounded-xl p-4 mt-auto">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-500 to-accent-teal flex items-center justify-center text-sm font-bold text-white">
-                        <span th:text="${currentUser.initials}">FR</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold truncate" th:text="${currentUser.displayName}">User</p>
-                        <span class="inline-block text-[10px] px-2 py-0.5 rounded-full font-semibold mt-0.5"
-                              th:classappend="${currentUser.role.name() == 'ALUMNI' ? 'badge-alumni' : 'badge-student'}"
-                              th:text="${currentUser.role}">ROLE</span>
-                    </div>
-                    <a href="/logout" class="text-surface-200/40 hover:text-accent-rose transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                    </a>
+            <div
+                class="flex items-center gap-3 p-3 mb-4 border-[3px] border-on-surface bg-surface text-on-surface shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]">
+                <div
+                    class="w-10 h-10 shrink-0 bg-primary flex items-center justify-center text-sm font-bold text-on-primary border-[3px] border-on-surface overflow-hidden">
+                    <img th:if="${currentUser.avatarUrl != null}" th:src="${currentUser.avatarUrl}" class="w-full h-full object-cover">
+                    <span th:if="${currentUser.avatarUrl == null}" th:text="${currentUser.initials}">FR</span>
+                </div>
+                <div class="flex-1 min-w-0 sidebar-text">
+                    <p class="font-headline-sm text-[16px] truncate" th:text="${currentUser.displayName}">User</p>
+                    <p class="font-label-md text-on-surface-variant truncate" th:text="${currentUser.role}">ROLE</p>
                 </div>
             </div>
-        </aside>
 
-        <!-- ═══ Mobile Header ═══ -->
-        <header class="lg:hidden fixed top-0 left-0 right-0 z-50 glass border-b border-white/5 px-4 py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                        </svg>
-                    </div>
-                    <span class="text-lg font-bold bg-gradient-to-r from-brand-400 to-accent-teal bg-clip-text text-transparent">LinkIUT</span>
-                </div>
-                <nav class="flex items-center gap-4">
-                    <a href="/" class="text-surface-200/60 hover:text-brand-400 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
-                    </a>
-                    <a href="/messages" class="text-surface-200/60 hover:text-brand-400 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                    </a>
-                    <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}" class="text-surface-200/60 hover:text-brand-400 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                    </a>
-                </nav>
-            </div>
-        </header>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                    class="w-full flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                    <span class="material-symbols-outlined shrink-0">logout</span> <span
+                        class="sidebar-text">Logout</span>
+                </button>
+            </form>
+        </div>
+    </nav>
 
-        <!-- ═══ Main Content ═══ -->
-        <main class="flex-1 lg:ml-72 pt-16 lg:pt-0">
-            <div layout:fragment="content" class="p-6 lg:p-10">
-                <!-- Page content injected here -->
-            </div>
-        </main>
+    <!-- Main Content Canvas -->
+    <main class="flex-1 md:ml-64 p-5 pb-24 md:pb-5 md:p-[64px] bg-background min-h-screen transition-all duration-300">
+        <div layout:fragment="content">
+            <!-- Page content injected here -->
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t-[3px] border-on-surface flex justify-around items-center h-16 z-50 md:hidden"
+        th:if="${currentUser != null}">
+        <a th:href="@{/feed}"
+            th:classappend="${activePage == 'feed' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'feed' ? 'fill-current' : ''}">dynamic_feed</span>
+            <span class="font-label-md text-[10px] uppercase">Feed</span>
+        </a>
+        <a th:href="@{/network}"
+            th:classappend="${activePage == 'network' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'network' ? 'fill-current' : ''}">group</span>
+            <span class="font-label-md text-[10px] uppercase">Network</span>
+        </a>
+        <a th:href="@{/messages}"
+            th:classappend="${activePage == 'messages' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'messages' ? 'fill-current' : ''}">forum</span>
+            <span class="font-label-md text-[10px] uppercase">Chat</span>
+        </a>
+        <a th:href="@{/notifications}"
+            th:classappend="${activePage == 'notifications' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'notifications' ? 'fill-current' : ''}">notifications</span>
+            <span class="font-label-md text-[10px] uppercase">Alerts</span>
+        </a>
+        <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}"
+            th:classappend="${activePage == 'profile' ? 'text-primary border-t-2 border-primary -mt-[2px]' : 'text-on-surface-variant'}"
+            class="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2">
+            <span class="material-symbols-outlined text-xl"
+                th:classappend="${activePage == 'profile' ? 'fill-current' : ''}">person</span>
+            <span class="font-label-md text-[10px] uppercase">Profile</span>
+        </a>
+    </nav>
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-[0.04] pointer-events-none -z-10"
+        style="background-image: radial-gradient(circle, #2D2926 1px, transparent 1px); background-size: 20px 20px;">
     </div>
+
+    <script>
+
+        // Restore Sidebar State
+        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+
+        // Sidebar Toggle Logic
+        const sidebarBtn = document.getElementById('sidebar-toggle');
+        if (sidebarBtn) {
+            sidebarBtn.addEventListener('click', () => {
+                document.body.classList.toggle('sidebar-collapsed');
+                localStorage.setItem('sidebar-collapsed', document.body.classList.contains('sidebar-collapsed'));
+            });
+        }
+
+        // HTMX CSRF Configuration
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+            if (csrfHeader && csrfToken) {
+                evt.detail.headers[csrfHeader] = csrfToken;
+            }
+        });
+
+        // Dark mode toggle functionality
+        const toggleBtn = document.getElementById('theme-toggle');
+        const toggleMobileBtn = document.getElementById('theme-toggle-mobile');
+
+        function switchTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', switchTheme);
+        }
+        if (toggleMobileBtn) {
+            toggleMobileBtn.addEventListener('click', switchTheme);
+        }
+
+        // HTMX After Swap fixes and Tribute init
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.detail.target.id === 'message-list') {
+                const msgs = document.getElementById('message-list');
+                if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            }
+            initTribute();
+        });
+
+        // Initialize Tribute.js for mentions
+        let tribute = null;
+        function initTribute() {
+            const elements = document.querySelectorAll('.mentionable');
+            if (elements.length > 0) {
+                if (!tribute) {
+                    tribute = new Tribute({
+                        values: function (text, cb) {
+                            fetch('/api/users/search-mentions?q=' + text)
+                                .then(res => res.json())
+                                .then(data => cb(data))
+                                .catch(() => cb([]));
+                        },
+                        lookup: 'displayName',
+                        fillAttr: 'handle',
+                        menuItemTemplate: function (item) {
+                            return `<div class="flex items-center gap-2 p-1">
+                                        <div class="w-6 h-6 bg-primary text-on-primary text-[10px] font-bold flex items-center justify-center overflow-hidden shrink-0">
+                                            ${item.original.avatarUrl ? `<img src="${item.original.avatarUrl}" class="w-full h-full object-cover">` : item.original.initials}
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-sm leading-tight text-on-surface">${item.original.displayName}</div>
+                                            <div class="text-[10px] text-on-surface-variant leading-tight">@${item.original.handle}</div>
+                                        </div>
+                                    </div>`;
+                        },
+                        selectTemplate: function (item) {
+                            return '@' + item.original.handle;
+                        },
+                        requireLeadingSpace: true
+                    });
+                }
+                elements.forEach(el => {
+                    if (!el.hasAttribute('data-tribute')) {
+                        tribute.attach(el);
+                    }
+                });
+            }
+        }
+        
+        // Initial attach
+        initTribute();
+    </script>
 </body>
+
 </html>

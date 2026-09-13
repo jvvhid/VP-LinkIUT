@@ -14,9 +14,18 @@ public interface ProfileRepository extends JpaRepository<UserProfile, Long> {
     Optional<UserProfile> findByUser_Id(Long userId);
 
     @Query("SELECT p FROM UserProfile p " +
-           "LEFT JOIN FETCH p.experiences " +
-           "LEFT JOIN FETCH p.projects " +
            "JOIN FETCH p.user " +
            "WHERE p.user.id = :userId")
     Optional<UserProfile> findByUserIdWithDetails(@Param("userId") Long userId);
+
+    @Query("SELECT p FROM UserProfile p " +
+           "JOIN FETCH p.user u " +
+           "WHERE (:department IS NULL OR :department = '' OR p.department = :department) " +
+           "AND (:batch IS NULL OR :batch = '' OR p.batch = :batch) " +
+           "AND (:hostel IS NULL OR :hostel = '' OR p.hostel = :hostel) " +
+           "AND (:name IS NULL OR :name = '' OR LOWER(u.displayName) LIKE LOWER(CONCAT('%', :name, '%')))")
+    java.util.List<UserProfile> searchNetwork(@Param("department") String department,
+                                              @Param("batch") String batch,
+                                              @Param("hostel") String hostel,
+                                              @Param("name") String name);
 }

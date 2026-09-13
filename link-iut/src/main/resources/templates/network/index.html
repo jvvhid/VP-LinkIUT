@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/main}">
+
+<head>
+    <title>Network Directory</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+
+        <div class="hidden md:flex justify-between items-center mb-8 border-b-[3px] border-on-surface pb-6">
+            <h2 class="text-headline-lg font-headline-lg font-extrabold text-primary tracking-tighter">IUT Network
+                Directory</h2>
+            <a href="/connections"
+                class="bg-primary text-on-primary font-headline-sm uppercase border-[3px] border-on-surface px-6 py-3 shadow-isometric hover-isometric transition-transform flex items-center gap-2">
+                <span class="material-symbols-outlined">group</span> My Connections
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+
+            <!-- Filter Sidebar -->
+            <div class="lg:col-span-3">
+                <div class="border-[3px] border-on-surface shadow-isometric bg-surface sticky top-8">
+                    <div class="h-10 bg-secondary border-b-[3px] border-on-surface flex items-center px-4">
+                        <span class="font-label-md text-label-md text-on-secondary uppercase">Filters</span>
+                    </div>
+                    <div class="p-6">
+                        <form hx-get="/network/search" hx-target="#network-grid"
+                            hx-trigger="change, keyup delay:300ms from:input">
+
+                            <div class="mb-4">
+                                <label class="block font-label-md text-on-surface uppercase mb-2">Search Name</label>
+                                <input type="text" name="name" placeholder="Name..."
+                                    class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 font-body-sm shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,1)] focus:outline-none focus:border-primary">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block font-label-md text-on-surface uppercase mb-2">Department</label>
+                                <select name="department"
+                                    class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 font-body-sm shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,1)] focus:outline-none focus:border-primary">
+                                    <option value="">All Departments</option>
+                                    <option value="CSE">CSE</option>
+                                    <option value="EEE">EEE</option>
+                                    <option value="MCE">MCE</option>
+                                    <option value="CEE">CEE</option>
+                                    <option value="BTM">BTM</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block font-label-md text-on-surface uppercase mb-2">Batch</label>
+                                <input type="text" name="batch" placeholder="e.g. 2019"
+                                    class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 font-body-sm shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,1)] focus:outline-none focus:border-primary">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block font-label-md text-on-surface uppercase mb-2">Hostel</label>
+                                <select name="hostel"
+                                    class="w-full bg-surface-container-low border-[3px] border-on-surface p-2 font-body-sm shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,1)] focus:outline-none focus:border-primary">
+                                    <option value="">All Locations</option>
+                                    <option value="South Hostel">South Hostel</option>
+                                    <option value="North Hostel">North Hostel</option>
+                                    <option value="Non-Residential">Non-Residential</option>
+                                </select>
+                            </div>
+
+                            <!-- Reset Button -->
+                            <button type="reset"
+                                class="mt-4 w-full bg-surface-variant text-on-surface border-[3px] border-on-surface py-2 font-headline-sm uppercase shadow-isometric hover-isometric transition-transform">Reset
+                                Filters</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Grid -->
+            <div class="lg:col-span-9">
+                <div id="network-grid" class="contents">
+                    <th:block th:fragment="profile-grid">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+
+                            <div th:each="profile : ${profiles}"
+                                class="border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric transition-transform animate-fade-in">
+                                <div class="h-24 border-b-[3px] border-on-surface relative"
+                                    th:classappend="${profile.user.role.name() == 'ALUMNI' ? 'bg-secondary' : 'bg-primary'}">
+                                </div>
+
+                                <div class="px-6 pb-6 relative flex flex-col items-center text-center -mt-12">
+                                    <div
+                                        class="w-24 h-24 bg-surface border-[3px] border-on-surface shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] flex items-center justify-center mb-4 overflow-hidden">
+                                        <img th:if="${profile.user.avatarUrl != null}" th:src="${profile.user.avatarUrl}" class="w-full h-full object-cover">
+                                        <span th:if="${profile.user.avatarUrl == null}" class="text-3xl font-headline-lg text-on-surface font-extrabold"
+                                            th:text="${profile.user.initials}">FR</span>
+                                    </div>
+
+                                    <h3 class="font-headline-md text-headline-md text-on-surface mb-1">
+                                        <a th:href="@{/profile/{id}(id=${profile.user.id})}"
+                                            class="hover:text-primary transition-colors"
+                                            th:text="${profile.user.displayName}">Name</a>
+                                    </h3>
+                                    <p class="font-body-sm text-on-surface-variant mb-4 line-clamp-2"
+                                        th:text="${profile.headline}">Headline</p>
+
+                                    <div class="flex flex-wrap justify-center gap-2 mb-4">
+                                        <span th:if="${profile.department}"
+                                            class="text-[10px] uppercase font-bold bg-surface-container-low border-[3px] border-on-surface px-2 py-1"
+                                            th:text="${profile.department + ' ' + profile.batch}">CSE 2018</span>
+                                        <span th:if="${profile.hostel}"
+                                            class="text-[10px] uppercase font-bold bg-surface-container-low border-[3px] border-on-surface px-2 py-1"
+                                            th:text="${profile.hostel}">South</span>
+                                        <span
+                                            class="text-[10px] uppercase font-bold bg-surface-variant border-[3px] border-on-surface px-2 py-1"
+                                            th:text="${profile.user.role}">ALUMNI</span>
+                                    </div>
+
+                                    <a th:href="@{/profile/{id}(id=${profile.user.id})}"
+                                        class="mt-auto w-full bg-surface border-[3px] border-on-surface text-on-surface font-headline-sm uppercase py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover:bg-primary hover:text-on-primary transition-colors block text-center">
+                                        View Profile
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Empty State -->
+                            <div th:if="${#lists.isEmpty(profiles)}"
+                                class="col-span-1 md:col-span-2 border-[3px] border-on-surface p-12 bg-surface text-center shadow-isometric">
+                                <span
+                                    class="material-symbols-outlined text-4xl text-on-surface-variant mb-4">search_off</span>
+                                <p class="font-headline-sm text-on-surface-variant">No profiles found matching those
+                                    filters.</p>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

@@ -19,8 +19,17 @@ public class Message {
     @JoinColumn(name = "sender_id", nullable = false)
     private AppUser sender;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "photo_url")
+    private String photoUrl;
+
+    @Column(name = "video_url")
+    private String videoUrl;
+
+    @Column(name = "audio_url")
+    private String audioUrl;
 
     @Column(name = "sent_at", nullable = false, updatable = false)
     private LocalDateTime sentAt = LocalDateTime.now();
@@ -46,6 +55,15 @@ public class Message {
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+
+    public String getPhotoUrl() { return photoUrl; }
+    public void setPhotoUrl(String photoUrl) { this.photoUrl = photoUrl; }
+
+    public String getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
+    public String getAudioUrl() { return audioUrl; }
+    public void setAudioUrl(String audioUrl) { this.audioUrl = audioUrl; }
 
     public LocalDateTime getSentAt() { return sentAt; }
     public void setSentAt(LocalDateTime sentAt) { this.sentAt = sentAt; }

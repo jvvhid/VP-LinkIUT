@@ -33,12 +33,23 @@ public class UserProfile {
     @Column(name = "linkedin_url")
     private String linkedinUrl;
 
+    @Column(name = "github_url")
+    private String githubUrl;
+
+    @Column(name = "office_hours")
+    private String officeHours;
+
+    private String hostel;
+
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("startDate DESC")
     private List<Experience> experiences = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Project> projects = new ArrayList<>();
+
+    @Column(columnDefinition = "TEXT")
+    private String skills;
 
     // ── Constructors ─────────────────────────────────────────
     public UserProfile() {}
@@ -71,9 +82,26 @@ public class UserProfile {
     public String getLinkedinUrl() { return linkedinUrl; }
     public void setLinkedinUrl(String linkedinUrl) { this.linkedinUrl = linkedinUrl; }
 
+    public String getGithubUrl() { return githubUrl; }
+    public void setGithubUrl(String githubUrl) { this.githubUrl = githubUrl; }
+
+    public String getOfficeHours() { return officeHours; }
+    public void setOfficeHours(String officeHours) { this.officeHours = officeHours; }
+
+    public String getHostel() { return hostel; }
+    public void setHostel(String hostel) { this.hostel = hostel; }
+
     public List<Experience> getExperiences() { return experiences; }
     public void setExperiences(List<Experience> experiences) { this.experiences = experiences; }
 
     public List<Project> getProjects() { return projects; }
     public void setProjects(List<Project> projects) { this.projects = projects; }
+
+    public String getSkills() { return skills; }
+    public void setSkills(String skills) { this.skills = skills; }
+
+    public String[] getSkillList() {
+        if (skills == null || skills.isBlank()) return new String[0];
+        return skills.split("\\s*,\\s*");
+    }
 }

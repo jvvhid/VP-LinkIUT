@@ -1,116 +1,197 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In — LinkIUT</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800&family=Hanken+Grotesk:wght@400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: "class",
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    fontFamily: { 
+                        'headline-lg': ['Anybody', 'sans-serif'], 
+                        'headline-md': ['Anybody', 'sans-serif'], 
+                        'headline-sm': ['Anybody', 'sans-serif'],
+                        'body-md': ['Hanken Grotesk', 'sans-serif'],
+                        'body-sm': ['Hanken Grotesk', 'sans-serif'],
+                        'label-md': ['JetBrains Mono', 'monospace']
+                    },
                     colors: {
-                        brand: { 400: '#599dff', 500: '#3377ff', 600: '#1b55f5', 700: '#1440e1' },
-                        surface: { 800: '#0f172a', 900: '#020617' },
-                        accent: { teal: '#2dd4bf', violet: '#a78bfa' }
-                    }
+                        "primary": "var(--color-primary)",
+                        "on-primary": "var(--color-on-primary)",
+                        "primary-container": "var(--color-primary-container)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "secondary": "var(--color-secondary)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "tertiary": "var(--color-tertiary)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "background": "var(--color-background)",
+                        "on-background": "var(--color-on-background)",
+                        "surface": "var(--color-surface)",
+                        "on-surface": "var(--color-on-surface)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "error": "var(--color-error)",
+                        "on-error": "var(--color-on-error)",
+                        "error-container": "var(--color-error-container)",
+                        "on-error-container": "var(--color-on-error-container)",
+                    },
+                    spacing: { 'gutter': '24px' },
+                    boxShadow: { 'isometric': '4px 4px 0px 0px var(--color-on-surface)' }
                 }
             }
         }
     </script>
     <style>
-        * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background: #020617; }
-        .bg-orb { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.12; pointer-events: none; }
-        .bg-orb-1 { width: 500px; height: 500px; background: #3377ff; top: -15%; left: -10%; animation: drift1 20s ease-in-out infinite; }
-        .bg-orb-2 { width: 400px; height: 400px; background: #2dd4bf; bottom: -10%; right: -5%; animation: drift2 25s ease-in-out infinite; }
-        @keyframes drift1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(60px,40px); } }
-        @keyframes drift2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-50px,-40px); } }
-        @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        /* Attractive Sophisticated Palette */
+        :root {
+            --color-background: #F4F1EA;
+            --color-on-background: #2C3E50;
+            --color-surface: #FFFFFF;
+            --color-on-surface: #2C3E50;
+            --color-primary: #D35400;
+            --color-on-primary: #FFFFFF;
+            --color-primary-container: #E67E22;
+            --color-on-primary-container: #FFFFFF;
+            --color-secondary: #2C3E50;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #16A085;
+            --color-on-tertiary: #FFFFFF;
+            --color-surface-variant: #EAE6DF;
+            --color-on-surface-variant: #5A6D7C;
+            --color-surface-container-low: #F9F8F6;
+            --color-surface-container-highest: #D5D0C5;
+            --color-error: #C0392B;
+            --color-on-error: #FFFFFF;
+            --color-error-container: #F2D7D5;
+            --color-on-error-container: #641E16;
+        }
+        .dark {
+            --color-background: #000000;
+            --color-on-background: #FFFFFF;
+            --color-surface: #000000;
+            --color-on-surface: #FFFFFF;
+            --color-primary: #E67E22;
+            --color-on-primary: #000000;
+            --color-primary-container: #000000;
+            --color-on-primary-container: #E67E22;
+            --color-secondary: #000000;
+            --color-on-secondary: #FFFFFF;
+            --color-tertiary: #1ABC9C;
+            --color-on-tertiary: #000000;
+            --color-surface-variant: #000000;
+            --color-on-surface-variant: #A4B0BE;
+            --color-surface-container-low: #000000;
+            --color-surface-container-highest: #111111;
+            --color-error: #E74C3C;
+            --color-on-error: #000000;
+            --color-error-container: #000000;
+            --color-on-error-container: #E74C3C;
+        }
+
+        * { font-family: 'Hanken Grotesk', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline-lg, .font-headline-md, .font-headline-sm {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 800;
+        }
+        .font-label-md {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        body { background: var(--color-background); color: var(--color-on-background); }
+        .hover-isometric { transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out; }
+        .hover-isometric:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px var(--color-on-surface); cursor: pointer; }
+        .hover-isometric:active { transform: translate(4px, 4px); box-shadow: none; }
+        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-up { animation: fade-in-up 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center px-4 antialiased">
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-
-    <div class="relative z-10 w-full max-w-md" style="animation: fadeInUp 0.7s ease-out forwards">
+<body class="min-h-screen flex flex-col items-center justify-center py-10 px-4 antialiased overflow-y-auto bg-background text-on-background">
+    <!-- Main Content Wrapper -->
+    <div id="main-content" class="w-full max-w-md mx-auto">
         <!-- Logo -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-lg shadow-brand-500/25 mb-4">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 border-[3px] border-on-surface bg-primary shadow-isometric mb-3">
+                <span class="material-symbols-outlined text-3xl text-on-primary font-bold">link</span>
             </div>
-            <h1 class="text-3xl font-bold bg-gradient-to-r from-brand-400 to-accent-teal bg-clip-text text-transparent">LinkIUT</h1>
-            <p class="text-sm text-slate-400 mt-1">Alumni-Student Networking Hub</p>
+            <h1 class="text-3xl font-headline-lg text-on-surface tracking-tighter">LINKIUT</h1>
+            <p class="text-xs font-label-md text-on-surface-variant uppercase mt-1">Alumni-Student Networking Hub</p>
         </div>
 
-        <!-- Login Card -->
-        <div class="backdrop-blur-xl bg-white/[0.04] border border-white/[0.06] rounded-2xl p-8 shadow-2xl">
+        <!-- Login Section -->
+        <div class="border-[3px] border-on-surface shadow-isometric bg-surface p-8 flex flex-col hover-isometric transition-transform animate-fade-in-up">
+            
             <!-- Error -->
-            <div th:if="${param.error}" class="mb-5 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400 flex items-center gap-2">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+            <div th:if="${param.error}" class="mb-6 p-4 border-[3px] border-on-surface bg-error-container text-on-error-container font-body-md font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined">error</span>
                 Invalid email or password.
             </div>
 
             <!-- Logout -->
-            <div th:if="${param.logout}" class="mb-5 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-400 flex items-center gap-2">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <div th:if="${param.logout}" class="mb-6 p-4 border-[3px] border-on-surface bg-primary-container text-on-primary-container font-body-md font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined">logout</span>
                 You have been signed out.
             </div>
 
             <!-- Registration success -->
-            <div th:if="${param.registered}" class="mb-5 px-4 py-3 rounded-xl bg-brand-500/10 border border-brand-500/20 text-sm text-brand-400 flex items-center gap-2">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Account created successfully! Sign in to get started.
+            <div th:if="${param.registered}" class="mb-6 p-4 border-[3px] border-on-surface bg-secondary text-on-secondary font-body-md font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined">check_circle</span>
+                Account created successfully! Sign in.
             </div>
 
-            <form th:action="@{/login}" method="post" class="space-y-5">
+            <form th:action="@{/login}" method="post" class="space-y-6">
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1.5" for="username">Email</label>
+                    <label class="block font-label-md text-on-surface uppercase mb-2" for="username">Email</label>
                     <input type="text" id="username" name="username" placeholder="alumni@iut.edu"
-                           class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface focus:outline-none focus:border-primary" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1.5" for="password">Password</label>
+                    <label class="block font-label-md text-on-surface uppercase mb-2" for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="••••••••"
-                           class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" required>
+                           class="w-full bg-surface-container-low border-[3px] border-on-surface p-3 font-body-md text-on-surface focus:outline-none focus:border-primary" required>
                 </div>
                 <button type="submit" id="login-submit"
-                        class="w-full bg-gradient-to-r from-brand-500 to-brand-600 text-white py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                        class="w-full bg-primary text-on-primary font-headline-md uppercase border-[3px] border-on-surface py-3 shadow-isometric hover-isometric transition-all">
                     Sign In
                 </button>
             </form>
 
             <!-- Demo credentials -->
-            <div class="mt-6 pt-5 border-t border-white/[0.06]">
-                <p class="text-xs text-slate-500 text-center mb-3">Demo Accounts</p>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="document.getElementById('username').value='alumni@iut.edu'; document.getElementById('password').value='password';"
-                            class="text-xs px-3 py-2.5 rounded-lg bg-amber-500/10 border border-amber-500/15 text-amber-400 hover:bg-amber-500/15 transition-colors text-center cursor-pointer">
-                        🎓 Alumni
+            <div class="mt-8 pt-6 border-t-[3px] border-on-surface border-dotted">
+                <p class="font-label-md text-on-surface-variant text-center mb-4 uppercase">Demo Accounts</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="document.getElementById('username').value='alumni@iut.edu'; document.getElementById('password').value='123456';"
+                            class="font-label-md uppercase bg-secondary text-on-secondary border-[3px] border-on-surface py-2 shadow-isometric hover-isometric transition-all text-center flex justify-center items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">school</span>
+                        ALUMNI
                     </button>
-                    <button onclick="document.getElementById('username').value='student@iut.edu'; document.getElementById('password').value='password';"
-                            class="text-xs px-3 py-2.5 rounded-lg bg-teal-500/10 border border-teal-500/15 text-teal-400 hover:bg-teal-500/15 transition-colors text-center cursor-pointer">
-                        📚 Student
+                    <button onclick="document.getElementById('username').value='student@iut.edu'; document.getElementById('password').value='123456';"
+                            class="font-label-md uppercase bg-tertiary text-on-tertiary border-[3px] border-on-surface py-2 shadow-isometric hover-isometric transition-all text-center flex justify-center items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">menu_book</span>
+                        STUDENT
                     </button>
                 </div>
             </div>
 
             <!-- Sign up link -->
-            <div class="mt-5 pt-5 border-t border-white/[0.06] text-center">
-                <p class="text-sm text-slate-500">Don't have an account?
-                    <a href="/register" class="text-brand-400 hover:text-brand-300 font-medium transition-colors">Create one</a>
+            <div class="mt-6 pt-6 border-t-[3px] border-on-surface border-dotted text-center">
+                <p class="font-body-md text-on-surface-variant">Don't have an account?
+                    <a href="/register" class="text-primary font-bold hover:underline">Build one</a>
                 </p>
             </div>
         </div>
 
-        <p class="text-center text-xs text-slate-600 mt-6">IUT Dhaka — Islamic University of Technology</p>
+        <p class="mt-8 text-center font-label-md text-on-surface-variant uppercase text-xs">IUT Dhaka — Islamic University of Technology</p>
     </div>
+
+
 </body>
 </html>
