@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Job & Internship Portal</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8 border-b-[3px] border-on-surface pb-4">
+        <div>
+            <h1 class="font-headline-xl text-primary uppercase">Job & Internship Portal</h1>
+            <p class="font-body-md text-on-surface-variant">Explore career opportunities posted by IUT Alumni.</p>
+        </div>
+        <div class="flex gap-4">
+            <a th:href="@{/jobs/my-applications}" class="px-4 py-2 border-[3px] border-on-surface bg-surface text-on-surface font-label-md uppercase hover-isometric shadow-isometric">My Applications</a>
+            <a th:if="${currentUser != null && currentUser.role.name() == 'ALUMNI'}" th:href="@{/jobs/create}" class="px-4 py-2 border-[3px] border-on-surface bg-primary text-on-primary font-label-md uppercase hover-isometric shadow-isometric">+ Post a Job</a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div th:each="job : ${jobs}" class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-start mb-3">
+                    <span th:text="${job.jobType}" class="px-2 py-1 text-xs font-bold uppercase border border-on-surface bg-tertiary text-on-tertiary">JOB TYPE</span>
+                    <span th:text="${#temporals.format(job.createdAt, 'dd MMM yyyy')}" class="text-xs text-on-surface-variant">Date</span>
+                </div>
+                <h2 th:text="${job.title}" class="font-headline-md text-xl font-extrabold mb-1">Job Title</h2>
+                <p th:text="${job.company}" class="font-bold text-primary mb-3">Company Name</p>
+
+                <p th:if="${job.location}" class="text-sm text-on-surface-variant mb-2 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">location_on</span>
+                    <span th:text="${job.location}">Location</span>
+                </p>
+
+                <p th:text="${#strings.abbreviate(job.description, 120)}" class="text-sm text-on-surface mb-4">Description snippet...</p>
+            </div>
+
+            <div class="border-t border-on-surface/20 pt-4 flex justify-between items-center">
+                <span th:if="${job.salaryRange}" th:text="${job.salaryRange}" class="font-label-md text-xs font-bold text-secondary">Salary</span>
+                <a th:href="@{/jobs/{id}(id=${job.id})}" class="px-3 py-1 bg-secondary text-on-secondary font-label-md text-xs uppercase hover:bg-primary transition-colors">View Details & Apply</a>
+            </div>
+        </div>
+
+        <div th:if="${jobs.isEmpty()}" class="col-span-full border-[3px] border-on-surface p-12 text-center bg-surface">
+            <span class="material-symbols-outlined text-6xl text-on-surface-variant mb-4">work_off</span>
+            <h3 class="font-headline-md text-2xl mb-2">No Active Job Postings</h3>
+            <p class="text-on-surface-variant">Check back later or ask seniors to post opportunities!</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

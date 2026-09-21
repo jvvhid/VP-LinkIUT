@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${deptCode + ' Department Hub'}">Department Hub</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-6xl mx-auto">
+    <div class="border-b-[3px] border-on-surface pb-4 mb-8">
+        <h1 class="font-headline-xl text-primary uppercase" th:text="${deptCode + ' Department Hub'}">DEPT HUB</h1>
+        <p class="font-body-md text-on-surface-variant">Showing all registered students and alumni in this department.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div th:each="m : ${members}" class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric flex gap-4 items-center">
+            <div class="w-14 h-14 bg-primary text-on-primary font-bold flex items-center justify-center border-[2px] border-on-surface shrink-0">
+                <span th:text="${m.user.initials}">U</span>
+            </div>
+            <div>
+                <a th:href="@{/profile/{id}(id=${m.user.id})}" th:text="${m.user.displayName}" class="font-bold text-lg text-on-surface hover:text-primary block">Member Name</a>
+                <p th:text="${m.headline}" class="text-xs text-on-surface-variant mb-1">Headline</p>
+                <span th:text="${m.user.role}" class="px-2 py-0.5 text-[10px] font-bold uppercase border border-on-surface bg-tertiary text-on-tertiary">ROLE</span>
+            </div>
+        </div>
+
+        <div th:if="${members.isEmpty()}" class="col-span-full border-[3px] border-on-surface p-12 text-center bg-surface">
+            <p class="text-on-surface-variant">No members currently registered under this department.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

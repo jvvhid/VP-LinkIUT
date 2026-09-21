@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Post a New Job Opportunity</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-3xl mx-auto">
+    <div class="border-[3px] border-on-surface bg-surface p-8 shadow-isometric">
+        <h1 class="font-headline-xl text-2xl text-primary uppercase mb-6 border-b-[3px] border-on-surface pb-3">Post a Job / Internship</h1>
+
+        <form th:action="@{/jobs/create}" method="post" class="flex flex-col gap-6">
+            <div>
+                <label class="block font-label-md uppercase text-xs mb-2">Job Title *</label>
+                <input type="text" name="title" required placeholder="e.g. Software Engineer (Backend)" class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-label-md uppercase text-xs mb-2">Company Name *</label>
+                    <input type="text" name="company" required placeholder="e.g. Brain Station 23" class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-label-md uppercase text-xs mb-2">Location *</label>
+                    <input type="text" name="location" required placeholder="e.g. Dhaka, BD (or Remote)" class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-label-md uppercase text-xs mb-2">Job Type *</label>
+                    <select name="jobType" class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none">
+                        <option th:each="jt : ${jobTypes}" th:value="${jt}" th:text="${jt}">FULL_TIME</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-label-md uppercase text-xs mb-2">Salary Range / Compensation</label>
+                    <input type="text" name="salaryRange" placeholder="e.g. 50,000 - 70,000 BDT/month" class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-label-md uppercase text-xs mb-2">Job Description *</label>
+                <textarea name="description" rows="5" required placeholder="Provide role details, key responsibilities..." class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-label-md uppercase text-xs mb-2">Requirements / Tech Stack</label>
+                <textarea name="requirements" rows="3" placeholder="e.g. Java, Spring Boot, MySQL, REST APIs" class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-label-md uppercase text-xs mb-2">Required Skills (comma-separated) — Powers AI Readiness Tracker</label>
+                <input type="text" name="requiredSkills" placeholder="e.g. Java, Spring Boot, SQL, Docker, REST API" class="w-full p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none">
+                <p class="text-xs text-on-surface-variant mt-1">These skills will be used by our AI to calculate applicant readiness scores.</p>
+            </div>
+
+            <button type="submit" class="w-full py-4 border-[3px] border-on-surface bg-primary text-on-primary font-headline-md uppercase text-lg hover-isometric shadow-isometric">Publish Opportunity</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,8 +25,12 @@ public interface ProfileRepository extends JpaRepository<UserProfile, Long> {
            "AND (:batch IS NULL OR :batch = '' OR p.batch = :batch) " +
            "AND (:hostel IS NULL OR :hostel = '' OR p.hostel = :hostel) " +
            "AND (:name IS NULL OR :name = '' OR LOWER(u.displayName) LIKE LOWER(CONCAT('%', :name, '%')))")
-    java.util.List<UserProfile> searchNetwork(@Param("department") String department,
-                                              @Param("batch") String batch,
-                                              @Param("hostel") String hostel,
-                                              @Param("name") String name);
+    List<UserProfile> searchNetwork(@Param("department") String department,
+                                    @Param("batch") String batch,
+                                    @Param("hostel") String hostel,
+                                    @Param("name") String name);
+
+    List<UserProfile> findByUser_DisplayNameContainingIgnoreCaseOrHeadlineContainingIgnoreCaseOrDepartmentContainingIgnoreCase(String name, String headline, String dept);
+
+    List<UserProfile> findByDepartmentIgnoreCase(String department);
 }

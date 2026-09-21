@@ -3,6 +3,7 @@ package edu.iutdhaka.linkiut.repository;
 import edu.iutdhaka.linkiut.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,8 +15,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllWithAuthor();
 
     @Query("SELECT p FROM Post p JOIN FETCH p.author WHERE p.author.id = :authorId ORDER BY p.createdAt DESC")
-    List<Post> findByAuthorId(Long authorId);
+    List<Post> findByAuthorId(@Param("authorId") Long authorId);
 
     @Query("SELECT p FROM Post p JOIN FETCH p.author WHERE LOWER(p.content) LIKE LOWER(CONCAT('%', :query, '%')) ORDER BY p.createdAt DESC")
-    List<Post> searchByContent(String query);
+    List<Post> searchByContent(@Param("query") String query);
+
+    List<Post> findByContentContainingIgnoreCase(String query);
 }

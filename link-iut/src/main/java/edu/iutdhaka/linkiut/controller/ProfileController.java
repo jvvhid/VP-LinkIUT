@@ -26,6 +26,7 @@ public class ProfileController {
     private final ProfileVisitRepository profileVisitRepository;
     private final edu.iutdhaka.linkiut.service.FileUploadService fileUploadService;
     private final edu.iutdhaka.linkiut.repository.ConnectionRepository connectionRepository;
+    private final edu.iutdhaka.linkiut.repository.RecommendationRepository recommendationRepository;
 
     public ProfileController(ProfileRepository profileRepository, UserRepository userRepository,
             edu.iutdhaka.linkiut.service.PostService postService,
@@ -33,7 +34,8 @@ public class ProfileController {
             edu.iutdhaka.linkiut.repository.EndorsementRepository endorsementRepository,
             ProfileVisitRepository profileVisitRepository,
             edu.iutdhaka.linkiut.service.FileUploadService fileUploadService,
-            edu.iutdhaka.linkiut.repository.ConnectionRepository connectionRepository) {
+            edu.iutdhaka.linkiut.repository.ConnectionRepository connectionRepository,
+            edu.iutdhaka.linkiut.repository.RecommendationRepository recommendationRepository) {
         this.profileRepository = profileRepository;
         this.userRepository = userRepository;
         this.postService = postService;
@@ -42,6 +44,7 @@ public class ProfileController {
         this.profileVisitRepository = profileVisitRepository;
         this.fileUploadService = fileUploadService;
         this.connectionRepository = connectionRepository;
+        this.recommendationRepository = recommendationRepository;
     }
 
     /**
@@ -62,6 +65,7 @@ public class ProfileController {
         model.addAttribute("profileUser", profile.getUser());
         model.addAttribute("opportunities", postService.getPostsByUser(userId).stream().filter(edu.iutdhaka.linkiut.model.Post::isOpportunity).toList());
         model.addAttribute("connectionCount", connectionService.getConnectionCount(userId));
+        model.addAttribute("isOwnProfile", false);
 
         // Add current user for "Start Chat" button visibility
         if (userDetails != null) {
@@ -99,6 +103,15 @@ public class ProfileController {
             });
         }
         model.addAttribute("profileViews", profileVisitRepository.countByProfileId(profile.getId()));
+
+        model.addAttribute("recommendations", recommendationRepository.findByReceiver_IdAndApprovedTrueOrderByCreatedAtDesc(userId));
+        if (userDetails != null) {
+            userRepository.findByEmail(userDetails.getUsername()).ifPresent(u -> {
+                if (u.getId().equals(userId)) {
+                    model.addAttribute("pendingRecommendations", recommendationRepository.findByReceiver_IdAndApprovedFalseOrderByCreatedAtDesc(userId));
+                }
+            });
+        }
 
         model.addAttribute("activePage", "profile");
         return "profile/view";

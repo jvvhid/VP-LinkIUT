@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>My Submitted Applications</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-4xl mx-auto">
+    <h1 class="font-headline-xl text-primary uppercase mb-6 border-b-[3px] border-on-surface pb-3">My Job Applications</h1>
+
+    <div class="flex flex-col gap-4">
+        <div th:each="app : ${applications}" class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric flex justify-between items-center">
+            <div>
+                <h3 th:text="${app.jobPosting.title}" class="font-headline-md text-lg font-bold">Job Title</h3>
+                <p th:text="${app.jobPosting.company}" class="text-primary font-bold text-sm">Company</p>
+                <span th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy, HH:mm')}" class="text-xs text-on-surface-variant block mt-1">Applied Date</span>
+            </div>
+            <div>
+                <span th:text="${app.status}" class="px-3 py-1 font-label-md text-xs font-bold uppercase border border-on-surface bg-tertiary text-on-tertiary">STATUS</span>
+            </div>
+        </div>
+
+        <div th:if="${applications.isEmpty()}" class="border-[3px] border-on-surface p-12 text-center bg-surface">
+            <p class="text-on-surface-variant">You have not submitted any job applications yet.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

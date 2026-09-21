@@ -13,10 +13,10 @@ public interface ConnectionRepository extends JpaRepository<Connection, Long> {
 
     Optional<Connection> findByRequesterIdAndReceiverId(Long requesterId, Long receiverId);
 
-    @Query("SELECT c FROM Connection c WHERE c.receiver.id = :userId AND c.status = 'PENDING'")
+    @Query("SELECT c FROM Connection c JOIN FETCH c.requester JOIN FETCH c.receiver WHERE c.receiver.id = :userId AND c.status = 'PENDING'")
     List<Connection> findPendingForUser(Long userId);
 
-    @Query("SELECT c FROM Connection c WHERE (c.requester.id = :userId OR c.receiver.id = :userId) AND c.status = 'ACCEPTED'")
+    @Query("SELECT c FROM Connection c JOIN FETCH c.requester JOIN FETCH c.receiver WHERE (c.requester.id = :userId OR c.receiver.id = :userId) AND c.status = 'ACCEPTED'")
     List<Connection> findAcceptedConnections(Long userId);
 
     @Query("SELECT COUNT(c) FROM Connection c WHERE (c.requester.id = :userId OR c.receiver.id = :userId) AND c.status = 'ACCEPTED'")

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Alumni Career Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-6xl mx-auto">
+    <div class="border-b-[3px] border-on-surface pb-4 mb-8">
+        <h1 class="font-headline-xl text-primary uppercase">IUT Alumni Career Pathway Analytics</h1>
+        <p class="font-body-md text-on-surface-variant">Real-time statistics on graduate distribution, top employers, and departments.</p>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric text-center">
+            <h3 class="font-label-md text-xs uppercase text-on-surface-variant mb-2">Registered Students</h3>
+            <span th:text="${totalStudents}" class="font-headline-xl text-4xl text-primary font-black">0</span>
+        </div>
+        <div class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric text-center">
+            <h3 class="font-label-md text-xs uppercase text-on-surface-variant mb-2">Registered Alumni</h3>
+            <span th:text="${totalAlumni}" class="font-headline-xl text-4xl text-secondary font-black">0</span>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric">
+            <h3 class="font-headline-md text-lg text-primary uppercase mb-4 text-center">Department Distribution</h3>
+            <canvas id="deptChart"></canvas>
+        </div>
+        <div class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric">
+            <h3 class="font-headline-md text-lg text-secondary uppercase mb-4 text-center">Top Employers</h3>
+            <canvas id="companyChart"></canvas>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const deptData = /*[[${deptDistribution}]]*/ {};
+        const companyData = /*[[${topCompanies}]]*/ {};
+
+        // Dept Chart
+        new Chart(document.getElementById('deptChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(deptData),
+                datasets: [{
+                    data: Object.values(deptData),
+                    backgroundColor: ['#7B241C', '#0A1128', '#D4AF37', '#922B21', '#5A6D7C', '#C0392B']
+                }]
+            }
+        });
+
+        // Company Chart
+        new Chart(document.getElementById('companyChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(companyData),
+                datasets: [{
+                    label: 'Alumni Count',
+                    data: Object.values(companyData),
+                    backgroundColor: '#0A1128'
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

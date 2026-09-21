@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "post")
@@ -50,6 +52,13 @@ public class Post {
     @JoinColumn(name = "poll_id")
     private Poll poll;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<PostReaction> reactions = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "original_post_id")
+    private Post originalPost;
+
     public Post() {}
 
     public Post(AppUser author, String content) {
@@ -92,6 +101,22 @@ public class Post {
         if (likes == null) return 0;
         return (int) likes.stream().filter(l -> !l.isDislike()).count();
     }
+
+    public int getReactionCount() {
+        return reactions != null ? reactions.size() : 0;
+    }
+
+    public int getTotalEngagement() {
+        return getLikeCount() + getReactionCount();
+    }
+
+    public Set<PostReaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(Set<PostReaction> reactions) {
+        this.reactions = reactions;
+    }
     
     public int getDislikeCount() {
         if (likes == null) return 0;
@@ -130,5 +155,13 @@ public class Post {
 
     public void setPoll(Poll poll) {
         this.poll = poll;
+    }
+
+    public Post getOriginalPost() {
+        return originalPost;
+    }
+
+    public void setOriginalPost(Post originalPost) {
+        this.originalPost = originalPost;
     }
 }

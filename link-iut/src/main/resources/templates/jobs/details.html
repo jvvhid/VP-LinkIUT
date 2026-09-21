@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="${job.title}">Job Details</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-4xl mx-auto">
+    <div class="border-[3px] border-on-surface bg-surface p-8 shadow-isometric mb-6">
+        <div class="flex justify-between items-start border-b-[3px] border-on-surface pb-6 mb-6">
+            <div>
+                <span th:text="${job.jobType}" class="px-3 py-1 text-xs font-bold uppercase border border-on-surface bg-tertiary text-on-tertiary mb-3 inline-block">JOB TYPE</span>
+                <h1 th:text="${job.title}" class="font-headline-xl text-3xl font-extrabold text-on-surface mb-2">Job Title</h1>
+                <p th:text="${job.company}" class="text-xl font-bold text-primary mb-1">Company</p>
+                <p th:if="${job.location}" class="text-sm text-on-surface-variant flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">location_on</span>
+                    <span th:text="${job.location}">Location</span>
+                </p>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-on-surface-variant block mb-2" th:text="${#temporals.format(job.createdAt, 'dd MMM yyyy')}">Date</span>
+                <span th:if="${job.salaryRange}" class="px-3 py-1 bg-secondary text-on-secondary font-label-md text-sm font-bold block" th:text="${job.salaryRange}">Salary</span>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="font-headline-md text-lg text-primary uppercase mb-3">Job Description</h3>
+            <p th:text="${job.description}" class="whitespace-pre-line text-on-surface leading-relaxed">Description...</p>
+        </div>
+
+        <div th:if="${job.requirements != null && !job.requirements.isBlank()}" class="mb-8">
+            <h3 class="font-headline-md text-lg text-primary uppercase mb-3">Requirements</h3>
+            <p th:text="${job.requirements}" class="whitespace-pre-line text-on-surface leading-relaxed">Requirements...</p>
+        </div>
+
+        <!-- Required Skills Tags -->
+        <div th:if="${job.requiredSkills != null && !job.requiredSkills.isBlank()}" class="mb-8">
+            <h3 class="font-headline-md text-lg text-primary uppercase mb-3">Required Skills</h3>
+            <div class="flex flex-wrap gap-2">
+                <span th:each="skill : ${job.requiredSkillList}" th:text="${skill}"
+                      class="px-3 py-1 text-xs font-bold uppercase border-[2px] border-on-surface bg-surface-variant text-on-surface">SKILL</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ AI JOB READINESS SCORE ═══ -->
+    <div th:if="${readiness != null}" class="border-[3px] border-on-surface bg-surface shadow-isometric mb-6 animate-fade-in-up">
+        <!-- Header -->
+        <div class="h-12 bg-secondary border-b-[3px] border-on-surface flex items-center px-4 gap-2">
+            <span class="material-symbols-outlined text-tertiary">psychology</span>
+            <h3 class="font-headline-md text-sm text-on-secondary uppercase tracking-wider">AI Job Readiness Tracker</h3>
+        </div>
+
+        <div class="p-6">
+            <div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                <!-- Circular Score -->
+                <div class="flex flex-col items-center shrink-0">
+                    <div class="relative w-36 h-36">
+                        <svg class="w-36 h-36 transform -rotate-90" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="52" fill="none" stroke-width="10"
+                                    class="stroke-surface-variant opacity-50"/>
+                            <circle id="score-ring" cx="60" cy="60" r="52" fill="none" stroke-width="10"
+                                    stroke-linecap="square"
+                                    th:attr="stroke-dasharray=${readiness.score() * 3.267} + ' 326.7'"
+                                    th:classappend="${readiness.score() >= 70 ? 'stroke-[#27ae60]' : readiness.score() >= 40 ? 'stroke-[#D4AF37]' : 'stroke-[#C0392B]'}"
+                                    style="transition: stroke-dasharray 1.5s ease-out;"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span th:text="${readiness.score() + '%'}" class="font-headline-xl text-3xl font-black text-on-surface">0%</span>
+                            <span class="text-[10px] font-label-md uppercase text-on-surface-variant">Readiness</span>
+                        </div>
+                    </div>
+                    <p th:text="${readiness.summary()}" class="text-xs text-center text-on-surface-variant mt-3 max-w-[200px]">Summary</p>
+                </div>
+
+                <!-- Skills Breakdown -->
+                <div class="flex-1 w-full">
+                    <!-- Matched Skills -->
+                    <div th:if="${!readiness.matchedSkills().isEmpty()}" class="mb-4">
+                        <h4 class="font-label-md text-xs uppercase text-on-surface-variant mb-2 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[#27ae60] text-sm">check_circle</span>
+                            Skills You Have (<span th:text="${readiness.matchedSkills().size()}">0</span>)
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span th:each="skill : ${readiness.matchedSkills()}" th:text="${skill}"
+                                  class="px-3 py-1 text-xs font-bold uppercase border-[2px] border-[#27ae60] bg-[#27ae60]/10 text-[#27ae60]">SKILL</span>
+                        </div>
+                    </div>
+
+                    <!-- Missing Skills -->
+                    <div th:if="${!readiness.missingSkills().isEmpty()}" class="mb-4">
+                        <h4 class="font-label-md text-xs uppercase text-on-surface-variant mb-2 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[#C0392B] text-sm">cancel</span>
+                            Skills to Develop (<span th:text="${readiness.missingSkills().size()}">0</span>)
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span th:each="skill : ${readiness.missingSkills()}" th:text="${skill}"
+                                  class="px-3 py-1 text-xs font-bold uppercase border-[2px] border-[#C0392B] bg-[#C0392B]/10 text-[#C0392B]">SKILL</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Recommendations -->
+                    <div th:if="${!readiness.recommendations().isEmpty()}" class="mt-4 p-4 border-[2px] border-on-surface bg-surface-variant">
+                        <h4 class="font-label-md text-xs uppercase text-primary mb-2 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">lightbulb</span>
+                            AI Recommendations
+                        </h4>
+                        <ul class="list-none space-y-1">
+                            <li th:each="rec : ${readiness.recommendations()}" class="text-sm text-on-surface flex items-start gap-2">
+                                <span class="text-tertiary font-bold">→</span>
+                                <span th:text="${rec}">Recommendation</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Section -->
+    <div class="border-[3px] border-on-surface bg-surface p-8 shadow-isometric mb-6">
+        <div th:if="${alreadyApplied}" class="p-4 border-[3px] border-on-surface bg-tertiary/20 text-on-surface font-bold text-center">
+            ✅ You have already submitted an application for this position.
+        </div>
+
+        <div th:if="${!alreadyApplied && currentUser != null}" class="bg-background p-6 border-[3px] border-on-surface">
+            <h3 class="font-headline-md text-lg text-primary uppercase mb-4">Apply for this Position</h3>
+            <form th:action="@{/jobs/{id}/apply(id=${job.id})}" method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
+                <div>
+                    <label class="block font-label-md uppercase text-xs mb-2">Cover Note / Why you are a good fit</label>
+                    <textarea name="coverNote" rows="4" placeholder="Introduce yourself and highlight relevant experience..." class="w-full p-3 border-[3px] border-on-surface bg-surface text-on-surface focus:outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-label-md uppercase text-xs mb-2">Attach Resume / CV (PDF or DOCX)</label>
+                    <input type="file" name="resumeFile" accept=".pdf,.doc,.docx" class="w-full p-2 border-[3px] border-on-surface bg-surface focus:outline-none">
+                </div>
+
+                <button type="submit" class="py-3 px-6 bg-primary text-on-primary font-headline-md uppercase hover-isometric shadow-isometric border-[3px] border-on-surface">Submit Easy Application</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

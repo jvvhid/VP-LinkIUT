@@ -352,7 +352,67 @@
                 </div>
             </div>
         </div>
+        <!-- ═══ Recommendations Brick ═══ -->
+        <div class="mt-8 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+            <div class="h-10 bg-surface-variant border-b-[3px] border-on-surface flex items-center justify-between px-4">
+                <span class="font-label-md text-label-md text-on-surface uppercase">Recommendations</span>
+            </div>
 
+            <div class="p-6 bg-background space-y-4">
+                <!-- Give Recommendation Form -->
+                <div th:if="${!isOwnProfile && currentUser != null}" class="p-4 border-[3px] border-on-surface bg-surface mb-6">
+                    <h4 class="font-headline-sm text-sm uppercase text-primary mb-2">Write a Recommendation for <span th:text="${profileUser.displayName}">User</span></h4>
+                    <form th:action="@{/recommendations/give/{id}(id=${profileUser.id})}" method="post" class="flex flex-col gap-3">
+                        <input type="text" name="relationship" required placeholder="e.g. Managed Jahidul at BrainStation / Worked together on Thesis" class="p-2 border-[2px] border-on-surface bg-background text-xs">
+                        <textarea name="content" rows="3" required placeholder="Write your testimonial/recommendation..." class="p-2 border-[2px] border-on-surface bg-background text-xs"></textarea>
+                        <button type="submit" class="py-2 px-4 bg-primary text-on-primary font-label-md text-xs uppercase border border-on-surface self-start">Submit Recommendation</button>
+                    </form>
+                </div>
+
+                <!-- Display Recommendations -->
+                <div th:each="rec : ${recommendations}" class="p-4 border-[2px] border-on-surface bg-surface">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <a th:href="@{/profile/{id}(id=${rec.author.id})}" th:text="${rec.author.displayName}" class="font-bold text-on-surface hover:text-primary">Author Name</a>
+                            <span th:text="${' (' + rec.relationship + ')'}" class="text-xs text-on-surface-variant italic">Relationship</span>
+                        </div>
+                        <span th:text="${#temporals.format(rec.createdAt, 'dd MMM yyyy')}" class="text-xs text-on-surface-variant">Date</span>
+                    </div>
+                    <p th:text="${rec.content}" class="text-sm text-on-surface leading-relaxed"></p>
+                </div>
+
+                <div th:if="${recommendations == null || recommendations.isEmpty()}" class="text-center py-6 text-on-surface-variant text-sm">
+                    No recommendations published yet.
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ Pending Recommendations (Own Profile Only) ═══ -->
+        <div th:if="${isOwnProfile && pendingRecommendations != null && !pendingRecommendations.isEmpty()}"
+             class="mt-8 border-[3px] border-on-surface shadow-isometric bg-surface flex flex-col hover-isometric animate-fade-in-up">
+            <div class="h-10 bg-tertiary border-b-[3px] border-on-surface flex items-center px-4">
+                <span class="font-label-md text-label-md text-on-tertiary uppercase">Pending Recommendations (Awaiting Your Approval)</span>
+            </div>
+            <div class="p-6 bg-background space-y-4">
+                <div th:each="rec : ${pendingRecommendations}" class="p-4 border-[2px] border-on-surface bg-surface flex justify-between items-start gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <a th:href="@{/profile/{id}(id=${rec.author.id})}" th:text="${rec.author.displayName}" class="font-bold text-on-surface hover:text-primary">Author</a>
+                            <span th:text="${' — ' + rec.relationship}" class="text-xs text-on-surface-variant italic">Relation</span>
+                        </div>
+                        <p th:text="${rec.content}" class="text-sm text-on-surface leading-relaxed"></p>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <form th:action="@{/recommendations/{id}/approve(id=${rec.id})}" method="post">
+                            <button type="submit" class="px-3 py-1 bg-primary text-on-primary font-label-md text-xs uppercase border border-on-surface">Approve</button>
+                        </form>
+                        <form th:action="@{/recommendations/{id}/delete(id=${rec.id})}" method="post">
+                            <button type="submit" class="px-3 py-1 bg-error text-on-error font-label-md text-xs uppercase border border-on-surface">Decline</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

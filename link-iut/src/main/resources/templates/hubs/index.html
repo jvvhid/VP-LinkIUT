@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Department Hubs</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-5xl mx-auto">
+    <div class="border-b-[3px] border-on-surface pb-4 mb-8">
+        <h1 class="font-headline-xl text-primary uppercase">IUT Department Hubs</h1>
+        <p class="font-body-md text-on-surface-variant">Connect with peers, faculty, and alumni from specific departments.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div th:each="dept : ${departments}" class="border-[3px] border-on-surface bg-surface p-8 shadow-isometric text-center">
+            <span class="material-symbols-outlined text-5xl text-primary mb-2">school</span>
+            <h2 th:text="${dept}" class="font-headline-xl text-3xl font-extrabold mb-4">DEPT</h2>
+            <a th:href="@{/hubs/dept/{code}(code=${dept})}" class="inline-block px-6 py-2 bg-primary text-on-primary font-label-md uppercase border-[2px] border-on-surface hover-isometric">Explore Hub ↗</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

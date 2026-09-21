@@ -22,10 +22,10 @@ public class ConnectionController {
     }
 
     @PostMapping("/request/{userId}")
-    public String requestConnection(@PathVariable Long userId, @AuthenticationPrincipal UserDetails userDetails) {
+    public String requestConnection(@PathVariable Long userId, @AuthenticationPrincipal UserDetails userDetails, @RequestParam(defaultValue = "") String redirectUrl) {
         AppUser currentUser = getCurrentUser(userDetails);
         connectionService.sendRequest(currentUser.getId(), userId);
-        return "redirect:/profile/" + userId;
+        return redirectUrl.isEmpty() ? "redirect:/profile/" + userId : "redirect:" + redirectUrl;
     }
 
     @PostMapping("/accept/{connectionId}")

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Global Search</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-5xl mx-auto">
+    <div class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric mb-8">
+        <form th:action="@{/search}" method="get" class="flex gap-3">
+            <input type="text" name="q" th:value="${query}" placeholder="Search members, companies, skills, posts, jobs..." class="flex-1 p-3 border-[3px] border-on-surface bg-background text-on-background focus:outline-none">
+            <button type="submit" class="px-6 py-3 bg-primary text-on-primary font-headline-md uppercase border-[3px] border-on-surface hover-isometric">Search</button>
+        </form>
+    </div>
+
+    <div th:if="${query != null && !query.isBlank()}">
+        <h2 class="font-headline-md text-xl text-primary uppercase mb-4" th:text="${'Search Results for: ' + query}">Results</h2>
+
+        <!-- People Results -->
+        <div class="mb-8">
+            <h3 class="font-label-md text-sm uppercase text-on-surface-variant mb-3 border-b border-on-surface/20 pb-1">Members (<span th:text="${matchingProfiles.size()}">0</span>)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div th:each="p : ${matchingProfiles}" class="border-[2px] border-on-surface bg-surface p-4 flex gap-4 items-center">
+                    <div class="w-12 h-12 bg-primary text-on-primary font-bold flex items-center justify-center border border-on-surface">
+                        <span th:text="${p.user.initials}">U</span>
+                    </div>
+                    <div>
+                        <a th:href="@{/profile/{id}(id=${p.user.id})}" th:text="${p.user.displayName}" class="font-bold text-on-surface hover:text-primary">Name</a>
+                        <p th:text="${p.headline}" class="text-xs text-on-surface-variant">Headline</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Results -->
+        <div class="mb-8">
+            <h3 class="font-label-md text-sm uppercase text-on-surface-variant mb-3 border-b border-on-surface/20 pb-1">Jobs (<span th:text="${matchingJobs.size()}">0</span>)</h3>
+            <div class="flex flex-col gap-3">
+                <div th:each="j : ${matchingJobs}" class="border-[2px] border-on-surface bg-surface p-4 flex justify-between items-center">
+                    <div>
+                        <h4 th:text="${j.title}" class="font-bold text-on-surface">Title</h4>
+                        <p th:text="${j.company}" class="text-xs text-primary font-bold">Company</p>
+                    </div>
+                    <a th:href="@{/jobs/{id}(id=${j.id})}" class="px-3 py-1 bg-secondary text-on-secondary text-xs uppercase border border-on-surface">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

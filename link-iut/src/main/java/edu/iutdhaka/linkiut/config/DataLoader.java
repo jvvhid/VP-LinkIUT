@@ -109,12 +109,48 @@ public class DataLoader implements CommandLineRunner {
             userRepository.save(user);
         }
 
+        // Ensure explicit demo accounts exist (student@iut.edu and alumni@iut.edu)
+        createDemoUser("student@iut.edu", "Jahidul Islam", AppUser.Role.STUDENT, encodedPassword, "CSE Student | Developer", "CSE", "2023");
+        createDemoUser("alumni@iut.edu", "Aminul Islam", AppUser.Role.ALUMNI, encodedPassword, "Senior Software Engineer @ Tech", "CSE", "2018");
+
         // 2. Seed 12 new profiles if not enough users
         if (userRepository.count() < 12) {
             seedProfiles(encodedPassword);
         }
         
         log.info("DataLoader: ✅ Finished data seeding and password updates.");
+    }
+
+    private void createDemoUser(String email, String name, AppUser.Role role, String encodedPassword, String headline, String dept, String batch) {
+        if (userRepository.findByEmail(email).isEmpty()) {
+            AppUser user = new AppUser(email, encodedPassword, role, name);
+            userRepository.save(user);
+
+            UserProfile profile = new UserProfile();
+            profile.setUser(user);
+            profile.setHeadline(headline);
+            profile.setBio("Demo account for " + role + ". IUT " + dept + " batch " + batch);
+            profile.setDepartment(dept);
+            profile.setBatch(batch);
+            profile.setLocation("Dhaka, Bangladesh");
+            if (role == AppUser.Role.ALUMNI) {
+                profile.setCurrentCompany("BrainStation 23");
+            }
+            
+            if ("student@iut.edu".equals(email)) {
+                profile.setGithubUrl("https://github.com/jvvhid");
+                profile.setSkills("Java, Python, SQL, HTML, CSS, JavaScript, Git, REST API, Spring Boot");
+                Project p1 = new Project();
+                p1.setProfile(profile);
+                p1.setName("LinkIUT");
+                p1.setDescription("Professional networking platform for IUT alumni and students.");
+                p1.setRepoUrl("https://github.com/jvvhid/LinkIUT");
+                profile.getProjects().add(p1);
+            }
+
+            profileRepository.save(profile);
+            log.info("DataLoader: Created demo account: {}", email);
+        }
     }
     
     private void seedProfiles(String encodedPassword) {

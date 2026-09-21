@@ -115,10 +115,30 @@
                                             th:text="${profile.user.role}">ALUMNI</span>
                                     </div>
 
-                                    <a th:href="@{/profile/{id}(id=${profile.user.id})}"
-                                        class="mt-auto w-full bg-surface border-[3px] border-on-surface text-on-surface font-headline-sm uppercase py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover:bg-primary hover:text-on-primary transition-colors block text-center">
-                                        View Profile
-                                    </a>
+                                    <div class="mt-auto w-full flex flex-col gap-2">
+                                        <form th:action="@{/connections/request/{id}(id=${profile.user.id})}" method="post" 
+                                              th:if="${currentUser != null && currentUser.id != profile.user.id && @connectionService.getConnectionStatus(currentUser.id, profile.user.id) == null}">
+                                            <input type="hidden" name="redirectUrl" value="/network">
+                                            <button type="submit"
+                                                class="w-full bg-primary border-[3px] border-on-surface text-on-primary font-headline-sm uppercase py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover:bg-secondary hover:text-on-secondary transition-colors block text-center">
+                                                Connect
+                                            </button>
+                                        </form>
+                                        
+                                        <button disabled th:if="${currentUser != null && currentUser.id != profile.user.id && (@connectionService.getConnectionStatus(currentUser.id, profile.user.id) == 'PENDING_SENT' || @connectionService.getConnectionStatus(currentUser.id, profile.user.id) == 'PENDING_RECEIVED')}"
+                                            class="w-full bg-surface-variant border-[3px] border-on-surface text-on-surface-variant font-headline-sm uppercase py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] block text-center cursor-not-allowed">
+                                            Pending
+                                        </button>
+                                        
+                                        <button disabled th:if="${currentUser != null && currentUser.id != profile.user.id && @connectionService.getConnectionStatus(currentUser.id, profile.user.id) == 'CONNECTED'}"
+                                            class="w-full bg-secondary border-[3px] border-on-surface text-on-secondary font-headline-sm uppercase py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] block text-center cursor-not-allowed">
+                                            Connected
+                                        </button>
+                                        <a th:href="@{/profile/{id}(id=${profile.user.id})}"
+                                            class="w-full bg-surface border-[3px] border-on-surface text-on-surface font-headline-sm uppercase py-2 shadow-[2px_2px_0px_0px_rgba(26,28,28,1)] hover:bg-primary hover:text-on-primary transition-colors block text-center">
+                                            View Profile
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 

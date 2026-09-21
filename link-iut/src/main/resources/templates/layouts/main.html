@@ -280,7 +280,7 @@
             <button id="sidebar-toggle"
                 class="material-symbols-outlined text-on-secondary hover:text-primary transition-colors focus:outline-none shrink-0">menu_open</button>
         </div>
-        <div class="flex flex-col gap-2 p-4 flex-1 whitespace-nowrap overflow-hidden">
+        <div class="flex flex-col gap-2 p-4 flex-1 whitespace-nowrap overflow-y-auto">
             <a th:href="@{/feed}"
                 th:classappend="${activePage == 'feed' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
                 class="flex items-center gap-3 p-3 transition-colors text-on-secondary hover:bg-black/20">
@@ -309,16 +309,35 @@
                 </div>
                 <span class="sidebar-text">Notifications</span>
             </a>
+            <a th:href="@{/jobs}"
+                th:classappend="${activePage == 'jobs' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">work</span> <span class="sidebar-text">Jobs & Internships</span>
+            </a>
+            <a th:href="@{/mentorship}"
+                th:classappend="${activePage == 'mentorship' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">co_present</span> <span class="sidebar-text">Mentorship</span>
+            </a>
+            <a th:href="@{/analytics}"
+                th:classappend="${activePage == 'analytics' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">analytics</span> <span class="sidebar-text">Career Analytics</span>
+            </a>
+            <a th:href="@{/hubs}"
+                th:classappend="${activePage == 'hubs' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">school</span> <span class="sidebar-text">Dept Hubs</span>
+            </a>
+            <a th:href="@{/search}"
+                th:classappend="${activePage == 'search' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
+                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
+                <span class="material-symbols-outlined shrink-0">search</span> <span class="sidebar-text">Global Search</span>
+            </a>
             <a th:href="@{/profile/{id}(id=${currentUser?.id ?: 1})}"
                 th:classappend="${activePage == 'profile' ? 'border-l-4 border-tertiary bg-secondary/80 text-tertiary font-bold' : ''}"
                 class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
                 <span class="material-symbols-outlined shrink-0">person</span> <span class="sidebar-text">Profile</span>
-            </a>
-            <a th:if="${currentUser != null && currentUser.role.name() == 'ALUMNI'}"
-                th:href="@{/profile/{id}#opportunities(id=${currentUser.id})}"
-                class="flex items-center gap-3 p-3 text-on-secondary hover:bg-black/20 transition-colors">
-                <span class="material-symbols-outlined shrink-0">work</span> <span class="sidebar-text">Posted
-                    Opportunities</span>
             </a>
         </div>
 

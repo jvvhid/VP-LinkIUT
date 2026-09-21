@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Applicant Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-5xl mx-auto">
+    <div class="border-b-[3px] border-on-surface pb-4 mb-6">
+        <h1 class="font-headline-xl text-primary uppercase" th:text="${'Applicants for: ' + job.title}">Applicants</h1>
+        <p class="text-on-surface-variant font-body-md" th:text="${job.company}"></p>
+    </div>
+
+    <div class="flex flex-col gap-6">
+        <div th:each="app : ${applications}" class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric">
+            <div class="flex justify-between items-start mb-4 border-b border-on-surface/20 pb-4">
+                <div>
+                    <h3 th:text="${app.applicant.displayName}" class="font-headline-md text-xl font-bold">Applicant Name</h3>
+                    <p th:text="${app.applicant.email}" class="text-sm text-on-surface-variant">Email</p>
+                    <a th:href="@{/profile/{id}(id=${app.applicant.id})}" class="text-xs text-primary font-bold hover:underline block mt-1">View Candidate Profile ↗</a>
+                </div>
+                <div>
+                    <form th:action="@{/jobs/applications/{appId}/status(appId=${app.id})}" method="post" class="flex gap-2 items-center">
+                        <select name="status" class="p-2 border-[2px] border-on-surface bg-background font-label-md text-xs">
+                            <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}" th:selected="${st == app.status}">STATUS</option>
+                        </select>
+                        <button type="submit" class="px-3 py-2 bg-primary text-on-primary font-label-md text-xs uppercase border border-on-surface">Update</button>
+                    </form>
+                </div>
+            </div>
+
+            <div th:if="${app.coverNote != null && !app.coverNote.isBlank()}" class="mb-4">
+                <h4 class="font-label-md text-xs uppercase text-on-surface-variant mb-1">Cover Note</h4>
+                <p th:text="${app.coverNote}" class="text-sm text-on-surface bg-background p-3 border border-on-surface/30"></p>
+            </div>
+
+            <div th:if="${app.resumeUrl != null}" class="mt-2">
+                <a th:href="${app.resumeUrl}" target="_blank" class="px-3 py-2 bg-tertiary text-on-tertiary font-label-md text-xs uppercase inline-flex items-center gap-1 border border-on-surface">
+                    <span class="material-symbols-outlined text-sm">download</span> Download Resume / CV
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${applications.isEmpty()}" class="border-[3px] border-on-surface p-12 text-center bg-surface">
+            <p class="text-on-surface-variant">No candidates have applied for this position yet.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

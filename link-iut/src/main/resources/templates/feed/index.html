@@ -151,6 +151,17 @@
                             </div>
                             <p class="font-body-md text-on-surface-variant mb-6" th:utext="${opp.content}">Description...</p>
 
+                            <!-- Repost Original Content (if this is a repost) -->
+                            <div th:if="${opp.originalPost != null}" class="border-[3px] border-on-surface bg-surface-container-low p-4 mb-6 shadow-[inset_2px_2px_0px_0px_rgba(26,28,28,0.15)]">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-sm text-on-surface-variant">repeat</span>
+                                    <span class="font-label-md text-xs uppercase text-on-surface-variant">Reposted from</span>
+                                    <a th:href="@{/profile/{id}(id=${opp.originalPost.author.id})}" class="font-headline-sm text-xs text-primary hover:underline" th:text="${opp.originalPost.author.displayName}">Original Author</a>
+                                    <span class="text-xs text-on-surface-variant" th:text="${opp.originalPost.timeAgo}">2h ago</span>
+                                </div>
+                                <p class="font-body-md text-on-surface text-sm" th:utext="${opp.originalPost.content}">Original content...</p>
+                            </div>
+
                             <!-- Poll (if exists) -->
                             <div th:replace="~{feed/fragments :: poll-results}"></div>
 

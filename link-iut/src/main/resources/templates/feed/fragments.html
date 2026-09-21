@@ -20,26 +20,31 @@
         </th:block>
     </div>
 
-    <!-- Post Reactions Fragment -->
-    <div class="flex items-center gap-4 mt-4 border-t-[3px] border-on-surface pt-4 mb-4" th:fragment="post-reactions" th:id="'reactions-' + (${post != null ? post.id : opp?.id})">
+    <!-- Post Reactions Fragment (Multi-Reaction + Repost) -->
+    <div class="flex flex-wrap items-center gap-3 mt-4 border-t-[3px] border-on-surface pt-4 mb-4" th:fragment="post-reactions" th:id="'reactions-' + (${post != null ? post.id : opp?.id})">
         <th:block th:with="currentPost=${post != null ? post : opp}">
-            <button type="button" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-primary transition-colors"
-                    th:attr="hx-post=@{/posts/{id}/like(id=${currentPost.id})}, hx-target='#reactions-' + ${currentPost.id}"
-                    hx-swap="outerHTML">
-                <span class="material-symbols-outlined">thumb_up</span>
-                <span th:text="${currentPost.likeCount}">0</span>
-            </button>
-            <button type="button" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-error transition-colors"
-                    th:attr="hx-post=@{/posts/{id}/dislike(id=${currentPost.id})}, hx-target='#reactions-' + ${currentPost.id}"
-                    hx-swap="outerHTML">
-                <span class="material-symbols-outlined">thumb_down</span>
-                <span th:text="${currentPost.dislikeCount}">0</span>
-            </button>
-            <button type="button" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-secondary transition-colors"
+            <form th:action="@{/reactions/post/{id}(id=${currentPost.id})}" method="post" class="inline-flex gap-1">
+                <button type="submit" name="type" value="LIKE" title="Like" class="p-1 hover:scale-125 transition-transform text-lg">👍</button>
+                <button type="submit" name="type" value="CELEBRATE" title="Celebrate" class="p-1 hover:scale-125 transition-transform text-lg">🎉</button>
+                <button type="submit" name="type" value="SUPPORT" title="Support" class="p-1 hover:scale-125 transition-transform text-lg">🤝</button>
+                <button type="submit" name="type" value="INSIGHTFUL" title="Insightful" class="p-1 hover:scale-125 transition-transform text-lg">💡</button>
+                <button type="submit" name="type" value="LOVE" title="Love" class="p-1 hover:scale-125 transition-transform text-lg">❤️</button>
+            </form>
+            <span class="font-bold text-xs text-on-surface-variant" th:text="${currentPost.totalEngagement + ' Reactions'}">0 Reactions</span>
+
+            <button type="button" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-secondary transition-colors text-xs uppercase"
                     th:onclick="'document.getElementById(\'comments-' + ${currentPost.id} + '\').classList.toggle(\'hidden\')'">
-                <span class="material-symbols-outlined">comment</span>
+                <span class="material-symbols-outlined text-sm">comment</span>
                 <span>Comment</span>
             </button>
+
+            <!-- Repost -->
+            <form th:action="@{/reactions/post/{id}/repost(id=${currentPost.id})}" method="post" class="inline">
+                <button type="submit" class="flex items-center gap-1 font-headline-sm text-on-surface hover:text-primary transition-colors text-xs uppercase">
+                    <span class="material-symbols-outlined text-sm">repeat</span>
+                    <span>Repost</span>
+                </button>
+            </form>
         </th:block>
     </div>
 

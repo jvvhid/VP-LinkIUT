@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<head>
+    <title>Mentorship & Office Hours</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-6xl mx-auto">
+    <div class="border-b-[3px] border-on-surface pb-4 mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="font-headline-xl text-primary uppercase">Mentorship & Office Hours</h1>
+            <p class="font-body-md text-on-surface-variant">Book 1-on-1 career guidance or resume reviews with alumni.</p>
+        </div>
+    </div>
+
+    <!-- Alumni: Offer Slot Form -->
+    <div th:if="${currentUser != null && currentUser.role.name() == 'ALUMNI'}" class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric mb-8">
+        <h2 class="font-headline-md text-xl text-primary uppercase mb-4 border-b border-on-surface/20 pb-2">+ Offer Mentorship Availability Slot</h2>
+        <form th:action="@{/mentorship/create}" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block font-label-md text-xs uppercase mb-1">Topic *</label>
+                <input type="text" name="topic" required placeholder="e.g. System Design Interview Prep" class="w-full p-2 border-[2px] border-on-surface bg-background">
+            </div>
+            <div>
+                <label class="block font-label-md text-xs uppercase mb-1">Start Time *</label>
+                <input type="datetime-local" name="startTime" required class="w-full p-2 border-[2px] border-on-surface bg-background">
+            </div>
+            <div>
+                <label class="block font-label-md text-xs uppercase mb-1">Duration (Minutes)</label>
+                <input type="number" name="durationMinutes" value="30" class="w-full p-2 border-[2px] border-on-surface bg-background">
+            </div>
+            <div>
+                <label class="block font-label-md text-xs uppercase mb-1">Meeting Link (Google Meet / Zoom)</label>
+                <input type="url" name="meetingLink" placeholder="https://meet.google.com/..." class="w-full p-2 border-[2px] border-on-surface bg-background">
+            </div>
+            <div class="col-span-full">
+                <label class="block font-label-md text-xs uppercase mb-1">Description / Notes</label>
+                <textarea name="description" rows="2" placeholder="Explain what students can prepare..." class="w-full p-2 border-[2px] border-on-surface bg-background"></textarea>
+            </div>
+            <button type="submit" class="col-span-full py-3 bg-primary text-on-primary font-headline-md uppercase hover-isometric border-[2px] border-on-surface">Publish Available Slot</button>
+        </form>
+    </div>
+
+    <!-- Available Slots Grid -->
+    <h2 class="font-headline-md text-2xl text-on-surface uppercase mb-4">Available Slots for Booking</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div th:each="slot : ${availableSlots}" class="border-[3px] border-on-surface bg-surface p-6 shadow-isometric flex flex-col justify-between">
+            <div>
+                <span th:text="${slot.mentor.displayName}" class="font-bold text-primary block text-sm mb-1">Mentor Name</span>
+                <h3 th:text="${slot.topic}" class="font-headline-md text-lg font-bold mb-2">Topic</h3>
+                <p th:text="${slot.description}" class="text-sm text-on-surface mb-4">Description...</p>
+                <div class="text-xs text-on-surface-variant flex flex-col gap-1 mb-4">
+                    <span>📅 <strong th:text="${#temporals.format(slot.startTime, 'dd MMM yyyy, HH:mm')}">Time</strong></span>
+                    <span>⏱️ <strong th:text="${slot.durationMinutes + ' Mins'}">Duration</strong></span>
+                </div>
+            </div>
+
+            <form th:action="@{/mentorship/{id}/book(id=${slot.id})}" method="post" class="border-t border-on-surface/20 pt-4 flex flex-col gap-2">
+                <input type="text" name="studentNote" placeholder="Note to mentor..." class="p-2 border border-on-surface text-xs bg-background">
+                <button type="submit" class="w-full py-2 bg-secondary text-on-secondary font-label-md text-xs uppercase hover:bg-primary transition-colors border border-on-surface">Book Session</button>
+            </form>
+        </div>
+
+        <div th:if="${availableSlots.isEmpty()}" class="col-span-full border-[3px] border-on-surface p-12 text-center bg-surface">
+            <p class="text-on-surface-variant">No mentorship slots currently available. Check back soon!</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
